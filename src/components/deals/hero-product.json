@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_deals_hero_products",
+  "info": { "displayName": "Hero Product", "icon": "star" },
+  "attributes": {
+    "productHandle": { "type": "string", "required": true },
+    "highlightText": { "type": "string" }
+  }
+}

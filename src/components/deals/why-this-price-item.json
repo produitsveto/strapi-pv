@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_deals_why_this_price_items",
+  "info": { "displayName": "Why This Price Item", "icon": "info-circle" },
+  "attributes": {
+    "icon": { "type": "string", "required": true },
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true }
+  }
+}

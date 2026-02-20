@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_deals_discount_badges",
+  "info": { "displayName": "Discount Badge", "icon": "percentage" },
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "type": { "type": "enumeration", "enum": ["percent", "amount"], "required": true },
+    "value": { "type": "decimal", "required": true }
+  }
+}

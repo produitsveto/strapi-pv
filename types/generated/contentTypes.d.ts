@@ -441,18 +441,32 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
     blocks: Schema.Attribute.DynamicZone<
       ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
-    >;
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'> &
-      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'>;
     publishedAt: Schema.Attribute.DateTime;
-    title: Schema.Attribute.String;
+    title: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -573,20 +587,86 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    brands: Schema.Attribute.Component<'deals.brand', true>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    discountBadges: Schema.Attribute.Component<'deals.discount-badge', true>;
+    heroDescription: Schema.Attribute.Text;
+    heroProducts: Schema.Attribute.Component<'deals.hero-product', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 2;
+        },
+        number
+      >;
+    heroTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-homepage.deals-homepage'
+    >;
+    newProductsTitle: Schema.Attribute.String;
+    presentationBody: Schema.Attribute.RichText;
+    presentationTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    quickFilters: Schema.Attribute.Component<'deals.quick-filter', true>;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    stayConnectedBody: Schema.Attribute.RichText;
+    stayConnectedTitle: Schema.Attribute.String;
+    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsProductPageDealsProductPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'deals_product_pages';
+  info: {
+    displayName: 'DEALS - Product Page';
+    pluralName: 'deals-product-pages';
+    singularName: 'deals-product-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    crossSellTitle: Schema.Attribute.String;
+    genericFaqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::deals-homepage.deals-homepage'
-    > &
-      Schema.Attribute.Private;
+      'api::deals-product-page.deals-product-page'
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    relatedProductsTitle: Schema.Attribute.String;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    topBanner: Schema.Attribute.String;
+    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    whyThisPriceItems: Schema.Attribute.Component<
+      'deals.why-this-price-item',
+      true
+    >;
+    whyThisPriceTitle: Schema.Attribute.String;
   };
 }
 
@@ -641,12 +721,18 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    extendedDescription: Schema.Attribute.RichText;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::product.product'
     >;
+    medusaId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1168,6 +1254,7 @@ declare module '@strapi/strapi' {
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
       'api::deals-homepage.deals-homepage': ApiDealsHomepageDealsHomepage;
+      'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
       'api::global.global': ApiGlobalGlobal;
       'api::product.product': ApiProductProduct;
       'plugin::content-releases.release': PluginContentReleasesRelease;

@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_deals_brands",
+  "info": { "displayName": "Brand", "icon": "tag" },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "logo": { "type": "media", "multiple": false, "required": true, "allowedTypes": ["images"] },
+    "slug": { "type": "string", "required": true }
+  }
+}

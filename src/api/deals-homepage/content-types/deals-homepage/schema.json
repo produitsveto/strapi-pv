@@ -6,9 +6,21 @@
     "pluralName": "deals-homepages",
     "displayName": "DEALS - Homepage"
   },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
-  "attributes": {}
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "heroTitle": { "type": "string", "required": true },
+    "heroDescription": { "type": "text" },
+    "heroProducts": { "type": "component", "repeatable": true, "component": "deals.hero-product", "max": 2 },
+    "trustBadges": { "type": "component", "repeatable": true, "component": "deals.trust-badge" },
+    "newProductsTitle": { "type": "string" },
+    "quickFilters": { "type": "component", "repeatable": true, "component": "deals.quick-filter" },
+    "brands": { "type": "component", "repeatable": true, "component": "deals.brand" },
+    "discountBadges": { "type": "component", "repeatable": true, "component": "deals.discount-badge" },
+    "presentationTitle": { "type": "string" },
+    "presentationBody": { "type": "richtext" },
+    "stayConnectedTitle": { "type": "string" },
+    "stayConnectedBody": { "type": "richtext" },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+  }
 }
