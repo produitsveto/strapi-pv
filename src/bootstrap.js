@@ -92,9 +92,11 @@ const CONTENT_TYPE_CONFIG = {
     },
   },
   'api::product.product': {
-    settings: { mainField: 'handle', defaultSortBy: 'handle', defaultSortOrder: 'ASC' },
-    listColumns: ['handle', 'medusaId', 'laboratory', 'visibilite', 'createdAt'],
+    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
+    listColumns: ['name', 'ean', 'handle', 'laboratory', 'visibilite', 'createdAt'],
     labels: {
+      name: 'Nom',
+      ean: 'EAN',
       medusaId: 'ID Medusa',
       handle: 'Handle',
       visibilite: 'Visibilité',

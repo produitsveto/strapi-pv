@@ -2,4 +2,4 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::deals-partners.deals-partner');
+module.exports = createCoreRouter('api::deals-partner.deals-partner');

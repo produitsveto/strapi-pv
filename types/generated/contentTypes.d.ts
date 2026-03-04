@@ -504,7 +504,7 @@ export interface ApiBreedBreed extends Struct.CollectionTypeSchema {
   collectionName: 'breeds';
   info: {
     description: 'Race animale (Labrador, Persan\u2026)';
-    displayName: 'Breed';
+    displayName: 'Race';
     pluralName: 'breeds';
     singularName: 'breed';
   };
@@ -565,7 +565,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
     description: 'Cat\u00E9gorie produit (antiparasitaires, compl\u00E9ments\u2026)';
-    displayName: 'Category';
+    displayName: 'Cat\u00E9gorie Produit';
     pluralName: 'categories';
     singularName: 'category';
   };
@@ -630,10 +630,135 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDealsCguDealsCgu extends Struct.SingleTypeSchema {
+  collectionName: 'deals_cgus';
+  info: {
+    displayName: 'DEALS - CGU';
+    pluralName: 'deals-cgus';
+    singularName: 'deals-cgu';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-cgu.deals-cgu'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsDeliveryDealsDelivery extends Struct.SingleTypeSchema {
+  collectionName: 'deals_deliveries';
+  info: {
+    displayName: 'DEALS - Livraison';
+    pluralName: 'deals-deliveries';
+    singularName: 'deals-delivery';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-delivery.deals-delivery'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsFaqDealsFaq extends Struct.SingleTypeSchema {
+  collectionName: 'deals_faqs';
+  info: {
+    displayName: 'DEALS - FAQ';
+    pluralName: 'deals-faqs';
+    singularName: 'deals-faq';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    items: Schema.Attribute.Component<'deals.faq-item', true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-faq.deals-faq'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
   collectionName: 'deals_homepages';
   info: {
-    displayName: 'DEALS - Homepage';
+    displayName: 'DEALS - Accueil';
     pluralName: 'deals-homepages';
     singularName: 'deals-homepage';
   };
@@ -680,11 +805,237 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiDealsLegalDealsLegal extends Struct.SingleTypeSchema {
+  collectionName: 'deals_legals';
+  info: {
+    displayName: 'DEALS - Mentions l\u00E9gales';
+    pluralName: 'deals-legals';
+    singularName: 'deals-legal';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-legal.deals-legal'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsLoyaltyDealsLoyalty extends Struct.SingleTypeSchema {
+  collectionName: 'deals_loyalties';
+  info: {
+    displayName: 'DEALS - Fid\u00E9lit\u00E9';
+    pluralName: 'deals-loyalties';
+    singularName: 'deals-loyalty';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-loyalty.deals-loyalty'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsPartnerDealsPartner extends Struct.SingleTypeSchema {
+  collectionName: 'deals_partners';
+  info: {
+    displayName: 'DEALS - Partenaires';
+    pluralName: 'deals-partners';
+    singularName: 'deals-partner';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-partner.deals-partner'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsPaymentInfoDealsPaymentInfo
+  extends Struct.SingleTypeSchema {
+  collectionName: 'deals_payment_infos';
+  info: {
+    displayName: 'DEALS - Paiement s\u00E9curis\u00E9';
+    pluralName: 'deals-payment-infos';
+    singularName: 'deals-payment-info';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-payment-info.deals-payment-info'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsPrivacyDealsPrivacy extends Struct.SingleTypeSchema {
+  collectionName: 'deals_privacies';
+  info: {
+    displayName: 'DEALS - Confidentialit\u00E9';
+    pluralName: 'deals-privacies';
+    singularName: 'deals-privacy';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    contenu: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-privacy.deals-privacy'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDealsProductPageDealsProductPage
   extends Struct.SingleTypeSchema {
   collectionName: 'deals_product_pages';
   info: {
-    displayName: 'DEALS - Product Page';
+    displayName: 'DEALS - Fiche Produit';
     pluralName: 'deals-product-pages';
     singularName: 'deals-product-page';
   };
@@ -727,7 +1078,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   collectionName: 'laboratories';
   info: {
     description: 'Laboratoire / Marque (Virbac, Elanco\u2026)';
-    displayName: 'Laboratory';
+    displayName: 'Laboratoire';
     pluralName: 'laboratories';
     singularName: 'laboratory';
   };
@@ -793,7 +1144,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
-    displayName: 'Product';
+    displayName: 'Produit';
     pluralName: 'products';
     singularName: 'product';
   };
@@ -812,6 +1163,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    ean: Schema.Attribute.String & Schema.Attribute.Unique;
     extendedDescription: Schema.Attribute.RichText &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -840,6 +1192,13 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     notice: Schema.Attribute.Media<'files', true>;
     precautions: Schema.Attribute.RichText &
       Schema.Attribute.SetPluginOptions<{
@@ -862,7 +1221,7 @@ export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
   collectionName: 'species_entries';
   info: {
     description: 'Esp\u00E8ce cible (chien, chat, cheval\u2026)';
-    displayName: 'Species';
+    displayName: 'Esp\u00E8ce';
     pluralName: 'species-entries';
     singularName: 'species';
   };
@@ -1443,7 +1802,15 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::breed.breed': ApiBreedBreed;
       'api::category.category': ApiCategoryCategory;
+      'api::deals-cgu.deals-cgu': ApiDealsCguDealsCgu;
+      'api::deals-delivery.deals-delivery': ApiDealsDeliveryDealsDelivery;
+      'api::deals-faq.deals-faq': ApiDealsFaqDealsFaq;
       'api::deals-homepage.deals-homepage': ApiDealsHomepageDealsHomepage;
+      'api::deals-legal.deals-legal': ApiDealsLegalDealsLegal;
+      'api::deals-loyalty.deals-loyalty': ApiDealsLoyaltyDealsLoyalty;
+      'api::deals-partner.deals-partner': ApiDealsPartnerDealsPartner;
+      'api::deals-payment-info.deals-payment-info': ApiDealsPaymentInfoDealsPaymentInfo;
+      'api::deals-privacy.deals-privacy': ApiDealsPrivacyDealsPrivacy;
       'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::product.product': ApiProductProduct;

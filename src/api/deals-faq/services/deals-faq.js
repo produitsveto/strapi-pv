@@ -2,4 +2,4 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::deals-partners.deals-partner');
+module.exports = createCoreService('api::deals-faq.deals-faq');
