@@ -4,7 +4,7 @@
   "info": {
     "singularName": "category",
     "pluralName": "categories",
-    "displayName": "Catégorie",
+    "displayName": "Catégorie Produit",
     "description": "Catégorie produit (antiparasitaires, compléments…)"
   },
   "options": { "draftAndPublish": true },
