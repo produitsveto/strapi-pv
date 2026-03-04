@@ -1,142 +1,175 @@
 'use strict';
 
 /**
- * Labels français pour les champs du content-manager.
+ * Bootstrap — Labels FR + configuration des vues liste/edit
  *
- * Les labels sont appliqués au démarrage de Strapi sur les configurations
- * du content-manager stockées en base. Au premier lancement, les configs
- * n'existent pas encore (créées au premier accès admin) — il suffit de
- * redémarrer Strapi une fois après le premier accès pour que les labels
- * soient appliqués.
+ * Les configurations du content-manager sont créées en base au premier accès
+ * admin. Ce bootstrap les patche à chaque démarrage : labels FR, colonnes
+ * de liste, mainField, tri par défaut.
+ *
+ * → Premier lancement : les configs n'existent pas encore, rien ne se passe.
+ * → Redémarrer Strapi après le premier accès admin pour appliquer.
  */
 
-const FIELD_LABELS = {
+const CONTENT_TYPE_CONFIG = {
   'api::species.species': {
-    name: 'Nom',
-    slug: 'Slug',
-    visibilite: 'Visibilité',
-    mainImage: 'Image principale',
-    description: 'Description',
-    faqs: 'FAQ',
-    marketingBanner: 'Bannière marketing',
-    featuredProducts: 'Produits mis en avant',
-    parentSpecies: 'Espèce parente',
-    childSpecies: 'Sous-espèces',
-    categories: 'Catégories',
-    laboratories: 'Laboratoires',
-    articles: 'Articles',
-    seo: 'SEO',
+    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
+    listColumns: ['name', 'slug', 'visibilite', 'categories', 'createdAt'],
+    labels: {
+      name: 'Nom',
+      slug: 'Slug',
+      visibilite: 'Visibilité',
+      mainImage: 'Image principale',
+      description: 'Description',
+      faqs: 'FAQ',
+      marketingBanner: 'Bannière marketing',
+      featuredProducts: 'Produits mis en avant',
+      parentSpecies: 'Espèce parente',
+      childSpecies: 'Sous-espèces',
+      categories: 'Catégories',
+      laboratories: 'Laboratoires',
+      articles: 'Articles',
+      seo: 'SEO',
+    },
   },
   'api::breed.breed': {
-    name: 'Nom',
-    slug: 'Slug',
-    visibilite: 'Visibilité',
-    mainImage: 'Image principale',
-    description: 'Description',
-    faqs: 'FAQ',
-    marketingBanner: 'Bannière marketing',
-    featuredProducts: 'Produits mis en avant',
-    parentSpecies: 'Espèce parente',
-    laboratories: 'Laboratoires',
-    articles: 'Articles',
-    seo: 'SEO',
+    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
+    listColumns: ['name', 'slug', 'parentSpecies', 'visibilite', 'createdAt'],
+    labels: {
+      name: 'Nom',
+      slug: 'Slug',
+      visibilite: 'Visibilité',
+      mainImage: 'Image principale',
+      description: 'Description',
+      faqs: 'FAQ',
+      marketingBanner: 'Bannière marketing',
+      featuredProducts: 'Produits mis en avant',
+      parentSpecies: 'Espèce parente',
+      laboratories: 'Laboratoires',
+      articles: 'Articles',
+      seo: 'SEO',
+    },
   },
   'api::laboratory.laboratory': {
-    name: 'Nom',
-    slug: 'Slug',
-    visibilite: 'Visibilité',
-    mainImage: 'Image principale',
-    logo: 'Logo',
-    description: 'Description',
-    faqs: 'FAQ',
-    marketingBanner: 'Bannière marketing',
-    featuredProducts: 'Produits mis en avant',
-    categories: 'Catégories',
-    species: 'Espèces',
-    breeds: 'Races',
-    alliedLaboratory: 'Laboratoire allié',
-    articles: 'Articles',
-    seo: 'SEO',
+    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
+    listColumns: ['name', 'slug', 'visibilite', 'categories', 'createdAt'],
+    labels: {
+      name: 'Nom',
+      slug: 'Slug',
+      visibilite: 'Visibilité',
+      mainImage: 'Image principale',
+      logo: 'Logo',
+      description: 'Description',
+      faqs: 'FAQ',
+      marketingBanner: 'Bannière marketing',
+      featuredProducts: 'Produits mis en avant',
+      categories: 'Catégories',
+      species: 'Espèces',
+      breeds: 'Races',
+      alliedLaboratory: 'Laboratoire allié',
+      articles: 'Articles',
+      seo: 'SEO',
+    },
   },
   'api::category.category': {
-    name: 'Nom',
-    slug: 'Slug',
-    visibilite: 'Visibilité',
-    mainImage: 'Image principale',
-    description: 'Description',
-    marketingBanner: 'Bannière marketing',
-    featuredProducts: 'Produits mis en avant',
-    googleCategory: 'Catégorie Google',
-    parentCategory: 'Catégorie parente',
-    childCategories: 'Sous-catégories',
-    articles: 'Articles',
-    species: 'Espèces',
-    laboratories: 'Laboratoires',
-    seo: 'SEO',
+    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
+    listColumns: ['name', 'slug', 'parentCategory', 'visibilite', 'createdAt'],
+    labels: {
+      name: 'Nom',
+      slug: 'Slug',
+      visibilite: 'Visibilité',
+      mainImage: 'Image principale',
+      description: 'Description',
+      marketingBanner: 'Bannière marketing',
+      featuredProducts: 'Produits mis en avant',
+      googleCategory: 'Catégorie Google',
+      parentCategory: 'Catégorie parente',
+      childCategories: 'Sous-catégories',
+      articles: 'Articles',
+      species: 'Espèces',
+      laboratories: 'Laboratoires',
+      seo: 'SEO',
+    },
   },
   'api::product.product': {
-    medusaId: 'ID Medusa',
-    handle: 'Handle',
-    visibilite: 'Visibilité',
-    mainImage: 'Image principale',
-    carousel: 'Carrousel',
-    extendedDescription: 'Description étendue',
-    modeEmploi: "Mode d'emploi",
-    precautions: 'Précautions',
-    notice: 'Notice (PDF)',
-    formeGalenique: 'Forme galénique',
-    synonymes: 'Synonymes',
-    faqs: 'FAQ',
-    laboratory: 'Laboratoire',
-    species: 'Espèces',
-    breeds: 'Races',
-    articles: 'Articles',
-    seo: 'SEO',
+    settings: { mainField: 'handle', defaultSortBy: 'handle', defaultSortOrder: 'ASC' },
+    listColumns: ['handle', 'medusaId', 'laboratory', 'visibilite', 'createdAt'],
+    labels: {
+      medusaId: 'ID Medusa',
+      handle: 'Handle',
+      visibilite: 'Visibilité',
+      mainImage: 'Image principale',
+      carousel: 'Carrousel',
+      extendedDescription: 'Description étendue',
+      modeEmploi: "Mode d'emploi",
+      precautions: 'Précautions',
+      notice: 'Notice (PDF)',
+      formeGalenique: 'Forme galénique',
+      synonymes: 'Synonymes',
+      faqs: 'FAQ',
+      laboratory: 'Laboratoire',
+      species: 'Espèces',
+      breeds: 'Races',
+      articles: 'Articles',
+      seo: 'SEO',
+    },
   },
   'api::article.article': {
-    title: 'Titre',
-    description: 'Description',
-    slug: 'Slug',
-    cover: 'Couverture',
-    categories: 'Catégories',
-    species: 'Espèces',
-    breeds: 'Races',
-    laboratories: 'Laboratoires',
-    relatedArticles: 'Articles liés',
-    body: 'Contenu',
-    seo: 'SEO',
+    settings: { mainField: 'title', defaultSortBy: 'createdAt', defaultSortOrder: 'DESC' },
+    listColumns: ['title', 'slug', 'categories', 'createdAt'],
+    labels: {
+      title: 'Titre',
+      description: 'Description',
+      slug: 'Slug',
+      cover: 'Couverture',
+      categories: 'Catégories',
+      species: 'Espèces',
+      breeds: 'Races',
+      laboratories: 'Laboratoires',
+      relatedArticles: 'Articles liés',
+      body: 'Contenu',
+      seo: 'SEO',
+    },
   },
   'api::deals-homepage.deals-homepage': {
-    heroTitle: 'Titre hero',
-    heroDescription: 'Description hero',
-    heroProducts: 'Produits hero',
-    trustBadges: 'Badges de confiance',
-    newProductsTitle: 'Titre nouveautés',
-    quickFilters: 'Filtres rapides',
-    brands: 'Marques',
-    discountBadges: 'Badges promo',
-    presentationTitle: 'Titre présentation',
-    presentationBody: 'Corps présentation',
-    stayConnectedTitle: 'Titre restez connecté',
-    stayConnectedBody: 'Corps restez connecté',
-    seo: 'SEO',
+    settings: {},
+    listColumns: [],
+    labels: {
+      heroTitle: 'Titre hero',
+      heroDescription: 'Description hero',
+      heroProducts: 'Produits hero',
+      trustBadges: 'Badges de confiance',
+      newProductsTitle: 'Titre nouveautés',
+      quickFilters: 'Filtres rapides',
+      brands: 'Marques',
+      discountBadges: 'Badges promo',
+      presentationTitle: 'Titre présentation',
+      presentationBody: 'Corps présentation',
+      stayConnectedTitle: 'Titre restez connecté',
+      stayConnectedBody: 'Corps restez connecté',
+      seo: 'SEO',
+    },
   },
   'api::deals-product-page.deals-product-page': {
-    topBanner: 'Bannière haute',
-    trustBadges: 'Badges de confiance',
-    whyThisPriceTitle: 'Titre pourquoi ce prix',
-    whyThisPriceItems: 'Éléments pourquoi ce prix',
-    genericFaqs: 'FAQ génériques',
-    crossSellTitle: 'Titre ventes croisées',
-    relatedProductsTitle: 'Titre produits similaires',
-    seo: 'SEO',
+    settings: {},
+    listColumns: [],
+    labels: {
+      topBanner: 'Bannière haute',
+      trustBadges: 'Badges de confiance',
+      whyThisPriceTitle: 'Titre pourquoi ce prix',
+      whyThisPriceItems: 'Éléments pourquoi ce prix',
+      genericFaqs: 'FAQ génériques',
+      crossSellTitle: 'Titre ventes croisées',
+      relatedProductsTitle: 'Titre produits similaires',
+      seo: 'SEO',
+    },
   },
 };
 
-async function applyFrenchLabels() {
+async function applyContentManagerConfig() {
   const cmStore = strapi.store({ type: 'plugin', name: 'content_manager' });
 
-  for (const [uid, labels] of Object.entries(FIELD_LABELS)) {
+  for (const [uid, ctConfig] of Object.entries(CONTENT_TYPE_CONFIG)) {
     const storeKey = `configuration_content_types::${uid}`;
 
     let config;
@@ -149,7 +182,29 @@ async function applyFrenchLabels() {
     if (!config || !config.metadatas) continue;
 
     let changed = false;
-    for (const [field, label] of Object.entries(labels)) {
+
+    // --- Settings (mainField, tri) ---
+    if (ctConfig.settings && Object.keys(ctConfig.settings).length > 0) {
+      for (const [key, value] of Object.entries(ctConfig.settings)) {
+        if (config.settings[key] !== value) {
+          config.settings[key] = value;
+          changed = true;
+        }
+      }
+    }
+
+    // --- Colonnes de liste ---
+    if (ctConfig.listColumns && ctConfig.listColumns.length > 0) {
+      const currentList = JSON.stringify(config.layouts?.list);
+      const targetList = JSON.stringify(ctConfig.listColumns);
+      if (currentList !== targetList) {
+        config.layouts.list = ctConfig.listColumns;
+        changed = true;
+      }
+    }
+
+    // --- Labels FR ---
+    for (const [field, label] of Object.entries(ctConfig.labels)) {
       const meta = config.metadatas[field];
       if (!meta) continue;
 
@@ -165,11 +220,11 @@ async function applyFrenchLabels() {
 
     if (changed) {
       await cmStore.set({ key: storeKey, value: config });
-      strapi.log.info(`[bootstrap] Labels FR appliqués pour ${uid}`);
+      strapi.log.info(`[bootstrap] Config content-manager mise à jour pour ${uid}`);
     }
   }
 }
 
 module.exports = async () => {
-  await applyFrenchLabels();
+  await applyContentManagerConfig();
 };
