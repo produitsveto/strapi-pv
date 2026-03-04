@@ -21,17 +21,17 @@
       "type": "boolean",
       "default": true
     },
-    "mainImage": {
+    "imagePrincipale": {
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"]
     },
-    "carousel": {
+    "carrousel": {
       "type": "media",
       "multiple": true,
       "allowedTypes": ["images"]
     },
-    "extendedDescription": {
+    "descriptionEtendue": {
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
@@ -59,17 +59,17 @@
       "repeatable": true,
       "component": "deals.faq-item"
     },
-    "laboratory": {
+    "laboratoire": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::laboratory.laboratory"
     },
-    "species": {
+    "especes": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::species.species"
     },
-    "breeds": {
+    "races": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::breed.breed"
