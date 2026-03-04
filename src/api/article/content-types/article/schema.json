@@ -10,7 +10,7 @@
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
   "attributes": {
-    "titre": {
+    "title": {
       "type": "string",
       "pluginOptions": { "i18n": { "localized": true } }
     },
@@ -21,9 +21,9 @@
     },
     "slug": {
       "type": "uid",
-      "targetField": "titre"
+      "targetField": "title"
     },
-    "couverture": {
+    "cover": {
       "type": "media",
       "multiple": false,
       "required": false,
@@ -35,30 +35,30 @@
       "target": "api::category.category",
       "inversedBy": "articles"
     },
-    "especes": {
+    "species": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::species.species",
       "mappedBy": "articles"
     },
-    "races": {
+    "breeds": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::breed.breed",
       "mappedBy": "articles"
     },
-    "laboratoires": {
+    "laboratories": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::laboratory.laboratory",
       "mappedBy": "articles"
     },
-    "articlesLies": {
+    "relatedArticles": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::article.article"
     },
-    "contenu": {
+    "body": {
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
