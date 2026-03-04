@@ -4,7 +4,7 @@
   "info": {
     "singularName": "breed",
     "pluralName": "breeds",
-    "displayName": "Breed",
+    "displayName": "Race",
     "description": "Race animale (Labrador, Persan…)"
   },
   "options": { "draftAndPublish": true },

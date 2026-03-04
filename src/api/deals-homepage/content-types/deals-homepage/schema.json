@@ -4,7 +4,7 @@
   "info": {
     "singularName": "deals-homepage",
     "pluralName": "deals-homepages",
-    "displayName": "DEALS - Homepage"
+    "displayName": "DEALS - Accueil"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },

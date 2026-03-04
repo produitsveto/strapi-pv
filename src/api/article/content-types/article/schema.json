@@ -29,12 +29,6 @@
       "required": false,
       "allowedTypes": ["images", "files", "videos"]
     },
-    "author": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::author.author",
-      "inversedBy": "articles"
-    },
     "categories": {
       "type": "relation",
       "relation": "manyToMany",
@@ -64,9 +58,9 @@
       "relation": "manyToMany",
       "target": "api::article.article"
     },
-    "blocks": {
-      "type": "dynamiczone",
-      "components": ["shared.media", "shared.quote", "shared.rich-text", "shared.slider"]
+    "body": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "seo": {
       "type": "component",

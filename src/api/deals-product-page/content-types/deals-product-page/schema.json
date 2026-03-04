@@ -4,7 +4,7 @@
   "info": {
     "singularName": "deals-product-page",
     "pluralName": "deals-product-pages",
-    "displayName": "DEALS - Product Page"
+    "displayName": "DEALS - Fiche Produit"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
