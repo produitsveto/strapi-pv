@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "categories",
+  "collectionName": "breeds",
   "info": {
-    "singularName": "category",
-    "pluralName": "categories",
-    "displayName": "Category",
-    "description": "Catégorie produit (antiparasitaires, compléments…)"
+    "singularName": "breed",
+    "pluralName": "breeds",
+    "displayName": "Breed",
+    "description": "Race animale (Labrador, Persan…)"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
@@ -33,6 +33,11 @@
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.faq-item"
+    },
     "marketingBanner": {
       "type": "media",
       "multiple": true,
@@ -43,38 +48,22 @@
       "repeatable": true,
       "component": "deals.featured-product"
     },
-    "googleCategory": {
-      "type": "string"
-    },
-    "parentCategory": {
+    "parentSpecies": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "childCategories"
-    },
-    "childCategories": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::category.category",
-      "mappedBy": "parentCategory"
-    },
-    "articles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::article.article",
-      "mappedBy": "categories"
-    },
-    "species": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::species.species",
-      "mappedBy": "categories"
+      "target": "api::species.species"
     },
     "laboratories": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::laboratory.laboratory",
-      "mappedBy": "categories"
+      "inversedBy": "breeds"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "inversedBy": "breeds"
     },
     "seo": {
       "type": "component",

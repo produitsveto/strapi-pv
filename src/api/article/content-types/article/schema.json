@@ -5,19 +5,19 @@
     "singularName": "article",
     "pluralName": "articles",
     "displayName": "Article",
-    "description": "Create your blog content"
+    "description": "Article de blog / conseil vétérinaire"
   },
-  "options": {
-    "draftAndPublish": true
-  },
-  "pluginOptions": {},
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "description": {
       "type": "text",
-      "maxLength": 80
+      "maxLength": 80,
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "slug": {
       "type": "uid",
@@ -35,15 +35,43 @@
       "target": "api::author.author",
       "inversedBy": "articles"
     },
-    "category": {
+    "categories": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::category.category",
       "inversedBy": "articles"
+    },
+    "species": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::species.species",
+      "mappedBy": "articles"
+    },
+    "breeds": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::breed.breed",
+      "mappedBy": "articles"
+    },
+    "laboratories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::laboratory.laboratory",
+      "mappedBy": "articles"
+    },
+    "relatedArticles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
     },
     "blocks": {
       "type": "dynamiczone",
       "components": ["shared.media", "shared.quote", "shared.rich-text", "shared.slider"]
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
     }
   }
 }

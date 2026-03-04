@@ -21,6 +21,16 @@
       "multiple": false,
       "required": false,
       "allowedTypes": ["images"]
+    },
+    "h1": {
+      "type": "string"
+    },
+    "noIndex": {
+      "type": "boolean",
+      "default": false
+    },
+    "keyword": {
+      "type": "string"
     }
   }
 }

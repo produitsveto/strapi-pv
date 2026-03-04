@@ -476,7 +476,7 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
 export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
-    description: 'Create your blog content';
+    description: 'Article de blog / conseil v\u00E9t\u00E9rinaire';
     displayName: 'Article';
     pluralName: 'articles';
     singularName: 'article';
@@ -484,29 +484,57 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
     author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
     blocks: Schema.Attribute.DynamicZone<
       ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
     >;
-    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
+    breeds: Schema.Attribute.Relation<'manyToMany', 'api::breed.breed'>;
+    categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::category.category'
+    >;
     cover: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 80;
       }>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    laboratories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::laboratory.laboratory'
+    >;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::article.article'
-    > &
-      Schema.Attribute.Private;
+    >;
     publishedAt: Schema.Attribute.DateTime;
+    relatedArticles: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::article.article'
+    >;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'>;
-    title: Schema.Attribute.String;
+    species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -545,35 +573,133 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBreedBreed extends Struct.CollectionTypeSchema {
+  collectionName: 'breeds';
+  info: {
+    description: 'Race animale (Labrador, Persan\u2026)';
+    displayName: 'Breed';
+    pluralName: 'breeds';
+    singularName: 'breed';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    featuredProducts: Schema.Attribute.Component<
+      'deals.featured-product',
+      true
+    >;
+    laboratories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::laboratory.laboratory'
+    >;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::breed.breed'>;
+    mainImage: Schema.Attribute.Media<'images'>;
+    marketingBanner: Schema.Attribute.Media<'images', true>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    parentSpecies: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::species.species'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
-    description: 'Organize your content into categories';
+    description: 'Cat\u00E9gorie produit (antiparasitaires, compl\u00E9ments\u2026)';
     displayName: 'Category';
     pluralName: 'categories';
     singularName: 'category';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
   };
   attributes: {
-    articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    childCategories: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::category.category'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Text;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    featuredProducts: Schema.Attribute.Component<
+      'deals.featured-product',
+      true
+    >;
+    googleCategory: Schema.Attribute.String;
+    laboratories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::laboratory.laboratory'
+    >;
+    locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::category.category'
-    > &
-      Schema.Attribute.Private;
-    name: Schema.Attribute.String;
+    >;
+    mainImage: Schema.Attribute.Media<'images'>;
+    marketingBanner: Schema.Attribute.Media<'images', true>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    parentCategory: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::category.category'
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -702,6 +828,73 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
+  collectionName: 'laboratories';
+  info: {
+    description: 'Laboratoire / Marque (Virbac, Elanco\u2026)';
+    displayName: 'Laboratory';
+    pluralName: 'laboratories';
+    singularName: 'laboratory';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    alliedLaboratory: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::laboratory.laboratory'
+    >;
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    breeds: Schema.Attribute.Relation<'manyToMany', 'api::breed.breed'>;
+    categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::category.category'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    featuredProducts: Schema.Attribute.Component<
+      'deals.featured-product',
+      true
+    >;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::laboratory.laboratory'
+    >;
+    logo: Schema.Attribute.Media<'images'>;
+    mainImage: Schema.Attribute.Media<'images'>;
+    marketingBanner: Schema.Attribute.Media<'images', true>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
@@ -718,24 +911,127 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    breeds: Schema.Attribute.Relation<'manyToMany', 'api::breed.breed'>;
+    carousel: Schema.Attribute.Media<'images', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    extendedDescription: Schema.Attribute.RichText;
+    extendedDescription: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    formeGalenique: Schema.Attribute.String;
+    handle: Schema.Attribute.String;
+    laboratory: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::laboratory.laboratory'
+    >;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::product.product'
     >;
+    mainImage: Schema.Attribute.Media<'images'>;
     medusaId: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    modeEmploi: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    notice: Schema.Attribute.Media<'files', true>;
+    precautions: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    synonymes: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
+  collectionName: 'species_entries';
+  info: {
+    description: 'Esp\u00E8ce cible (chien, chat, cheval\u2026)';
+    displayName: 'Species';
+    pluralName: 'species-entries';
+    singularName: 'species';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    categories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::category.category'
+    >;
+    childSpecies: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::species.species'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    featuredProducts: Schema.Attribute.Component<
+      'deals.featured-product',
+      true
+    >;
+    laboratories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::laboratory.laboratory'
+    >;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::species.species'
+    >;
+    mainImage: Schema.Attribute.Media<'images'>;
+    marketingBanner: Schema.Attribute.Media<'images', true>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    parentSpecies: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::species.species'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
   };
 }
 
@@ -1252,11 +1548,14 @@ declare module '@strapi/strapi' {
       'api::about.about': ApiAboutAbout;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
+      'api::breed.breed': ApiBreedBreed;
       'api::category.category': ApiCategoryCategory;
       'api::deals-homepage.deals-homepage': ApiDealsHomepageDealsHomepage;
       'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
       'api::global.global': ApiGlobalGlobal;
+      'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::product.product': ApiProductProduct;
+      'api::species.species': ApiSpeciesSpecies;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

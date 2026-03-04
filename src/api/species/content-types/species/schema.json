@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "categories",
+  "collectionName": "species_entries",
   "info": {
-    "singularName": "category",
-    "pluralName": "categories",
-    "displayName": "Category",
-    "description": "Catégorie produit (antiparasitaires, compléments…)"
+    "singularName": "species",
+    "pluralName": "species-entries",
+    "displayName": "Species",
+    "description": "Espèce cible (chien, chat, cheval…)"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
@@ -33,6 +33,11 @@
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.faq-item"
+    },
     "marketingBanner": {
       "type": "media",
       "multiple": true,
@@ -43,38 +48,35 @@
       "repeatable": true,
       "component": "deals.featured-product"
     },
-    "googleCategory": {
-      "type": "string"
-    },
-    "parentCategory": {
+    "parentSpecies": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "childCategories"
+      "target": "api::species.species",
+      "inversedBy": "childSpecies"
     },
-    "childCategories": {
+    "childSpecies": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::category.category",
-      "mappedBy": "parentCategory"
-    },
-    "articles": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::article.article",
-      "mappedBy": "categories"
-    },
-    "species": {
-      "type": "relation",
-      "relation": "manyToMany",
       "target": "api::species.species",
-      "mappedBy": "categories"
+      "mappedBy": "parentSpecies"
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "species"
     },
     "laboratories": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::laboratory.laboratory",
-      "mappedBy": "categories"
+      "inversedBy": "species"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "inversedBy": "species"
     },
     "seo": {
       "type": "component",

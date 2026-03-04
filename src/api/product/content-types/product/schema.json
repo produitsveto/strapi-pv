@@ -9,9 +9,80 @@
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
   "attributes": {
-    "medusaId": { "type": "string", "required": true, "unique": true },
-    "extendedDescription": { "type": "richtext" },
-    "faqs": { "type": "component", "repeatable": true, "component": "deals.faq-item" },
-    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "medusaId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "handle": {
+      "type": "string"
+    },
+    "visibilite": {
+      "type": "boolean",
+      "default": true
+    },
+    "mainImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "carousel": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "extendedDescription": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "modeEmploi": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "precautions": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "notice": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["files"]
+    },
+    "formeGalenique": {
+      "type": "string"
+    },
+    "synonymes": {
+      "type": "text"
+    },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.faq-item"
+    },
+    "laboratory": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::laboratory.laboratory"
+    },
+    "species": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::species.species"
+    },
+    "breeds": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::breed.breed"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
   }
 }

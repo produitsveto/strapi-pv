@@ -1,11 +1,11 @@
 {
   "kind": "collectionType",
-  "collectionName": "categories",
+  "collectionName": "laboratories",
   "info": {
-    "singularName": "category",
-    "pluralName": "categories",
-    "displayName": "Category",
-    "description": "Catégorie produit (antiparasitaires, compléments…)"
+    "singularName": "laboratory",
+    "pluralName": "laboratories",
+    "displayName": "Laboratory",
+    "description": "Laboratoire / Marque (Virbac, Elanco…)"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
@@ -29,9 +29,19 @@
       "multiple": false,
       "allowedTypes": ["images"]
     },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
     "description": {
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "faqs": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.faq-item"
     },
     "marketingBanner": {
       "type": "media",
@@ -43,38 +53,34 @@
       "repeatable": true,
       "component": "deals.featured-product"
     },
-    "googleCategory": {
-      "type": "string"
-    },
-    "parentCategory": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "childCategories"
-    },
-    "childCategories": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::category.category",
-      "mappedBy": "parentCategory"
-    },
-    "articles": {
+    "categories": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::article.article",
-      "mappedBy": "categories"
+      "target": "api::category.category",
+      "inversedBy": "laboratories"
     },
     "species": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::species.species",
-      "mappedBy": "categories"
+      "mappedBy": "laboratories"
     },
-    "laboratories": {
+    "breeds": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::laboratory.laboratory",
-      "mappedBy": "categories"
+      "target": "api::breed.breed",
+      "mappedBy": "laboratories"
+    },
+    "alliedLaboratory": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::laboratory.laboratory"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "inversedBy": "laboratories"
     },
     "seo": {
       "type": "component",

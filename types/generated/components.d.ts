@@ -39,6 +39,19 @@ export interface DealsFaqItem extends Struct.ComponentSchema {
   };
 }
 
+export interface DealsFeaturedProduct extends Struct.ComponentSchema {
+  collectionName: 'components_deals_featured_products';
+  info: {
+    description: 'Produit mis en avant sur une page entit\u00E9';
+    displayName: 'Featured Product';
+    icon: 'star';
+  };
+  attributes: {
+    highlightText: Schema.Attribute.String;
+    productHandle: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface DealsHeroProduct extends Struct.ComponentSchema {
   collectionName: 'components_deals_hero_products';
   info: {
@@ -139,8 +152,11 @@ export interface SharedSeo extends Struct.ComponentSchema {
     name: 'Seo';
   };
   attributes: {
+    h1: Schema.Attribute.String;
+    keyword: Schema.Attribute.String;
     metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
     metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    noIndex: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     shareImage: Schema.Attribute.Media<'images'>;
   };
 }
@@ -163,6 +179,7 @@ declare module '@strapi/strapi' {
       'deals.brand': DealsBrand;
       'deals.discount-badge': DealsDiscountBadge;
       'deals.faq-item': DealsFaqItem;
+      'deals.featured-product': DealsFeaturedProduct;
       'deals.hero-product': DealsHeroProduct;
       'deals.quick-filter': DealsQuickFilter;
       'deals.trust-badge': DealsTrustBadge;

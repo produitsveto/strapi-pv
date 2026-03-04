@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_deals_featured_products",
+  "info": {
+    "displayName": "Featured Product",
+    "icon": "star",
+    "description": "Produit mis en avant sur une page entité"
+  },
+  "options": {},
+  "attributes": {
+    "productHandle": {
+      "type": "string",
+      "required": true
+    },
+    "highlightText": {
+      "type": "string"
+    }
+  }
+}
