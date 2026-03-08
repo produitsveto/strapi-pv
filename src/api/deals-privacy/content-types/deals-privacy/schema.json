@@ -3,7 +3,7 @@
   "collectionName": "deals_privacies",
   "info": {
     "singularName": "deals-privacy",
-    "pluralName": "deals-privacies",
+    "pluralName": "deals-privacys",
     "displayName": "DEALS - Confidentialité"
   },
   "options": { "draftAndPublish": true },
@@ -14,8 +14,14 @@
       "required": true,
       "pluginOptions": { "i18n": { "localized": true } }
     },
-    "contenu": {
-      "type": "richtext",
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "shared.media",
+        "shared.quote",
+        "shared.slider"
+      ],
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "seo": {

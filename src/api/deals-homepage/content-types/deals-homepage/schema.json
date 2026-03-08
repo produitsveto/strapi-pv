@@ -11,7 +11,7 @@
   "attributes": {
     "heroTitle": { "type": "string", "required": true },
     "heroDescription": { "type": "text" },
-    "heroProducts": { "type": "component", "repeatable": true, "component": "deals.hero-product", "max": 2 },
+    "heroProducts": { "type": "component", "repeatable": true, "component": "deals.hero-product", "max": 6 },
     "trustBadges": { "type": "component", "repeatable": true, "component": "deals.trust-badge" },
     "newProductsTitle": { "type": "string" },
     "quickFilters": { "type": "component", "repeatable": true, "component": "deals.quick-filter" },

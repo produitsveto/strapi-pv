@@ -3,7 +3,7 @@
   "collectionName": "deals_loyalties",
   "info": {
     "singularName": "deals-loyalty",
-    "pluralName": "deals-loyalties",
+    "pluralName": "deals-loyaltys",
     "displayName": "DEALS - Fidélité"
   },
   "options": { "draftAndPublish": true },
@@ -14,8 +14,14 @@
       "required": true,
       "pluginOptions": { "i18n": { "localized": true } }
     },
-    "contenu": {
-      "type": "richtext",
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "shared.media",
+        "shared.quote",
+        "shared.slider"
+      ],
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "seo": {

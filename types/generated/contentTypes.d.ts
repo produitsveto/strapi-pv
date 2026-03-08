@@ -646,7 +646,9 @@ export interface ApiDealsCguDealsCgu extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -679,7 +681,7 @@ export interface ApiDealsDeliveryDealsDelivery extends Struct.SingleTypeSchema {
   collectionName: 'deals_deliveries';
   info: {
     displayName: 'DEALS - Livraison';
-    pluralName: 'deals-deliveries';
+    pluralName: 'deals-deliverys';
     singularName: 'deals-delivery';
   };
   options: {
@@ -691,7 +693,9 @@ export interface ApiDealsDeliveryDealsDelivery extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -780,7 +784,7 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
     heroProducts: Schema.Attribute.Component<'deals.hero-product', true> &
       Schema.Attribute.SetMinMax<
         {
-          max: 2;
+          max: 6;
         },
         number
       >;
@@ -821,7 +825,9 @@ export interface ApiDealsLegalDealsLegal extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -854,7 +860,7 @@ export interface ApiDealsLoyaltyDealsLoyalty extends Struct.SingleTypeSchema {
   collectionName: 'deals_loyalties';
   info: {
     displayName: 'DEALS - Fid\u00E9lit\u00E9';
-    pluralName: 'deals-loyalties';
+    pluralName: 'deals-loyaltys';
     singularName: 'deals-loyalty';
   };
   options: {
@@ -866,7 +872,9 @@ export interface ApiDealsLoyaltyDealsLoyalty extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -911,7 +919,9 @@ export interface ApiDealsPartnerDealsPartner extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -957,7 +967,9 @@ export interface ApiDealsPaymentInfoDealsPaymentInfo
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -990,7 +1002,7 @@ export interface ApiDealsPrivacyDealsPrivacy extends Struct.SingleTypeSchema {
   collectionName: 'deals_privacies';
   info: {
     displayName: 'DEALS - Confidentialit\u00E9';
-    pluralName: 'deals-privacies';
+    pluralName: 'deals-privacys';
     singularName: 'deals-privacy';
   };
   options: {
@@ -1002,7 +1014,9 @@ export interface ApiDealsPrivacyDealsPrivacy extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    contenu: Schema.Attribute.RichText &
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
