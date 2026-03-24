@@ -8,8 +8,8 @@ module.exports = [
         useDefaults: true,
         directives: {
           'connect-src': ["'self'", 'https:'],
-          'img-src': ["'self'", 'data:', 'blob:', 'https://*.r2.dev', 'https://*.cloudflareinsights.com'],
-          'media-src': ["'self'", 'data:', 'blob:', 'https://*.r2.dev'],
+          'img-src': ["'self'", 'data:', 'blob:', 'https://*.r2.dev', 'https://media.produits-veto.com', 'https://*.cloudflareinsights.com'],
+          'media-src': ["'self'", 'data:', 'blob:', 'https://*.r2.dev', 'https://media.produits-veto.com'],
         },
       },
     },
