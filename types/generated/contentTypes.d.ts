@@ -780,7 +780,32 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     discountBadges: Schema.Attribute.Component<'deals.discount-badge', true>;
-    heroDescription: Schema.Attribute.Text;
+    heroCtaPrimaryLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroCtaPrimaryLink: Schema.Attribute.String;
+    heroCtaSecondaryLabel: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroCtaSecondaryLink: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroEyebrow: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     heroProducts: Schema.Attribute.Component<'deals.hero-product', true> &
       Schema.Attribute.SetMinMax<
         {
@@ -788,21 +813,79 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
         },
         number
       >;
-    heroTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    heroStats: Schema.Attribute.Component<'deals.hero-stat', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 4;
+        },
+        number
+      >;
+    heroTitle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::deals-homepage.deals-homepage'
     >;
-    newProductsTitle: Schema.Attribute.String;
-    presentationBody: Schema.Attribute.RichText;
-    presentationTitle: Schema.Attribute.String;
+    newProductsTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    presentationBody: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    presentationTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     publishedAt: Schema.Attribute.DateTime;
-    quickFilters: Schema.Attribute.Component<'deals.quick-filter', true>;
-    seo: Schema.Attribute.Component<'shared.seo', false>;
-    stayConnectedBody: Schema.Attribute.RichText;
-    stayConnectedTitle: Schema.Attribute.String;
-    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true>;
+    quickFilters: Schema.Attribute.Component<'deals.quick-filter', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    stayConnectedBody: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    stayConnectedTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

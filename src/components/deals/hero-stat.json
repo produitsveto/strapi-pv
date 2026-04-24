@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_deals_hero_stats",
+  "info": { "displayName": "Hero Stat", "icon": "chartBubble" },
+  "attributes": {
+    "value": { "type": "string", "required": true },
+    "label": { "type": "string", "required": true }
+  }
+}

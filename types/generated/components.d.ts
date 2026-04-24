@@ -64,6 +64,18 @@ export interface DealsHeroProduct extends Struct.ComponentSchema {
   };
 }
 
+export interface DealsHeroStat extends Struct.ComponentSchema {
+  collectionName: 'components_deals_hero_stats';
+  info: {
+    displayName: 'Hero Stat';
+    icon: 'chartBubble';
+  };
+  attributes: {
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    value: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface DealsQuickFilter extends Struct.ComponentSchema {
   collectionName: 'components_deals_quick_filters';
   info: {
@@ -180,6 +192,7 @@ declare module '@strapi/strapi' {
       'deals.faq-item': DealsFaqItem;
       'deals.featured-product': DealsFeaturedProduct;
       'deals.hero-product': DealsHeroProduct;
+      'deals.hero-stat': DealsHeroStat;
       'deals.quick-filter': DealsQuickFilter;
       'deals.trust-badge': DealsTrustBadge;
       'deals.why-this-price-item': DealsWhyThisPriceItem;
