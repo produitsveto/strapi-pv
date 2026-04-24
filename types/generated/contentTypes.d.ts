@@ -775,11 +775,9 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
     };
   };
   attributes: {
-    brands: Schema.Attribute.Component<'deals.brand', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    discountBadges: Schema.Attribute.Component<'deals.discount-badge', true>;
     heroCtaPrimaryLabel: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -843,43 +841,25 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
-    presentationBody: Schema.Attribute.RichText &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
-    presentationTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     publishedAt: Schema.Attribute.DateTime;
-    quickFilters: Schema.Attribute.Component<'deals.quick-filter', true> &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
       }>;
-    stayConnectedBody: Schema.Attribute.RichText &
+    topBandItems: Schema.Attribute.Component<'deals.top-band-item', true> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
-      }>;
-    stayConnectedTitle: Schema.Attribute.String &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: true;
-        };
-      }>;
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 6;
+        },
+        number
+      >;
     trustBadges: Schema.Attribute.Component<'deals.trust-badge', true> &
       Schema.Attribute.SetPluginOptions<{
         i18n: {

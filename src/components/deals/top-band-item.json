@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_deals_top_band_items",
+  "info": { "displayName": "Top Band Item", "icon": "bulletList" },
+  "attributes": {
+    "text": { "type": "string", "required": true },
+    "link": { "type": "string" }
+  }
+}

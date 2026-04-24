@@ -1,32 +1,5 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface DealsBrand extends Struct.ComponentSchema {
-  collectionName: 'components_deals_brands';
-  info: {
-    displayName: 'Brand';
-    icon: 'tag';
-  };
-  attributes: {
-    logo: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
-    slug: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
-export interface DealsDiscountBadge extends Struct.ComponentSchema {
-  collectionName: 'components_deals_discount_badges';
-  info: {
-    displayName: 'Discount Badge';
-    icon: 'percentage';
-  };
-  attributes: {
-    label: Schema.Attribute.String & Schema.Attribute.Required;
-    type: Schema.Attribute.Enumeration<['percent', 'amount']> &
-      Schema.Attribute.Required;
-    value: Schema.Attribute.Decimal & Schema.Attribute.Required;
-  };
-}
-
 export interface DealsFaqItem extends Struct.ComponentSchema {
   collectionName: 'components_deals_faq_items';
   info: {
@@ -76,22 +49,15 @@ export interface DealsHeroStat extends Struct.ComponentSchema {
   };
 }
 
-export interface DealsQuickFilter extends Struct.ComponentSchema {
-  collectionName: 'components_deals_quick_filters';
+export interface DealsTopBandItem extends Struct.ComponentSchema {
+  collectionName: 'components_deals_top_band_items';
   info: {
-    displayName: 'Quick Filter';
-    icon: 'filter';
+    displayName: 'Top Band Item';
+    icon: 'bulletList';
   };
   attributes: {
-    color: Schema.Attribute.Enumeration<
-      ['red', 'orange', 'yellow', 'green', 'blue']
-    > &
-      Schema.Attribute.Required;
-    description: Schema.Attribute.String;
-    filterType: Schema.Attribute.Enumeration<['expiry_months', 'collection']> &
-      Schema.Attribute.Required;
-    filterValue: Schema.Attribute.String & Schema.Attribute.Required;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
+    link: Schema.Attribute.String;
+    text: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -187,13 +153,11 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
-      'deals.brand': DealsBrand;
-      'deals.discount-badge': DealsDiscountBadge;
       'deals.faq-item': DealsFaqItem;
       'deals.featured-product': DealsFeaturedProduct;
       'deals.hero-product': DealsHeroProduct;
       'deals.hero-stat': DealsHeroStat;
-      'deals.quick-filter': DealsQuickFilter;
+      'deals.top-band-item': DealsTopBandItem;
       'deals.trust-badge': DealsTrustBadge;
       'deals.why-this-price-item': DealsWhyThisPriceItem;
       'shared.media': SharedMedia;
