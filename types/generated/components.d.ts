@@ -33,7 +33,8 @@ export interface DealsHeroProduct extends Struct.ComponentSchema {
   };
   attributes: {
     highlightText: Schema.Attribute.String;
-    productHandle: Schema.Attribute.String & Schema.Attribute.Required;
+    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'> &
+      Schema.Attribute.Required;
   };
 }
 

@@ -2,7 +2,12 @@
   "collectionName": "components_deals_hero_products",
   "info": { "displayName": "Hero Product", "icon": "star" },
   "attributes": {
-    "productHandle": { "type": "string", "required": true },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product",
+      "required": true
+    },
     "highlightText": { "type": "string" }
   }
 }
