@@ -630,6 +630,53 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiDealsAboutDealsAbout extends Struct.SingleTypeSchema {
+  collectionName: 'deals_abouts';
+  info: {
+    displayName: 'DEALS - \u00C0 propos';
+    pluralName: 'deals-abouts';
+    singularName: 'deals-about';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-about.deals-about'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiDealsCguDealsCgu extends Struct.SingleTypeSchema {
   collectionName: 'deals_cgus';
   info: {
@@ -1880,6 +1927,7 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::breed.breed': ApiBreedBreed;
       'api::category.category': ApiCategoryCategory;
+      'api::deals-about.deals-about': ApiDealsAboutDealsAbout;
       'api::deals-cgu.deals-cgu': ApiDealsCguDealsCgu;
       'api::deals-delivery.deals-delivery': ApiDealsDeliveryDealsDelivery;
       'api::deals-faq.deals-faq': ApiDealsFaqDealsFaq;
