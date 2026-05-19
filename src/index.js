@@ -8,7 +8,14 @@ module.exports = {
    *
    * This gives you an opportunity to extend code.
    */
-  register(/*{ strapi }*/) {},
+  register({ strapi }) {
+    // Register the deal-ref custom field (used by deals.hero-product to pick
+    // a Medusa deal_reference by ID via the Medusa Store API).
+    strapi.customFields.register({
+      name: 'deal-ref',
+      type: 'string',
+    });
+  },
 
   /**
    * An asynchronous bootstrap function that runs before

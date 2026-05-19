@@ -2,10 +2,9 @@
   "collectionName": "components_deals_hero_products",
   "info": { "displayName": "Hero Product", "icon": "star" },
   "attributes": {
-    "product": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::product.product",
+    "dealRefId": {
+      "type": "customField",
+      "customField": "global::deal-ref",
       "required": true
     },
     "highlightText": { "type": "string" }

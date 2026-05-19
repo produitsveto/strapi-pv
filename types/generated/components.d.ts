@@ -32,9 +32,10 @@ export interface DealsHeroProduct extends Struct.ComponentSchema {
     icon: 'star';
   };
   attributes: {
+    dealRefId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.CustomField<'global::deal-ref'>;
     highlightText: Schema.Attribute.String;
-    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'> &
-      Schema.Attribute.Required;
   };
 }
 
