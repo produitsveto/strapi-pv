@@ -152,6 +152,7 @@ const DealPickerInput = (props) => {
         value={value || ''}
         onChange={handleChange}
         onInputChange={(e) => setSearchQuery(e.target.value)}
+        autocomplete="none"
         loading={loading}
         loadingMessage="Chargement…"
         noOptionsMessage={() => (fetchError ? `Erreur : ${fetchError}` : 'Aucun deal trouvé')}
