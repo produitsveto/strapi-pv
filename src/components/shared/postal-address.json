@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_shared_postal_addresses",
+  "info": {
+    "displayName": "Postal Address",
+    "icon": "map-marker-alt"
+  },
+  "attributes": {
+    "streetAddress": { "type": "string" },
+    "postalCode": { "type": "string" },
+    "addressLocality": { "type": "string" },
+    "addressRegion": { "type": "string" },
+    "addressCountry": { "type": "string", "default": "FR" }
+  }
+}

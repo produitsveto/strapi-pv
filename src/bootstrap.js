@@ -166,6 +166,24 @@ const CONTENT_TYPE_CONFIG = {
       seo: 'SEO',
     },
   },
+  'api::site-identity.site-identity': {
+    settings: {},
+    listColumns: [],
+    labels: {
+      legalName: 'Raison sociale',
+      logo: 'Logo',
+      email: 'Email contact',
+      phone: 'Téléphone',
+      address: 'Adresse',
+      socialLinks: 'Réseaux sociaux',
+      foundingDate: 'Date de création',
+      founders: 'Fondateurs',
+      pharmacists: 'Pharmaciens',
+      knowsAbout: "Domaines d'expertise",
+      vatId: 'Numéro TVA',
+      siret: 'SIRET',
+    },
+  },
 };
 
 async function applyContentManagerConfig() {

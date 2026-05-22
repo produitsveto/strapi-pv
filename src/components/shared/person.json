@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_shared_persons",
+  "info": {
+    "displayName": "Person",
+    "icon": "user"
+  },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "jobTitle": { "type": "string" }
+  }
+}

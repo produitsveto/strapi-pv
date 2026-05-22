@@ -1341,6 +1341,46 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSiteIdentitySiteIdentity extends Struct.SingleTypeSchema {
+  collectionName: 'site_identities';
+  info: {
+    description: 'Identit\u00E9 Organization globale utilis\u00E9e par tous les storefronts pour les donn\u00E9es structur\u00E9es Schema.org';
+    displayName: 'Identit\u00E9 du site (Schema.org)';
+    pluralName: 'site-identities';
+    singularName: 'site-identity';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    address: Schema.Attribute.Component<'shared.postal-address', false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    founders: Schema.Attribute.Component<'shared.person', true>;
+    foundingDate: Schema.Attribute.Date;
+    knowsAbout: Schema.Attribute.Component<'shared.knowledge-area', true>;
+    legalName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::site-identity.site-identity'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    pharmacists: Schema.Attribute.Component<'shared.person', true>;
+    phone: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    siret: Schema.Attribute.String;
+    socialLinks: Schema.Attribute.Component<'shared.social-link', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    vatId: Schema.Attribute.String;
+  };
+}
+
 export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
   collectionName: 'species_entries';
   info: {
@@ -1940,6 +1980,7 @@ declare module '@strapi/strapi' {
       'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::product.product': ApiProductProduct;
+      'api::site-identity.site-identity': ApiSiteIdentitySiteIdentity;
       'api::species.species': ApiSpeciesSpecies;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

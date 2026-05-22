@@ -1,0 +1,62 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_identities",
+  "info": {
+    "singularName": "site-identity",
+    "pluralName": "site-identities",
+    "displayName": "Identité du site (Schema.org)",
+    "description": "Identité Organization globale utilisée par tous les storefronts pour les données structurées Schema.org"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "legalName": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.postal-address"
+    },
+    "socialLinks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.social-link"
+    },
+    "foundingDate": {
+      "type": "date"
+    },
+    "founders": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.person"
+    },
+    "pharmacists": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.person"
+    },
+    "knowsAbout": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.knowledge-area"
+    },
+    "vatId": {
+      "type": "string"
+    },
+    "siret": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_shared_knowledge_areas",
+  "info": {
+    "displayName": "Knowledge Area",
+    "icon": "tag"
+  },
+  "attributes": {
+    "label": { "type": "string", "required": true }
+  }
+}
