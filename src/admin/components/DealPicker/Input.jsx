@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Field, Combobox, ComboboxOption, Loader } from '@strapi/design-system';
+import { Field, Combobox, ComboboxOption } from '@strapi/design-system';
 
-// Strapi exposes STRAPI_ADMIN_* env vars to the admin bundle via process.env
-// (DefinePlugin substitution at build time), NOT import.meta.env.
-const MEDUSA_URL = process.env.STRAPI_ADMIN_MEDUSA_URL || 'http://localhost:9000';
-const MEDUSA_PUBLISHABLE_KEY = process.env.STRAPI_ADMIN_MEDUSA_PUBLISHABLE_KEY || '';
+// Strapi Cloud's admin build only injects an allowlist of env vars (ADMIN_PATH,
+// STRAPI_ADMIN_BACKEND_URL, STRAPI_TELEMETRY_DISABLED, STRAPI_AI_URL,
+// STRAPI_ANALYTICS_URL) — STRAPI_ADMIN_* custom vars are ignored. So we fetch
+// the Medusa config from a public Strapi route that reads server-side env vars.
+let configPromise = null;
+function getMedusaConfig() {
+  if (!configPromise) {
+    configPromise = fetch('/api/medusa-config', { credentials: 'include' })
+      .then((r) => (r.ok ? r.json() : { url: '', publishableKey: '' }))
+      .catch(() => ({ url: '', publishableKey: '' }));
+  }
+  return configPromise;
+}
 
 const dateFmt = new Intl.DateTimeFormat('fr-FR', {
   day: '2-digit',
@@ -38,13 +47,13 @@ function formatDealLabel(deal) {
 }
 
 async function fetchDealsByQuery(query) {
+  const { url, publishableKey } = await getMedusaConfig();
+  if (!url) throw new Error('Medusa URL not configured');
   const params = new URLSearchParams();
   if (query) params.set('q', query);
   params.set('limit', '50');
-  const res = await fetch(`${MEDUSA_URL}/store/deals?${params.toString()}`, {
-    headers: MEDUSA_PUBLISHABLE_KEY
-      ? { 'x-publishable-api-key': MEDUSA_PUBLISHABLE_KEY }
-      : {},
+  const res = await fetch(`${url}/store/deals?${params.toString()}`, {
+    headers: publishableKey ? { 'x-publishable-api-key': publishableKey } : {},
   });
   if (!res.ok) throw new Error(`Medusa /store/deals failed: ${res.status}`);
   const json = await res.json();
@@ -53,10 +62,10 @@ async function fetchDealsByQuery(query) {
 
 async function fetchDealById(id) {
   if (!id) return null;
-  const res = await fetch(`${MEDUSA_URL}/store/deals?ids=${encodeURIComponent(id)}`, {
-    headers: MEDUSA_PUBLISHABLE_KEY
-      ? { 'x-publishable-api-key': MEDUSA_PUBLISHABLE_KEY }
-      : {},
+  const { url, publishableKey } = await getMedusaConfig();
+  if (!url) return null;
+  const res = await fetch(`${url}/store/deals?ids=${encodeURIComponent(id)}`, {
+    headers: publishableKey ? { 'x-publishable-api-key': publishableKey } : {},
   });
   if (!res.ok) return null;
   const json = await res.json();
@@ -83,7 +92,6 @@ const DealPickerInput = (props) => {
   const [selectedDeal, setSelectedDeal] = useState(null);
   const debounceRef = useRef(null);
 
-  // Initial: if there's a value, resolve the deal to show its label.
   useEffect(() => {
     if (value && !selectedDeal) {
       fetchDealById(value)
@@ -96,7 +104,6 @@ const DealPickerInput = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  // Search: debounce ~250ms
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -115,7 +122,6 @@ const DealPickerInput = (props) => {
       value: d.deal_reference?.id,
       label: formatDealLabel(d),
     }));
-    // Make sure the currently-selected deal is in the list (even if not in search results)
     if (
       selectedDeal &&
       selectedDeal.deal_reference?.id &&
