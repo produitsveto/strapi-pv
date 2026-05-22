@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Field, Combobox, ComboboxOption, Loader } from '@strapi/design-system';
 
-const MEDUSA_URL =
-  (typeof window !== 'undefined' && window.__MEDUSA_URL__) ||
-  import.meta.env.STRAPI_ADMIN_MEDUSA_URL ||
-  'http://localhost:9000';
-const MEDUSA_PUBLISHABLE_KEY =
-  (typeof window !== 'undefined' && window.__MEDUSA_PUBLISHABLE_KEY__) ||
-  import.meta.env.STRAPI_ADMIN_MEDUSA_PUBLISHABLE_KEY ||
-  '';
+// Strapi exposes STRAPI_ADMIN_* env vars to the admin bundle via process.env
+// (DefinePlugin substitution at build time), NOT import.meta.env.
+const MEDUSA_URL = process.env.STRAPI_ADMIN_MEDUSA_URL || 'http://localhost:9000';
+const MEDUSA_PUBLISHABLE_KEY = process.env.STRAPI_ADMIN_MEDUSA_PUBLISHABLE_KEY || '';
 
 const dateFmt = new Intl.DateTimeFormat('fr-FR', {
   day: '2-digit',
