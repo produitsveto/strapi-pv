@@ -1323,6 +1323,12 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    nomCourt: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     notice: Schema.Attribute.Media<'files', true>;
     precautions: Schema.Attribute.RichText &
       Schema.Attribute.SetPluginOptions<{

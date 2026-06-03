@@ -14,6 +14,10 @@
       "required": true,
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "nomCourt": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
     "ean": {
       "type": "string",
       "unique": true,
