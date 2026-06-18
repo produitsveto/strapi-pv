@@ -1,5 +1,6 @@
 'use strict';
 const bootstrap = require("./bootstrap");
+const { registerStorefrontRevalidation } = require("./revalidate-storefront");
 
 module.exports = {
   /**
@@ -15,6 +16,10 @@ module.exports = {
       name: 'deal-ref',
       type: 'string',
     });
+
+    // Purge le cache du storefront Deals à chaque publish/unpublish/delete,
+    // pour que le contenu mis à jour dans Strapi soit visible immédiatement.
+    registerStorefrontRevalidation({ strapi });
   },
 
   /**
