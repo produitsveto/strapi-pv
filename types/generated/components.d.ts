@@ -111,6 +111,23 @@ export interface SharedMedia extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedMedication extends Struct.ComponentSchema {
+  collectionName: 'components_shared_medications';
+  info: {
+    description: "Informations r\u00E9glementaires d'un m\u00E9dicament v\u00E9t\u00E9rinaire (PV-51 \u2014 agr\u00E9ment ANSES).";
+    displayName: 'M\u00E9dicament';
+    icon: 'shield';
+  };
+  attributes: {
+    contreIndications: Schema.Attribute.RichText;
+    indications: Schema.Attribute.RichText;
+    numeroAMM: Schema.Attribute.String;
+    posologie: Schema.Attribute.RichText;
+    tempsAttente: Schema.Attribute.String;
+    titulaireAMM: Schema.Attribute.String;
+  };
+}
+
 export interface SharedPerson extends Struct.ComponentSchema {
   collectionName: 'components_shared_persons';
   info: {
@@ -225,6 +242,7 @@ declare module '@strapi/strapi' {
       'deals.why-this-price-item': DealsWhyThisPriceItem;
       'shared.knowledge-area': SharedKnowledgeArea;
       'shared.media': SharedMedia;
+      'shared.medication': SharedMedication;
       'shared.person': SharedPerson;
       'shared.postal-address': SharedPostalAddress;
       'shared.quote': SharedQuote;

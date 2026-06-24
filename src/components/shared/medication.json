@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_medications",
+  "info": {
+    "displayName": "Médicament",
+    "icon": "shield",
+    "description": "Informations réglementaires d'un médicament vétérinaire (PV-51 — agrément ANSES)."
+  },
+  "options": {},
+  "attributes": {
+    "numeroAMM": {
+      "type": "string"
+    },
+    "titulaireAMM": {
+      "type": "string"
+    },
+    "indications": {
+      "type": "richtext"
+    },
+    "contreIndications": {
+      "type": "richtext"
+    },
+    "posologie": {
+      "type": "richtext"
+    },
+    "tempsAttente": {
+      "type": "string"
+    }
+  }
+}

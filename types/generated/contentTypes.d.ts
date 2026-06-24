@@ -1307,6 +1307,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       'api::product.product'
     >;
     mainImage: Schema.Attribute.Media<'images'>;
+    medication: Schema.Attribute.Component<'shared.medication', false>;
     medusaId: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
