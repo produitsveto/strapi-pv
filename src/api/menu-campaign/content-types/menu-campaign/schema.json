@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "menu_campaigns",
+  "info": {
+    "singularName": "menu-campaign",
+    "pluralName": "menu-campaigns",
+    "displayName": "Méga-menu — Campagne",
+    "description": "Bannière marketing affichée dans le méga-menu d'une espèce. Gérée par l'équipe marketing (campagnes). Publier/dépublier = activer/désactiver."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "required": true
+    },
+    "link": {
+      "type": "string"
+    },
+    "speciesHandle": {
+      "type": "string",
+      "required": true,
+      "description": "Handle de la catégorie Medusa de l'espèce (ex: chien, sante-du-chat-et-du-chaton). 'all' = toutes les espèces."
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
