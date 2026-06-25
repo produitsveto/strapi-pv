@@ -51,6 +51,19 @@ export interface DealsHeroStat extends Struct.ComponentSchema {
   };
 }
 
+export interface DealsProductCarousel extends Struct.ComponentSchema {
+  collectionName: 'components_deals_product_carousels';
+  info: {
+    description: "Carrousel de produits ins\u00E9r\u00E9 dans le corps d'un article";
+    displayName: 'Carrousel Produits';
+    icon: 'shopping-cart';
+  };
+  attributes: {
+    products: Schema.Attribute.Component<'deals.featured-product', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface DealsTopBandItem extends Struct.ComponentSchema {
   collectionName: 'components_deals_top_band_items';
   info: {
@@ -187,12 +200,20 @@ export interface SharedSeo extends Struct.ComponentSchema {
     name: 'Seo';
   };
   attributes: {
+    canonicalUrl: Schema.Attribute.String;
     h1: Schema.Attribute.String;
     keyword: Schema.Attribute.String;
     metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
     metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
     noIndex: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    ogDescription: Schema.Attribute.Text;
+    ogTitle: Schema.Attribute.String;
+    robots: Schema.Attribute.String;
     shareImage: Schema.Attribute.Media<'images'>;
+    structuredData: Schema.Attribute.JSON;
+    twitterCard: Schema.Attribute.String;
+    twitterDescription: Schema.Attribute.Text;
+    twitterTitle: Schema.Attribute.String;
   };
 }
 
@@ -237,6 +258,7 @@ declare module '@strapi/strapi' {
       'deals.featured-product': DealsFeaturedProduct;
       'deals.hero-product': DealsHeroProduct;
       'deals.hero-stat': DealsHeroStat;
+      'deals.product-carousel': DealsProductCarousel;
       'deals.top-band-item': DealsTopBandItem;
       'deals.trust-badge': DealsTrustBadge;
       'deals.why-this-price-item': DealsWhyThisPriceItem;

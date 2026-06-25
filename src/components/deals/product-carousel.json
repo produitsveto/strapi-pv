@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_deals_product_carousels",
+  "info": {
+    "displayName": "Carrousel Produits",
+    "icon": "shopping-cart",
+    "description": "Carrousel de produits inséré dans le corps d'un article"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.featured-product"
+    }
+  }
+}

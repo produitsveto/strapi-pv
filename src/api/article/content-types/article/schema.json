@@ -16,12 +16,25 @@
     },
     "description": {
       "type": "text",
-      "maxLength": 80,
+      "maxLength": 250,
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "slug": {
       "type": "uid",
       "targetField": "title"
+    },
+    "wpId": {
+      "type": "integer",
+      "unique": true
+    },
+    "wpStatus": {
+      "type": "string"
+    },
+    "wpModified": {
+      "type": "datetime"
+    },
+    "wpDate": {
+      "type": "datetime"
     },
     "cover": {
       "type": "media",
@@ -29,10 +42,28 @@
       "required": false,
       "allowedTypes": ["images", "files", "videos"]
     },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author",
+      "inversedBy": "articles"
+    },
     "categories": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::category.category",
+      "inversedBy": "articles"
+    },
+    "blogCategories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::blog-category.blog-category",
+      "inversedBy": "articles"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
       "inversedBy": "articles"
     },
     "species": {
@@ -53,13 +84,26 @@
       "target": "api::laboratory.laboratory",
       "mappedBy": "articles"
     },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "mappedBy": "articles"
+    },
     "relatedArticles": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::article.article"
     },
-    "body": {
-      "type": "richtext",
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "shared.media",
+        "shared.quote",
+        "shared.slider",
+        "deals.product-carousel"
+      ],
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "seo": {

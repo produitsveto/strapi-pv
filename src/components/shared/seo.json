@@ -31,6 +31,30 @@
     },
     "keyword": {
       "type": "string"
+    },
+    "canonicalUrl": {
+      "type": "string"
+    },
+    "robots": {
+      "type": "string"
+    },
+    "ogTitle": {
+      "type": "string"
+    },
+    "ogDescription": {
+      "type": "text"
+    },
+    "twitterTitle": {
+      "type": "string"
+    },
+    "twitterDescription": {
+      "type": "text"
+    },
+    "twitterCard": {
+      "type": "string"
+    },
+    "structuredData": {
+      "type": "json"
     }
   }
 }

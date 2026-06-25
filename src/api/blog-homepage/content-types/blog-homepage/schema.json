@@ -1,0 +1,41 @@
+{
+  "kind": "singleType",
+  "collectionName": "blog_homepage",
+  "info": {
+    "singularName": "blog-homepage",
+    "pluralName": "blog-homepages",
+    "displayName": "Blog — Accueil",
+    "description": "Contenu éditorial de la page d'accueil du blog"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "heroTitle": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "tagline": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "heroIntro": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "seoText": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "heroImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

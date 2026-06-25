@@ -447,12 +447,25 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     };
   };
   attributes: {
-    body: Schema.Attribute.RichText &
+    author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
+    blocks: Schema.Attribute.DynamicZone<
+      [
+        'shared.rich-text',
+        'shared.media',
+        'shared.quote',
+        'shared.slider',
+        'deals.product-carousel',
+      ]
+    > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
         };
       }>;
+    blogCategories: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::blog-category.blog-category'
+    >;
     breeds: Schema.Attribute.Relation<'manyToMany', 'api::breed.breed'>;
     categories: Schema.Attribute.Relation<
       'manyToMany',
@@ -469,7 +482,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
         };
       }> &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 80;
+        maxLength: 250;
       }>;
     laboratories: Schema.Attribute.Relation<
       'manyToMany',
@@ -480,6 +493,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       'oneToMany',
       'api::article.article'
     >;
+    products: Schema.Attribute.Relation<'manyToMany', 'api::product.product'>;
     publishedAt: Schema.Attribute.DateTime;
     relatedArticles: Schema.Attribute.Relation<
       'manyToMany',
@@ -488,7 +502,156 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'>;
     species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    tags: Schema.Attribute.Relation<'manyToMany', 'api::tag.tag'>;
     title: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    wpDate: Schema.Attribute.DateTime;
+    wpId: Schema.Attribute.Integer & Schema.Attribute.Unique;
+    wpModified: Schema.Attribute.DateTime;
+    wpStatus: Schema.Attribute.String;
+  };
+}
+
+export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
+  collectionName: 'authors';
+  info: {
+    description: "Auteur d'article de blog (import\u00E9 de WordPress)";
+    displayName: 'Auteur';
+    pluralName: 'authors';
+    singularName: 'author';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
+    avatar: Schema.Attribute.Media<'images'>;
+    bio: Schema.Attribute.RichText;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::author.author'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    wpId: Schema.Attribute.Integer & Schema.Attribute.Unique;
+  };
+}
+
+export interface ApiBlogCategoryBlogCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_categories';
+  info: {
+    description: 'Cat\u00E9gorie \u00E9ditoriale du blog (import\u00E9e de WordPress)';
+    displayName: 'Cat\u00E9gorie Blog';
+    pluralName: 'blog-categories';
+    singularName: 'blog-category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-category.blog-category'
+    >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    wpId: Schema.Attribute.Integer & Schema.Attribute.Unique;
+  };
+}
+
+export interface ApiBlogHomepageBlogHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'blog_homepage';
+  info: {
+    description: "Contenu \u00E9ditorial de la page d'accueil du blog";
+    displayName: 'Blog \u2014 Accueil';
+    pluralName: 'blog-homepages';
+    singularName: 'blog-homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroImage: Schema.Attribute.Media<'images'>;
+    heroIntro: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    heroTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-homepage.blog-homepage'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    seoText: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    tagline: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1265,6 +1428,76 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiMarketingCampaignMarketingCampaign
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'marketing_campaigns';
+  info: {
+    description: 'PV-79 \u2014 Campagne marketing centralis\u00E9e pilotant les emplacements promo du storefront (home, cat\u00E9gorie, marque, m\u00E9ga-menu, produits vedette, vente crois\u00E9e). Publier = activer ; la diffusion r\u00E9elle est born\u00E9e par start_date/end_date.';
+    displayName: 'Campagne marketing';
+    pluralName: 'marketing-campaigns';
+    singularName: 'marketing-campaign';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    add_to_cart_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    analytics_id: Schema.Attribute.String;
+    attributed_orders: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    attributed_revenue: Schema.Attribute.Decimal &
+      Schema.Attribute.DefaultTo<0>;
+    background_color: Schema.Attribute.String;
+    banner_image: Schema.Attribute.Media<'images'>;
+    banner_image_mobile: Schema.Attribute.Media<'images'>;
+    brand_handle: Schema.Attribute.String;
+    brand_handles: Schema.Attribute.JSON;
+    campaign_tracking_id: Schema.Attribute.String;
+    campaign_type: Schema.Attribute.Enumeration<
+      [
+        'HOME_BANNER',
+        'CATEGORY_BANNER',
+        'BRAND_BANNER',
+        'MEGAMENU_BANNER',
+        'TOP10_BRAND',
+        'CROSS_SELLING',
+        'FEATURED_CATEGORY_PRODUCTS',
+        'FEATURED_BRAND_PRODUCTS',
+      ]
+    > &
+      Schema.Attribute.Required;
+    clicks: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    conversion_rate: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    countries: Schema.Attribute.JSON;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    devices: Schema.Attribute.JSON;
+    end_date: Schema.Attribute.DateTime;
+    impressions: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    label_title: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    locales: Schema.Attribute.JSON;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::marketing-campaign.marketing-campaign'
+    > &
+      Schema.Attribute.Private;
+    priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    product_handles: Schema.Attribute.JSON;
+    publishedAt: Schema.Attribute.DateTime;
+    redirect_url: Schema.Attribute.String;
+    sales_channels: Schema.Attribute.JSON;
+    slug: Schema.Attribute.UID<'title'>;
+    start_date: Schema.Attribute.DateTime;
+    target_handles: Schema.Attribute.JSON;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
@@ -1457,6 +1690,45 @@ export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     visibilite: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+  };
+}
+
+export interface ApiTagTag extends Struct.CollectionTypeSchema {
+  collectionName: 'tags';
+  info: {
+    description: "\u00C9tiquette / tag d'article de blog (import\u00E9e de WordPress)";
+    displayName: '\u00C9tiquette';
+    pluralName: 'tags';
+    singularName: 'tag';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    articles: Schema.Attribute.Relation<'manyToMany', 'api::article.article'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::tag.tag'>;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    wpId: Schema.Attribute.Integer & Schema.Attribute.Unique;
   };
 }
 
@@ -1972,6 +2244,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::article.article': ApiArticleArticle;
+      'api::author.author': ApiAuthorAuthor;
+      'api::blog-category.blog-category': ApiBlogCategoryBlogCategory;
+      'api::blog-homepage.blog-homepage': ApiBlogHomepageBlogHomepage;
       'api::breed.breed': ApiBreedBreed;
       'api::category.category': ApiCategoryCategory;
       'api::deals-about.deals-about': ApiDealsAboutDealsAbout;
@@ -1986,9 +2261,11 @@ declare module '@strapi/strapi' {
       'api::deals-privacy.deals-privacy': ApiDealsPrivacyDealsPrivacy;
       'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
+      'api::marketing-campaign.marketing-campaign': ApiMarketingCampaignMarketingCampaign;
       'api::product.product': ApiProductProduct;
       'api::site-identity.site-identity': ApiSiteIdentitySiteIdentity;
       'api::species.species': ApiSpeciesSpecies;
+      'api::tag.tag': ApiTagTag;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
