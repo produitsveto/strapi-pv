@@ -1,0 +1,139 @@
+{
+  "kind": "collectionType",
+  "collectionName": "marketing_campaigns",
+  "info": {
+    "singularName": "marketing-campaign",
+    "pluralName": "marketing-campaigns",
+    "displayName": "Campagne marketing",
+    "description": "PV-79 — Campagne marketing centralisée pilotant les emplacements promo du storefront (home, catégorie, marque, méga-menu, produits vedette, vente croisée). Publier = activer ; la diffusion réelle est bornée par start_date/end_date."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "campaign_type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "HOME_BANNER",
+        "CATEGORY_BANNER",
+        "BRAND_BANNER",
+        "MEGAMENU_BANNER",
+        "TOP10_BRAND",
+        "CROSS_SELLING",
+        "FEATURED_CATEGORY_PRODUCTS",
+        "FEATURED_BRAND_PRODUCTS"
+      ]
+    },
+    "start_date": {
+      "type": "datetime"
+    },
+    "end_date": {
+      "type": "datetime"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Kill-switch manuel (en plus de la fenêtre de dates et de l'état publié)."
+    },
+    "priority": {
+      "type": "integer",
+      "default": 0,
+      "description": "Ordre d'affichage (tri croissant)."
+    },
+    "analytics_id": {
+      "type": "string",
+      "description": "Nom d'event GA4 pour le tracking."
+    },
+    "campaign_tracking_id": {
+      "type": "string",
+      "description": "ID interne de tracking (attribution commande Medusa)."
+    },
+    "banner_image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "banner_image_mobile": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "redirect_url": {
+      "type": "string",
+      "description": "URL/chemin de destination au clic."
+    },
+    "background_color": {
+      "type": "string",
+      "description": "Couleur de fond (HOME_BANNER). Ex: #4784c3."
+    },
+    "label_title": {
+      "type": "string",
+      "description": "Titre d'étiquette (CATEGORY_BANNER / BRAND_BANNER)."
+    },
+    "target_handles": {
+      "type": "json",
+      "description": "Handles Medusa des catégories ciblées (CATEGORY_BANNER) ou des entrées de méga-menu à affecter (MEGAMENU_BANNER). Tableau de strings. Vide/null = global."
+    },
+    "brand_handle": {
+      "type": "string",
+      "description": "Handle Medusa de la marque/laboratoire (BRAND_BANNER, FEATURED_BRAND_PRODUCTS)."
+    },
+    "product_handles": {
+      "type": "json",
+      "description": "Handles Medusa des produits mis en avant (FEATURED_*, CROSS_SELLING). Tableau ordonné de strings."
+    },
+    "brand_handles": {
+      "type": "json",
+      "description": "Handles Medusa des marques poussées (TOP10_BRAND). Tableau ordonné de strings."
+    },
+    "locales": {
+      "type": "json",
+      "description": "Langues ciblées (ex: [\"fr\",\"en\"]). Vide/null = toutes."
+    },
+    "devices": {
+      "type": "json",
+      "description": "Devices ciblés (desktop/mobile/tablet). Vide/null = tous."
+    },
+    "countries": {
+      "type": "json",
+      "description": "Codes pays ISO ciblés. Vide/null = tous."
+    },
+    "sales_channels": {
+      "type": "json",
+      "description": "IDs/noms de canaux de vente Medusa ciblés. Vide/null = tous."
+    },
+    "impressions": {
+      "type": "integer",
+      "default": 0
+    },
+    "clicks": {
+      "type": "integer",
+      "default": 0
+    },
+    "add_to_cart_count": {
+      "type": "integer",
+      "default": 0
+    },
+    "attributed_orders": {
+      "type": "integer",
+      "default": 0
+    },
+    "attributed_revenue": {
+      "type": "decimal",
+      "default": 0
+    },
+    "conversion_rate": {
+      "type": "decimal",
+      "default": 0
+    }
+  }
+}

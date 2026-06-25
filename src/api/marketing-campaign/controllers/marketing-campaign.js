@@ -2,4 +2,4 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::menu-campaign.menu-campaign');
+module.exports = createCoreController('api::marketing-campaign.marketing-campaign');

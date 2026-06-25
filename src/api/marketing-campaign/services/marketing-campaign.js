@@ -2,4 +2,4 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::menu-campaign.menu-campaign');
+module.exports = createCoreService('api::marketing-campaign.marketing-campaign');

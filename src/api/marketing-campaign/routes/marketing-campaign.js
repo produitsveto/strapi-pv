@@ -2,4 +2,4 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::menu-campaign.menu-campaign');
+module.exports = createCoreRouter('api::marketing-campaign.marketing-campaign');
