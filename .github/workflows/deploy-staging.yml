@@ -1,0 +1,65 @@
+name: Deploy staging (strapi)
+
+# Déploiement continu sur le VPS staging self-hosté (OVH).
+#
+# S'exécute sur un **runner self-hosté installé sur le VPS** (label `pv-staging`,
+# instance dédiée au repo strapi-pv) → pas de secret SSH, pas d'exposition
+# réseau : le runner « tire » le code. Voir infra/staging/setup-runner.sh
+# (monorepo) pour l'installation du runner.
+#
+# Ce qu'il fait, au push sur `staging` : rsync du code COMMITÉ de la branche dans
+# le projet compose (`/opt/pv-staging/repos/strapi`), puis `docker compose up -d
+# --build strapi`. Contrairement à `bin/staging deploy` (qui rsync le working
+# tree local), seul le code commité de la branche part en staging.
+#
+# Migrations Strapi (schéma / content-types) : appliquées AUTOMATIQUEMENT au boot
+# du conteneur (cf services/strapi-pv/Dockerfile) — rien à lancer hors-bande.
+# Les uploads vivent dans le volume Docker `strapi_uploads`, jamais dans le repo :
+# le rsync les exclut donc pour ne pas les écraser.
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging-strapi
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, pv-staging]
+    env:
+      REMOTE_DIR: /opt/pv-staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync source into compose project
+        run: |
+          rsync -a --delete \
+            --exclude='.git' --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.strapi' --exclude='.cache' --exclude='.tmp' \
+            --exclude='build' --exclude='dist' \
+            --exclude='.env' --exclude='.env.*' --exclude='*.log' \
+            --exclude='public/uploads' \
+            ./ "${REMOTE_DIR}/repos/strapi/"
+
+      - name: Build & restart strapi
+        working-directory: ${{ env.REMOTE_DIR }}
+        run: docker compose up -d --build strapi
+
+      - name: Wait for strapi to be running
+        working-directory: ${{ env.REMOTE_DIR }}
+        run: |
+          for i in $(seq 1 36); do
+            state=$(docker compose ps strapi --format '{{.State}}' 2>/dev/null || true)
+            echo "strapi state: ${state:-unknown}"
+            case "$state" in
+              running) echo "✅ strapi running"; exit 0 ;;
+              restarting|exited|dead) docker compose logs --tail=80 strapi; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "⏱️ timeout"; docker compose logs --tail=80 strapi; exit 1
