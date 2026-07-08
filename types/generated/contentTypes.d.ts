@@ -1361,6 +1361,54 @@ export interface ApiDealsProductPageDealsProductPage
   };
 }
 
+export interface ApiDealsVeterinaryMedicineDealsVeterinaryMedicine
+  extends Struct.SingleTypeSchema {
+  collectionName: 'deals_veterinary_medicines';
+  info: {
+    displayName: 'DEALS - M\u00E9dicaments v\u00E9t\u00E9rinaires';
+    pluralName: 'deals-veterinary-medicines';
+    singularName: 'deals-veterinary-medicine';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-veterinary-medicine.deals-veterinary-medicine'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   collectionName: 'laboratories';
   info: {
@@ -2260,6 +2308,7 @@ declare module '@strapi/strapi' {
       'api::deals-payment-info.deals-payment-info': ApiDealsPaymentInfoDealsPaymentInfo;
       'api::deals-privacy.deals-privacy': ApiDealsPrivacyDealsPrivacy;
       'api::deals-product-page.deals-product-page': ApiDealsProductPageDealsProductPage;
+      'api::deals-veterinary-medicine.deals-veterinary-medicine': ApiDealsVeterinaryMedicineDealsVeterinaryMedicine;
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::marketing-campaign.marketing-campaign': ApiMarketingCampaignMarketingCampaign;
       'api::product.product': ApiProductProduct;
