@@ -72,18 +72,6 @@
       "target": "api::species.species",
       "mappedBy": "articles"
     },
-    "breeds": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::breed.breed",
-      "mappedBy": "articles"
-    },
-    "laboratories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::laboratory.laboratory",
-      "mappedBy": "articles"
-    },
     "products": {
       "type": "relation",
       "relation": "manyToMany",
@@ -102,7 +90,8 @@
         "shared.media",
         "shared.quote",
         "shared.slider",
-        "deals.product-carousel"
+        "deals.product-carousel",
+        "deals.faq-block"
       ],
       "pluginOptions": { "i18n": { "localized": true } }
     },

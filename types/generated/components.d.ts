@@ -1,5 +1,18 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface DealsFaqBlock extends Struct.ComponentSchema {
+  collectionName: 'components_deals_faq_blocks';
+  info: {
+    description: 'Section FAQ ins\u00E9rable dans un contenu riche (titre H2 + questions/r\u00E9ponses)';
+    displayName: 'Bloc FAQ';
+    icon: 'question-circle';
+  };
+  attributes: {
+    items: Schema.Attribute.Component<'deals.faq-item', true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface DealsFaqItem extends Struct.ComponentSchema {
   collectionName: 'components_deals_faq_items';
   info: {
@@ -132,11 +145,7 @@ export interface SharedMedication extends Struct.ComponentSchema {
     icon: 'shield';
   };
   attributes: {
-    contreIndications: Schema.Attribute.RichText;
-    indications: Schema.Attribute.RichText;
     numeroAMM: Schema.Attribute.String;
-    posologie: Schema.Attribute.RichText;
-    tempsAttente: Schema.Attribute.String;
     titulaireAMM: Schema.Attribute.String;
   };
 }
@@ -206,14 +215,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
     metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
     metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
     noIndex: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    ogDescription: Schema.Attribute.Text;
-    ogTitle: Schema.Attribute.String;
-    robots: Schema.Attribute.String;
     shareImage: Schema.Attribute.Media<'images'>;
-    structuredData: Schema.Attribute.JSON;
-    twitterCard: Schema.Attribute.String;
-    twitterDescription: Schema.Attribute.Text;
-    twitterTitle: Schema.Attribute.String;
   };
 }
 
@@ -254,6 +256,7 @@ export interface SharedSocialLink extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'deals.faq-block': DealsFaqBlock;
       'deals.faq-item': DealsFaqItem;
       'deals.featured-product': DealsFeaturedProduct;
       'deals.hero-product': DealsHeroProduct;

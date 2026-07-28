@@ -24,10 +24,10 @@
       "type": "boolean",
       "default": true
     },
-    "mainImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
+    "shortDescription": {
+      "type": "text",
+      "maxLength": 250,
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "description": {
       "type": "richtext",
@@ -37,16 +37,6 @@
       "type": "component",
       "repeatable": true,
       "component": "deals.faq-item"
-    },
-    "marketingBanner": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": ["images"]
-    },
-    "featuredProducts": {
-      "type": "component",
-      "repeatable": true,
-      "component": "deals.featured-product"
     },
     "parentSpecies": {
       "type": "relation",

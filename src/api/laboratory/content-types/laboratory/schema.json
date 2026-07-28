@@ -24,15 +24,15 @@
       "type": "boolean",
       "default": true
     },
-    "mainImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
-    },
     "logo": {
       "type": "media",
       "multiple": false,
       "allowedTypes": ["images"]
+    },
+    "shortDescription": {
+      "type": "text",
+      "maxLength": 250,
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "description": {
       "type": "richtext",
@@ -42,16 +42,6 @@
       "type": "component",
       "repeatable": true,
       "component": "deals.faq-item"
-    },
-    "marketingBanner": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": ["images"]
-    },
-    "featuredProducts": {
-      "type": "component",
-      "repeatable": true,
-      "component": "deals.featured-product"
     },
     "categories": {
       "type": "relation",
@@ -65,22 +55,10 @@
       "target": "api::species.species",
       "mappedBy": "laboratories"
     },
-    "breeds": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::breed.breed",
-      "mappedBy": "laboratories"
-    },
-    "alliedLaboratory": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::laboratory.laboratory"
-    },
     "articles": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::article.article",
-      "inversedBy": "laboratories"
+      "target": "api::article.article"
     },
     "seo": {
       "type": "component",

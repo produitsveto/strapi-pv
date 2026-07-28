@@ -24,39 +24,19 @@
       "type": "boolean",
       "default": true
     },
-    "mainImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
+    "shortDescription": {
+      "type": "text",
+      "maxLength": 250,
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "description": {
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
-    "marketingBanner": {
-      "type": "media",
-      "multiple": true,
-      "allowedTypes": ["images"]
-    },
-    "featuredProducts": {
+    "faqs": {
       "type": "component",
       "repeatable": true,
-      "component": "deals.featured-product"
-    },
-    "googleCategory": {
-      "type": "string"
-    },
-    "parentCategory": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "childCategories"
-    },
-    "childCategories": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::category.category",
-      "mappedBy": "parentCategory"
+      "component": "deals.faq-item"
     },
     "articles": {
       "type": "relation",

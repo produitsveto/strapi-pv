@@ -12,18 +12,6 @@
     },
     "titulaireAMM": {
       "type": "string"
-    },
-    "indications": {
-      "type": "richtext"
-    },
-    "contreIndications": {
-      "type": "richtext"
-    },
-    "posologie": {
-      "type": "richtext"
-    },
-    "tempsAttente": {
-      "type": "string"
     }
   }
 }
