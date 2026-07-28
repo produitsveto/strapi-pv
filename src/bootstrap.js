@@ -5,7 +5,7 @@
  *
  * Les configurations du content-manager sont créées en base au premier accès
  * admin. Ce bootstrap les patche à chaque démarrage : labels FR, colonnes
- * de liste, mainField, tri par défaut.
+ * de liste, mainField, tri par défaut, champs en lecture seule (readOnlyFields).
  *
  * → Premier lancement : les configs n'existent pas encore, rien ne se passe.
  * → Redémarrer Strapi après le premier accès admin pour appliquer.
@@ -19,32 +19,12 @@ const CONTENT_TYPE_CONFIG = {
       name: 'Nom',
       slug: 'Slug',
       visibilite: 'Visibilité',
-      mainImage: 'Image principale',
+      shortDescription: 'Description courte',
       description: 'Description',
       faqs: 'FAQ',
-      marketingBanner: 'Bannière marketing',
-      featuredProducts: 'Produits mis en avant',
       parentSpecies: 'Espèce parente',
       childSpecies: 'Sous-espèces',
       categories: 'Catégories',
-      laboratories: 'Laboratoires',
-      articles: 'Articles',
-      seo: 'SEO',
-    },
-  },
-  'api::breed.breed': {
-    settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
-    listColumns: ['name', 'slug', 'parentSpecies', 'visibilite', 'createdAt'],
-    labels: {
-      name: 'Nom',
-      slug: 'Slug',
-      visibilite: 'Visibilité',
-      mainImage: 'Image principale',
-      description: 'Description',
-      faqs: 'FAQ',
-      marketingBanner: 'Bannière marketing',
-      featuredProducts: 'Produits mis en avant',
-      parentSpecies: 'Espèce parente',
       laboratories: 'Laboratoires',
       articles: 'Articles',
       seo: 'SEO',
@@ -57,34 +37,26 @@ const CONTENT_TYPE_CONFIG = {
       name: 'Nom',
       slug: 'Slug',
       visibilite: 'Visibilité',
-      mainImage: 'Image principale',
       logo: 'Logo',
+      shortDescription: 'Description courte',
       description: 'Description',
       faqs: 'FAQ',
-      marketingBanner: 'Bannière marketing',
-      featuredProducts: 'Produits mis en avant',
       categories: 'Catégories',
       species: 'Espèces',
-      breeds: 'Races',
-      alliedLaboratory: 'Laboratoire allié',
       articles: 'Articles',
       seo: 'SEO',
     },
   },
   'api::category.category': {
     settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
-    listColumns: ['name', 'slug', 'parentCategory', 'visibilite', 'createdAt'],
+    listColumns: ['name', 'slug', 'visibilite', 'createdAt'],
     labels: {
       name: 'Nom',
       slug: 'Slug',
       visibilite: 'Visibilité',
-      mainImage: 'Image principale',
+      shortDescription: 'Description courte',
       description: 'Description',
-      marketingBanner: 'Bannière marketing',
-      featuredProducts: 'Produits mis en avant',
-      googleCategory: 'Catégorie Google',
-      parentCategory: 'Catégorie parente',
-      childCategories: 'Sous-catégories',
+      faqs: 'FAQ',
       articles: 'Articles',
       species: 'Espèces',
       laboratories: 'Laboratoires',
@@ -100,21 +72,23 @@ const CONTENT_TYPE_CONFIG = {
       medusaId: 'ID Medusa',
       handle: 'Handle',
       visibilite: 'Visibilité',
-      mainImage: 'Image principale',
+      shortDescription: 'Description courte',
       carousel: 'Carrousel',
       extendedDescription: 'Description étendue',
       modeEmploi: "Mode d'emploi",
       precautions: 'Précautions',
       notice: 'Notice (PDF)',
       formeGalenique: 'Forme galénique',
-      synonymes: 'Synonymes',
+      synonymes: 'Synonymes (séparés par des virgules)',
       faqs: 'FAQ',
       laboratory: 'Laboratoire',
       species: 'Espèces',
-      breeds: 'Races',
       articles: 'Articles',
       seo: 'SEO',
     },
+    // Champs importés/synchronisés par le job nocturne sync-products (Woo→Medusa→Strapi)
+    // — un edit manuel serait écrasé au run suivant, jamais modifiés depuis Strapi.
+    readOnlyFields: ['medusaId', 'laboratory'],
   },
   'api::article.article': {
     settings: { mainField: 'title', defaultSortBy: 'createdAt', defaultSortOrder: 'DESC' },
@@ -126,12 +100,12 @@ const CONTENT_TYPE_CONFIG = {
       cover: 'Couverture',
       categories: 'Catégories',
       species: 'Espèces',
-      breeds: 'Races',
-      laboratories: 'Laboratoires',
       relatedArticles: 'Articles liés',
-      body: 'Contenu',
+      blocks: 'Contenu',
       seo: 'SEO',
     },
+    // Identifiants d'import WordPress — édition = risque de casser le lien avec l'article source.
+    readOnlyFields: ['wpId', 'wpStatus', 'wpModified', 'wpDate'],
   },
   'api::deals-homepage.deals-homepage': {
     settings: {},
@@ -235,6 +209,18 @@ async function applyContentManagerConfig() {
       if (meta.list && meta.list.label !== label) {
         meta.list.label = label;
         changed = true;
+      }
+    }
+
+    // --- Champs en lecture seule (édition désactivée dans le content-manager) ---
+    if (ctConfig.readOnlyFields) {
+      for (const field of ctConfig.readOnlyFields) {
+        const meta = config.metadatas[field];
+        if (!meta || !meta.edit) continue;
+        if (meta.edit.editable !== false) {
+          meta.edit.editable = false;
+          changed = true;
+        }
       }
     }
 

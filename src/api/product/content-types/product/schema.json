@@ -35,10 +35,10 @@
       "type": "boolean",
       "default": true
     },
-    "mainImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
+    "shortDescription": {
+      "type": "text",
+      "maxLength": 250,
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "carousel": {
       "type": "media",
@@ -63,7 +63,34 @@
       "allowedTypes": ["files"]
     },
     "formeGalenique": {
-      "type": "string"
+      "type": "enumeration",
+      "enum": [
+        "ampoule-buvable",
+        "batonnet-barre-friandise",
+        "baume",
+        "bouchee-croquette",
+        "collier",
+        "collyre",
+        "comprime",
+        "creme-pommade-gel",
+        "gel-buvable",
+        "gelule-capsule",
+        "goutte-auriculaire",
+        "goutte-ophtalmique",
+        "gouttes-buvables",
+        "lamelles",
+        "laniere-plaquette-ruban",
+        "lingette-coton",
+        "lotion-liquide",
+        "pate-seringue",
+        "pellets",
+        "pipette-spot-on",
+        "poudre",
+        "shampooing-mousse",
+        "sirop-solution-buvable",
+        "solution-pour-inhalation",
+        "spray-diffuseur-fogger"
+      ]
     },
     "synonymes": {
       "type": "text"
@@ -82,11 +109,6 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::species.species"
-    },
-    "breeds": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::breed.breed"
     },
     "articles": {
       "type": "relation",

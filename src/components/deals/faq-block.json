@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_deals_faq_blocks",
+  "info": {
+    "displayName": "Bloc FAQ",
+    "icon": "question-circle",
+    "description": "Section FAQ insérable dans un contenu riche (titre H2 + questions/réponses)"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "deals.faq-item"
+    }
+  }
+}
