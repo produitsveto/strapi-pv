@@ -38,6 +38,10 @@
       "type": "richtext",
       "pluginOptions": { "i18n": { "localized": true } }
     },
+    "faqTitle": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
     "faqs": {
       "type": "component",
       "repeatable": true,

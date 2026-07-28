@@ -1371,6 +1371,12 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
         };
       }>;
     faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    faqTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
