@@ -125,6 +125,10 @@
       "type": "component",
       "repeatable": false,
       "component": "shared.medication"
+    },
+    "translationMeta": {
+      "type": "json",
+      "pluginOptions": { "i18n": { "localized": true } }
     }
   }
 }
