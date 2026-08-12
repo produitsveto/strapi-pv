@@ -112,8 +112,9 @@
       "description": "Devices ciblés (desktop/mobile/tablet). Vide/null = tous."
     },
     "countries": {
-      "type": "json",
-      "description": "Codes pays ISO ciblés. Vide/null = tous."
+      "type": "customField",
+      "customField": "global::medusa-countries",
+      "description": "Pays où la campagne est diffusée (codes ISO 2 lettres, ex. « fr », « be »). Vide = tous les pays."
     },
     "sales_channels": {
       "type": "json",

@@ -74,6 +74,42 @@ export const RESOURCES = {
     },
   },
 
+  // Les pays ouverts à la vente viennent des régions Medusa : inutile d'entretenir une liste
+  // en double, et un pays qu'on n'affiche pas est un pays qu'on ne peut pas viser par erreur.
+  countries: {
+    placeholder: 'Rechercher un pays…',
+    empty: 'Aucun pays trouvé',
+    async all() {
+      const { regions } = await medusaFetch('regions', { limit: '50' });
+      const noms = new Intl.DisplayNames(['fr'], { type: 'region' });
+      const seen = new Map();
+      for (const r of regions ?? []) {
+        for (const c of r.countries ?? []) {
+          const code = String(c.iso_2 || '').toLowerCase();
+          if (!code || seen.has(code)) continue;
+          let label = code.toUpperCase();
+          try {
+            label = noms.of(code.toUpperCase()) || label;
+          }
+          catch { /* code inconnu du navigateur : on garde le code */ }
+          seen.set(code, { value: code, label });
+        }
+      }
+      return [...seen.values()].sort((a, b) => a.label.localeCompare(b.label, 'fr'));
+    },
+    async search(query) {
+      const all = await this.all();
+      if (!query) return all;
+      const q = query.toLowerCase();
+      return all.filter(c => c.label.toLowerCase().includes(q) || c.value.includes(q));
+    },
+    async resolve(codes) {
+      const all = await this.all();
+      const byCode = new Map(all.map(c => [c.value, c.label]));
+      return codes.map(c => ({ value: c, label: byCode.get(String(c).toLowerCase()) || c }));
+    },
+  },
+
   categories: {
     placeholder: 'Rechercher une catégorie…',
     empty: 'Aucune catégorie trouvée',
@@ -108,6 +144,7 @@ export const FIELDS = {
   'medusa-brands': { resource: 'brands', multiple: true },
   'medusa-products': { resource: 'products', multiple: true },
   'medusa-targets': { resource: 'categories', multiple: true, creatable: true },
+  'medusa-countries': { resource: 'countries', multiple: true },
 };
 
 /** `global::medusa-products` → définition du champ. */
