@@ -116,6 +116,11 @@
       "target": "api::article.article",
       "inversedBy": "products"
     },
+    "suggestedProducts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

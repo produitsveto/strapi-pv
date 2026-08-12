@@ -78,11 +78,10 @@ const DealPickerInput = (props) => {
     name,
     onChange,
     value,
-    intlLabel,
+    label,
+    hint,
     error,
     required,
-    description,
-    labelAction,
   } = props;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -146,10 +145,10 @@ const DealPickerInput = (props) => {
       name={name}
       id={name}
       error={error || fetchError}
-      hint={description?.defaultMessage}
+      hint={hint}
       required={required}
     >
-      <Field.Label action={labelAction}>{intlLabel?.defaultMessage ?? name}</Field.Label>
+      <Field.Label>{label ?? name}</Field.Label>
       <Combobox
         value={value || ''}
         onChange={handleChange}
