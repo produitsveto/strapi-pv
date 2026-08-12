@@ -167,8 +167,9 @@ const CONTENT_TYPE_CONFIG = {
   },
   // PV-188 — le formulaire des campagnes affichait 28 champs en vrac, aux noms techniques et
   // sans ordre : PA le jugeait « incompréhensible ». On range par usage, on nomme en clair, et
-  // on relègue en bas les champs que le site ne lit pas encore (segmentation) ainsi que les
-  // compteurs, alimentés par le suivi d'audience et donc passés en lecture seule.
+  // on relègue en bas les champs que le site ne lit pas (langues, appareils, canaux de vente)
+  // ainsi que les compteurs, alimentés par le suivi d'audience et donc en lecture seule.
+  // Le ciblage par pays, lui, est bien appliqué par le site : il reste dans le bloc ciblage.
   'api::marketing-campaign.marketing-campaign': {
     settings: { mainField: 'title', defaultSortBy: 'start_date', defaultSortOrder: 'DESC' },
     listColumns: ['title', 'campaign_type', 'is_active', 'start_date', 'end_date'],
@@ -193,7 +194,7 @@ const CONTENT_TYPE_CONFIG = {
       campaign_tracking_id: 'Identifiant de suivi interne',
       locales: 'Langues (non pris en compte)',
       devices: 'Appareils (non pris en compte)',
-      countries: 'Pays (non pris en compte)',
+      countries: 'Pays de diffusion',
       sales_channels: 'Canaux de vente (non pris en compte)',
       impressions: 'Affichages',
       clicks: 'Clics',
@@ -219,7 +220,7 @@ const CONTENT_TYPE_CONFIG = {
       analytics_id: 'Nom de la campagne remonté à Google Analytics.',
       locales: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
       devices: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
-      countries: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
+      countries: 'Limite la campagne aux visiteurs de ces pays. Vide = diffusée partout.',
       sales_channels: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
       impressions: 'Renseigné automatiquement par le suivi d’audience.',
     },
@@ -239,10 +240,11 @@ const CONTENT_TYPE_CONFIG = {
       [{ name: 'target_handles', size: 12 }],
       [{ name: 'brand_handle', size: 6 }, { name: 'brand_handles', size: 6 }],
       [{ name: 'product_handles', size: 12 }],
+      [{ name: 'countries', size: 12 }],
       [{ name: 'analytics_id', size: 6 }, { name: 'campaign_tracking_id', size: 6 }],
       [{ name: 'slug', size: 6 }],
       [{ name: 'locales', size: 6 }, { name: 'devices', size: 6 }],
-      [{ name: 'countries', size: 6 }, { name: 'sales_channels', size: 6 }],
+      [{ name: 'sales_channels', size: 6 }],
       [{ name: 'impressions', size: 4 }, { name: 'clicks', size: 4 }, { name: 'add_to_cart_count', size: 4 }],
       [{ name: 'attributed_orders', size: 4 }, { name: 'attributed_revenue', size: 4 }, { name: 'conversion_rate', size: 4 }],
     ],
