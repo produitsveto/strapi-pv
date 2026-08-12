@@ -16,7 +16,9 @@ import { RESOURCES, fieldConfig } from './resources';
  * plusieurs) viennent du nom du custom field, cf. `resources.js`.
  */
 const MedusaPickerInput = (props) => {
-  const { attribute, name, onChange, value, intlLabel, error, required, description, labelAction } = props;
+  // Strapi 5 fournit `label` et `hint` déjà résolus depuis la configuration de la vue
+  // (il n'y a plus d'`intlLabel` ni de `description`).
+  const { attribute, name, onChange, value, label, hint, error, required, disabled } = props;
 
   const config = fieldConfig(attribute?.customField) ?? { resource: 'products', multiple: false };
   const resource = RESOURCES[config.resource];
@@ -109,16 +111,17 @@ const MedusaPickerInput = (props) => {
       name={name}
       id={name}
       error={error || fetchError}
-      hint={description?.defaultMessage}
+      hint={hint}
       required={required}
     >
-      <Field.Label action={labelAction}>{intlLabel?.defaultMessage ?? name}</Field.Label>
+      <Field.Label>{label ?? name}</Field.Label>
 
       <Combobox
         value={comboValue}
         onChange={add}
         onInputChange={(e) => setQuery(e.target.value)}
         autocomplete="none"
+        disabled={disabled}
         loading={loading}
         loadingMessage="Chargement…"
         creatable={config.creatable ? true : undefined}
