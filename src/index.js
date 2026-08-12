@@ -1,6 +1,7 @@
 'use strict';
 const bootstrap = require("./bootstrap");
 const { registerStorefrontRevalidation } = require("./revalidate-storefront");
+const { registerMediaBufferStripping } = require("./strip-media-buffers");
 
 module.exports = {
   /**
@@ -20,6 +21,9 @@ module.exports = {
     // Purge le cache du storefront Deals à chaque publish/unpublish/delete,
     // pour que le contenu mis à jour dans Strapi soit visible immédiatement.
     registerStorefrontRevalidation({ strapi });
+
+    // PV-185 — empêche le provider R2 d'écrire le binaire des images en base.
+    registerMediaBufferStripping({ strapi });
   },
 
   /**
