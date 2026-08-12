@@ -18,6 +18,18 @@ module.exports = {
       type: 'string',
     });
 
+    // PV-188 — sélecteurs Medusa des campagnes marketing (produits, marques, catégories).
+    // Le type sous-jacent reste celui d'origine du champ : les campagnes déjà enregistrées
+    // restent lisibles telles quelles, aucune reprise de données.
+    for (const [name, type] of [
+      ['medusa-brand', 'string'],
+      ['medusa-brands', 'json'],
+      ['medusa-products', 'json'],
+      ['medusa-targets', 'json'],
+    ]) {
+      strapi.customFields.register({ name, type });
+    }
+
     // Purge le cache du storefront Deals à chaque publish/unpublish/delete,
     // pour que le contenu mis à jour dans Strapi soit visible immédiatement.
     registerStorefrontRevalidation({ strapi });
