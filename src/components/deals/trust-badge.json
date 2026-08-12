@@ -1,8 +1,0 @@
-{
-  "collectionName": "components_deals_trust_badges",
-  "info": { "displayName": "Trust Badge", "icon": "shield-alt" },
-  "attributes": {
-    "icon": { "type": "string", "required": true },
-    "label": { "type": "string", "required": true }
-  }
-}

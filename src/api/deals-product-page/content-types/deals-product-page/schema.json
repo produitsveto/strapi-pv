@@ -10,7 +10,6 @@
   "pluginOptions": { "i18n": { "localized": true } },
   "attributes": {
     "topBanner": { "type": "string" },
-    "trustBadges": { "type": "component", "repeatable": true, "component": "deals.trust-badge" },
     "whyThisPriceTitle": { "type": "string" },
     "whyThisPriceItems": { "type": "component", "repeatable": true, "component": "deals.why-this-price-item" },
     "genericFaqs": { "type": "component", "repeatable": true, "component": "deals.faq-item" },

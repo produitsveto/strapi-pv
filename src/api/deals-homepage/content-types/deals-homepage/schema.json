@@ -19,7 +19,6 @@
     "heroCtaSecondaryLink": { "type": "string" },
     "heroStats": { "type": "component", "repeatable": true, "component": "deals.hero-stat", "max": 4, "pluginOptions": { "i18n": { "localized": true } } },
     "heroProducts": { "type": "component", "repeatable": true, "component": "deals.hero-product", "max": 6 },
-    "trustBadges": { "type": "component", "repeatable": true, "component": "deals.trust-badge", "pluginOptions": { "i18n": { "localized": true } } },
     "newProductsTitle": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
     "seo": { "type": "component", "repeatable": false, "component": "shared.seo", "pluginOptions": { "i18n": { "localized": true } } }
   }
