@@ -60,12 +60,16 @@
     "banner_image": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "banner_image_mobile": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "redirect_url": {
       "type": "string",
@@ -80,19 +84,23 @@
       "description": "Titre d'étiquette (CATEGORY_BANNER / BRAND_BANNER)."
     },
     "target_handles": {
-      "type": "json",
+      "type": "customField",
+      "customField": "global::medusa-targets",
       "description": "Handles Medusa des catégories ciblées (CATEGORY_BANNER) ou des entrées de méga-menu à affecter (MEGAMENU_BANNER). Tableau de strings. Vide/null = global."
     },
     "brand_handle": {
-      "type": "string",
+      "type": "customField",
+      "customField": "global::medusa-brand",
       "description": "Handle Medusa de la marque/laboratoire (BRAND_BANNER, FEATURED_BRAND_PRODUCTS)."
     },
     "product_handles": {
-      "type": "json",
+      "type": "customField",
+      "customField": "global::medusa-products",
       "description": "Handles Medusa des produits mis en avant (FEATURED_*, CROSS_SELLING). Tableau ordonné de strings."
     },
     "brand_handles": {
-      "type": "json",
+      "type": "customField",
+      "customField": "global::medusa-brands",
       "description": "Handles Medusa des marques poussées (TOP10_BRAND). Tableau ordonné de strings."
     },
     "locales": {
