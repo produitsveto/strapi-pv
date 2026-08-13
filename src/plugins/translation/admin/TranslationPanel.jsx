@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Box, Button, Flex, Loader, Status, Typography } from '@strapi/design-system';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Button, Flex, Link, Loader, Status, Typography } from '@strapi/design-system';
 import { useFetchClient } from '@strapi/strapi/admin';
 
 /**
@@ -8,11 +8,12 @@ import { useFetchClient } from '@strapi/strapi/admin';
  * Montre, langue par langue, ce qui est à jour, ce qui est devenu obsolète
  * parce que le français a changé, ce qui a été corrigé à la main — et donc
  * protégé — et ce qui reste à générer. Un bouton relance uniquement les deux
- * premiers cas.
+ * cas qui le demandent.
  *
- * L'état est calculé côté serveur : ce composant ne fait que l'afficher. Il
- * n'existe donc aucune règle de traduction ici, et rien à tenir à jour de ce
- * côté quand celles du moteur évoluent.
+ * La traduction ne se fait pas ici : le bouton demande son exécution, et
+ * celle-ci prend plusieurs minutes. Le panneau surveille donc l'avancement et
+ * rafraîchit l'état tout seul, pour qu'un clic ne reste pas sans réponse
+ * visible. Fermer la page n'interrompt rien.
  */
 
 const LANGUAGES = {
@@ -39,6 +40,11 @@ const STATES = {
   skip: { variant: 'success', label: 'À jour' },
 };
 
+/** Rythme de surveillance : assez fréquent pour suivre, assez rare pour ne pas peser. */
+const POLL_MS = 15000;
+/** Au-delà, on cesse de surveiller : le traitement a largement eu le temps d'aboutir. */
+const POLL_MAX_MS = 20 * 60 * 1000;
+
 const detail = ({ counts }) => {
   const parts = [];
   if (counts.write) parts.push(`${counts.write} à générer`);
@@ -54,17 +60,18 @@ const TranslationPanel = ({ model, documentId, document }) => {
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState(null);
-  const [done, setDone] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const startedAt = useRef(null);
 
   const refresh = useCallback(async () => {
-    if (!documentId) return;
-    setLoading(true);
-    setError(null);
+    if (!documentId) return null;
     try {
       const { data } = await get(`/translation/status/${model}/${documentId}`);
       setStatus(data);
+      return data;
     } catch (err) {
       setError(err?.response?.data?.error?.message ?? 'État des traductions indisponible.');
+      return null;
     } finally {
       setLoading(false);
     }
@@ -74,25 +81,43 @@ const TranslationPanel = ({ model, documentId, document }) => {
     refresh();
   }, [refresh, document?.updatedAt]);
 
+  // Surveillance de l'exécution en cours : l'état des traductions est la vérité
+  // finale, l'exécution ne sert qu'à dire où on en est et à signaler un échec.
+  useEffect(() => {
+    if (!running) return undefined;
+
+    const timer = setInterval(async () => {
+      if (Date.now() - startedAt.current > POLL_MAX_MS) {
+        setRunning(false);
+        return;
+      }
+
+      const [état, exécution] = await Promise.all([
+        refresh(),
+        get('/translation/last-run')
+          .then((r) => r.data?.run ?? null)
+          .catch(() => null),
+      ]);
+
+      if (exécution) setProgress(exécution);
+
+      const terminé = exécution && exécution.status === 'completed';
+      const plusRien = état?.available && état.locales.every((l) => l.todo === 0);
+      if (terminé || plusRien) setRunning(false);
+    }, POLL_MS);
+
+    return () => clearInterval(timer);
+  }, [running, refresh, get]);
+
   const run = async () => {
-    setRunning(true);
     setError(null);
-    setDone(null);
+    setProgress(null);
     try {
-      const { data } = await post(`/translation/run/${model}/${documentId}`, {});
-      const total = data.results.reduce((n, r) => n + r.translated, 0);
-      const warnings = data.results.flatMap((r) => r.warnings);
-      setDone(
-        total === 0
-          ? 'Tout était déjà à jour.'
-          : `${total} traduction${total > 1 ? 's' : ''} mise${total > 1 ? 's' : ''} à jour.` +
-              (warnings.length ? ` ${warnings.length} à vérifier.` : '')
-      );
-      await refresh();
+      await post(`/translation/run/${model}/${documentId}`, {});
+      startedAt.current = Date.now();
+      setRunning(true);
     } catch (err) {
-      setError(err?.response?.data?.error?.message ?? 'La traduction a échoué.');
-    } finally {
-      setRunning(false);
+      setError(err?.response?.data?.error?.message ?? 'La traduction n’a pas pu être lancée.');
     }
   };
 
@@ -107,6 +132,7 @@ const TranslationPanel = ({ model, documentId, document }) => {
     if (!status) return null;
 
     const todo = status.locales.reduce((n, l) => n + l.todo, 0);
+    const échec = progress?.status === 'completed' && progress.conclusion !== 'success';
 
     return (
       <Flex direction="column" alignItems="stretch" gap={3}>
@@ -135,16 +161,29 @@ const TranslationPanel = ({ model, documentId, document }) => {
           {todo === 0 ? 'Tout est à jour' : `Traduire (${todo} champ${todo > 1 ? 's' : ''})`}
         </Button>
 
-        {done && (
-          <Typography variant="pi" textColor="success600">
-            {done}
+        {running && (
+          <Typography variant="pi" textColor="neutral600">
+            Traduction en cours — quelques minutes. Tu peux fermer cette page.
           </Typography>
         )}
+
+        {échec && (
+          <Typography variant="pi" textColor="danger600">
+            La dernière exécution a échoué.{' '}
+            {progress.url && (
+              <Link href={progress.url} isExternal>
+                Voir le détail
+              </Link>
+            )}
+          </Typography>
+        )}
+
         {error && (
           <Typography variant="pi" textColor="danger600">
             {error}
           </Typography>
         )}
+
         <Typography variant="pi" textColor="neutral600">
           Une traduction corrigée à la main n’est jamais écrasée.
         </Typography>

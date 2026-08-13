@@ -1,24 +1,32 @@
 'use strict';
 
 /**
- * PV-60 — état et exécution des traductions d'un document.
+ * PV-60 — état des traductions d'un document, et demande de traduction.
  *
- * Deux opérations seulement :
- *   - `status` ne coûte rien et ne modifie rien : il compare le français à
- *     chaque langue et dit ce qui mériterait d'être fait ;
- *   - `run` traduit ce que `status` a signalé, et rien d'autre.
+ * Deux opérations, et une séparation nette entre les deux :
  *
- * C'est la même règle que le script en ligne de commande qui décide dans les
- * deux cas : une traduction corrigée à la main n'est jamais retouchée, et un
- * clic sur le bouton ne peut donc pas défaire le travail de quelqu'un.
+ *   - `status` compare le français à chaque langue et dit ce qu'il y aurait à
+ *     faire. Il ne coûte rien, ne modifie rien, et ne dépend que de Strapi.
+ *
+ *   - `run` ne traduit pas : il demande au dépôt d'exécuter le script, qui
+ *     tourne sur le runner du VPS. Traduire ici supposerait de réimplémenter le
+ *     prompt, le glossaire et la protection des corrections manuelles, donc de
+ *     tenir deux versions alignées — et de faire tenir plusieurs minutes de
+ *     traitement dans une requête HTTP, ce que le proxy ne permet pas.
+ *
+ * La règle de décision, elle, est bien ici : le panneau doit pouvoir afficher
+ * l'état sans rien déclencher. Elle est identique à celle du script (`decide.js`).
  */
 
-const { SOURCE_LOCALE, TARGET_LOCALES, decideField, isWriting, summarize, withFieldMeta } = require('./decide');
-const { buildGlossary, translate } = require('./engine');
-const { buildPopulate, collectTextNodes, hasTranslatableFields, isLocalized, rebuild } = require('./schema');
+const { SOURCE_LOCALE, TARGET_LOCALES, decideField, summarize } = require('./decide');
+const { buildPopulate, collectTextNodes, hasTranslatableFields } = require('./schema');
 
 /** Le brouillon est ce que l'éditeur a sous les yeux : c'est lui qui fait foi. */
 const STATUS = 'draft';
+
+const DEFAULT_REPOSITORY = 'produitsveto/pv-storefronts';
+const DEFAULT_WORKFLOW = 'translate-document.yml';
+const DEFAULT_REF = 'main';
 
 function contentType(strapi, uid) {
   const model = strapi.contentTypes[uid];
@@ -36,30 +44,40 @@ async function loadDocument(strapi, uid, documentId, locale) {
   });
 }
 
-/**
- * Champs partagés par toutes les locales, relus depuis le français.
- *
- * Les omettre d'une écriture les vide pour toutes les langues à la fois — c'est
- * ce qui a effacé 109 fiches marque et 732 blocs SEO (PV-193).
- */
-function nonLocalizedFields(strapi, attributes, source) {
-  const out = {};
-  for (const [name, attr] of Object.entries(attributes ?? {})) {
-    if (isLocalized(attr) || attr.type === 'relation' || name === 'translationMeta') continue;
-    if (['id', 'documentId', 'locale', 'createdAt', 'updatedAt', 'publishedAt'].includes(name)) continue;
-    if (source && name in source) out[name] = source[name];
+/** Appel à l'API du dépôt, avec le jeton réservé à ce seul usage. */
+async function github(path, options = {}) {
+  const token = process.env.TRANSLATION_DISPATCH_TOKEN;
+  if (!token) {
+    throw new Error(
+      "La traduction à la demande n'est pas configurée sur ce serveur (variable TRANSLATION_DISPATCH_TOKEN)."
+    );
   }
-  return out;
+
+  const repository = process.env.TRANSLATION_REPOSITORY || DEFAULT_REPOSITORY;
+  const response = await fetch(`https://api.github.com/repos/${repository}${path}`, {
+    ...options,
+    headers: {
+      accept: 'application/vnd.github+json',
+      authorization: `Bearer ${token}`,
+      'x-github-api-version': '2022-11-28',
+      ...(options.body ? { 'content-type': 'application/json' } : {}),
+    },
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Déclenchement refusé (${response.status}) : ${detail.slice(0, 200)}`);
+  }
+  // Un déclenchement accepté ne renvoie pas de corps.
+  return response.status === 204 ? null : response.json();
 }
 
 module.exports = ({ strapi }) => ({
   /** Vrai si le contenu comporte des champs traduisibles : sinon, pas de panneau. */
   isTranslatable(uid) {
     const model = strapi.contentTypes[uid];
-    if (!model) return false;
-    // Sans i18n activée, la notion de traduction n'a pas de sens ici.
-    if (!model.pluginOptions?.i18n?.localized) return false;
-    return hasTranslatableFields(strapi, model.attributes);
+    if (!model?.pluginOptions?.i18n?.localized) return false;
+    return hasTranslatableFields(strapi, model.attributes, uid);
   },
 
   async status({ uid, documentId }) {
@@ -67,7 +85,7 @@ module.exports = ({ strapi }) => ({
     const source = await loadDocument(strapi, uid, documentId, SOURCE_LOCALE);
     if (!source) return { available: false, reason: 'Aucune version française à traduire.' };
 
-    const fields = collectTextNodes(strapi, model.attributes, source);
+    const fields = collectTextNodes(strapi, model.attributes, source, '', uid);
     if (!fields.length) return { available: false, reason: 'Aucun texte à traduire sur ce contenu.' };
 
     const locales = [];
@@ -75,7 +93,10 @@ module.exports = ({ strapi }) => ({
       const target = await loadDocument(strapi, uid, documentId, locale);
       const meta = target?.translationMeta ?? null;
       const targetValues = new Map(
-        (target ? collectTextNodes(strapi, model.attributes, target) : []).map((f) => [f.path, f.value])
+        (target ? collectTextNodes(strapi, model.attributes, target, '', uid) : []).map((f) => [
+          f.path,
+          f.value,
+        ])
       );
 
       const counts = { write: 0, refresh: 0, skip: 0, locked: 0, stale: 0 };
@@ -95,94 +116,53 @@ module.exports = ({ strapi }) => ({
     return { available: true, fields: fields.length, locales };
   },
 
+  /**
+   * Demande la traduction du document.
+   *
+   * Retour immédiat : le traitement dure plusieurs minutes et se poursuit sans
+   * que personne n'ait à garder la page ouverte.
+   */
   async run({ uid, documentId, locales }) {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      throw new Error(
-        "La clé d'API de traduction n'est pas configurée sur ce serveur (variable ANTHROPIC_API_KEY)."
-      );
-    }
-
     const model = contentType(strapi, uid);
-    const source = await loadDocument(strapi, uid, documentId, SOURCE_LOCALE);
-    if (!source) throw new Error('Aucune version française à traduire.');
+    const workflow = process.env.TRANSLATION_WORKFLOW || DEFAULT_WORKFLOW;
+    const wanted = (locales ?? []).filter((l) => TARGET_LOCALES.includes(l));
 
-    const fields = collectTextNodes(strapi, model.attributes, source);
-    if (!fields.length) throw new Error('Aucun texte à traduire sur ce contenu.');
+    await github(`/actions/workflows/${workflow}/dispatches`, {
+      method: 'POST',
+      body: JSON.stringify({
+        ref: process.env.TRANSLATION_REF || DEFAULT_REF,
+        inputs: {
+          uid,
+          // Un single type n'a pas d'identifiant : le champ doit rester présent
+          // et vide, sinon GitHub refuse l'entrée.
+          documentId: model.kind === 'singleType' ? '' : (documentId ?? ''),
+          locales: wanted.join(','),
+        },
+      }),
+    });
 
-    const targets = (locales?.length ? locales : TARGET_LOCALES).filter((l) => TARGET_LOCALES.includes(l));
-    const glossary = await buildGlossary(strapi);
-    const shared = nonLocalizedFields(strapi, model.attributes, source);
-    const label = model.info?.displayName ?? uid;
+    return { dispatched: true };
+  },
 
-    const results = [];
-    for (const locale of targets) {
-      const target = await loadDocument(strapi, uid, documentId, locale);
-      const meta = target?.translationMeta ?? null;
-      const targetNodes = target ? collectTextNodes(strapi, model.attributes, target) : [];
-      const targetValues = new Map(targetNodes.map((f) => [f.path, f.value]));
+  /**
+   * État de la dernière exécution, pour que le panneau montre l'avancement.
+   *
+   * Sans ça, un clic sur « Traduire » resterait sans retour visible jusqu'à ce
+   * que les traductions apparaissent, plusieurs minutes plus tard.
+   */
+  async lastRun() {
+    const workflow = process.env.TRANSLATION_WORKFLOW || DEFAULT_WORKFLOW;
+    const data = await github(`/actions/workflows/${workflow}/runs?per_page=1`);
+    const run = data?.workflow_runs?.[0];
+    if (!run) return { run: null };
 
-      // Une structure qui a bougé côté français ne peut plus servir de base :
-      // les chemins ne désignent plus les mêmes blocs.
-      const sameShape =
-        Boolean(target) &&
-        fields.length === targetNodes.length &&
-        fields.every((f, i) => f.path === targetNodes[i]?.path);
-
-      const kept = new Map();
-      const warnings = [];
-      let translated = 0;
-      let nextMeta = meta;
-
-      for (const field of fields) {
-        const current = targetValues.get(field.path) ?? '';
-        const { action } = decideField(field.value, current, meta, field.path);
-        if (!isWriting(action)) {
-          if (current) kept.set(field.path, current);
-          continue;
-        }
-
-        const result = await translate({
-          apiKey,
-          model: process.env.TRANSLATION_MODEL,
-          glossary,
-          text: field.value,
-          targetLocale: locale,
-          maxLength: field.maxLength,
-          context: `${label}, champ ${field.path}`,
-        });
-
-        kept.set(field.path, result.text);
-        translated += 1;
-        if (result.warnings.length) warnings.push(`${field.path} : ${result.warnings[0]}`);
-        nextMeta = withFieldMeta(nextMeta, field.path, {
-          sourceValue: field.value,
-          targetValue: result.text,
-          engine: process.env.TRANSLATION_MODEL || 'claude-sonnet-5',
-        });
-      }
-
-      if (!translated) {
-        results.push({ locale, translated: 0, warnings: [] });
-        continue;
-      }
-
-      const data = {
-        ...shared,
-        ...rebuild(strapi, model.attributes, sameShape ? target : source, kept),
-        translationMeta: nextMeta,
-      };
-
-      await strapi.documents(uid).update({ documentId, locale, data });
-      // La langue suit le français : si la version française est en ligne, sa
-      // traduction n'a pas de raison d'attendre dans les brouillons.
-      if (source.publishedAt) {
-        await strapi.documents(uid).publish({ documentId, locale });
-      }
-
-      results.push({ locale, translated, warnings });
-    }
-
-    return { results };
+    return {
+      run: {
+        status: run.status,
+        conclusion: run.conclusion,
+        startedAt: run.run_started_at,
+        url: run.html_url,
+      },
+    };
   },
 });

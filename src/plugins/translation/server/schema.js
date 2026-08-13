@@ -32,10 +32,27 @@ const SKIP_FIELDS = new Set([
   'dealRefId',
   'icon',
   'platform',
-  'name',
   'slug',
   'handle',
 ]);
+
+/**
+ * Exclusions propres à un type, là où le nom du champ ne suffit pas à décider.
+ *
+ * `name` se traduit sur un produit, une catégorie ou une étiquette. Il ne se
+ * traduit pas sur un laboratoire — le client a demandé que les marques restent
+ * strictement identiques dans toutes les langues — ni sur une personne.
+ */
+const SKIP_FIELDS_BY_TYPE = {
+  laboratory: ['name'],
+  'shared.person': ['name'],
+};
+
+/** `api::laboratory.laboratory` → `laboratory` ; `shared.person` reste tel quel. */
+const shortUid = (uid) => (uid.startsWith('api::') ? uid.split('.').pop() : uid);
+
+const isSkipped = (owner, field) =>
+  SKIP_FIELDS.has(field) || Boolean(owner && SKIP_FIELDS_BY_TYPE[shortUid(owner)]?.includes(field));
 
 const RESERVED = new Set([
   'id',
@@ -55,10 +72,10 @@ const isLocalized = (attr) => attr?.pluginOptions?.i18n?.localized === true;
 const componentAttributes = (strapi, uid) => strapi.components?.[uid]?.attributes ?? null;
 
 /** Vrai si le contenu porte au moins un champ traduisible. */
-function hasTranslatableFields(strapi, attributes) {
+function hasTranslatableFields(strapi, attributes, owner) {
   return Object.entries(attributes ?? {}).some(([name, attr]) => {
     if (RESERVED.has(name) || !isLocalized(attr)) return false;
-    if (TEXT_TYPES.has(attr.type)) return !SKIP_FIELDS.has(name);
+    if (TEXT_TYPES.has(attr.type)) return !isSkipped(owner, name);
     if (attr.type === 'component') {
       return !SKIP_COMPONENTS.has(attr.component) && Boolean(componentAttributes(strapi, attr.component));
     }
@@ -73,7 +90,7 @@ function hasTranslatableFields(strapi, attributes) {
  * il doit rester identique à celui produit par le script, sans quoi une
  * traduction protégée d'un côté serait retraduite de l'autre.
  */
-function collectTextNodes(strapi, attributes, data, prefix = '') {
+function collectTextNodes(strapi, attributes, data, prefix = '', owner) {
   if (!data || typeof data !== 'object') return [];
   const out = [];
 
@@ -85,7 +102,7 @@ function collectTextNodes(strapi, attributes, data, prefix = '') {
     const path = prefix ? `${prefix}.${name}` : name;
 
     if (TEXT_TYPES.has(attr.type)) {
-      if (SKIP_FIELDS.has(name)) continue;
+      if (isSkipped(owner, name)) continue;
       if (typeof value === 'string' && value.trim()) {
         out.push({ path, value, maxLength: attr.maxLength });
       }
@@ -97,7 +114,7 @@ function collectTextNodes(strapi, attributes, data, prefix = '') {
         const component = block?.__component;
         if (typeof component !== 'string' || SKIP_COMPONENTS.has(component)) return;
         const sub = componentAttributes(strapi, component);
-        if (sub) out.push(...collectTextNodes(strapi, sub, block, `${path}.${i}`));
+        if (sub) out.push(...collectTextNodes(strapi, sub, block, `${path}.${i}`, component));
       });
       continue;
     }
@@ -106,9 +123,11 @@ function collectTextNodes(strapi, attributes, data, prefix = '') {
       const sub = componentAttributes(strapi, attr.component);
       if (!sub) continue;
       if (attr.repeatable && Array.isArray(value)) {
-        value.forEach((item, i) => out.push(...collectTextNodes(strapi, sub, item, `${path}.${i}`)));
+        value.forEach((item, i) =>
+          out.push(...collectTextNodes(strapi, sub, item, `${path}.${i}`, attr.component))
+        );
       } else if (value && typeof value === 'object') {
-        out.push(...collectTextNodes(strapi, sub, value, path));
+        out.push(...collectTextNodes(strapi, sub, value, path, attr.component));
       }
     }
   }

@@ -82,6 +82,12 @@ module.exports = {
           handler: 'translation.run',
           config: { policies: [] },
         },
+        {
+          method: 'GET',
+          path: '/last-run',
+          handler: 'translation.lastRun',
+          config: { policies: [] },
+        },
       ],
     },
   },
@@ -104,6 +110,16 @@ module.exports = {
           ctx.body = await strapi.plugin('translation').service('translation').run({ uid, documentId, locales });
         } catch (error) {
           ctx.throw(400, error.message);
+        }
+      },
+
+      async lastRun(ctx) {
+        try {
+          ctx.body = await strapi.plugin('translation').service('translation').lastRun();
+        } catch (error) {
+          // L'avancement est un confort : ne pas l'obtenir ne doit pas se
+          // présenter comme un échec de la traduction elle-même.
+          ctx.body = { run: null, unavailable: error.message };
         }
       },
     },
