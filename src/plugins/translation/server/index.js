@@ -15,9 +15,56 @@
 
 const service = require('./service');
 
+/**
+ * Emplacement de la disposition d'un formulaire.
+ *
+ * Le store préfixe lui-même la clé avec le type et le nom : la clé complète en
+ * base est `plugin_content_manager_configuration_content_types::<uid>`.
+ */
+const configStore = (strapi) => strapi.store({ type: 'plugin', name: 'content_manager' });
+const configKey = (uid) => `configuration_content_types::${uid}`;
+
+/**
+ * Retire `translationMeta` des formulaires d'édition.
+ *
+ * Marquer le champ `visible: false` au schéma ne suffit pas : Strapi n'applique
+ * cette option qu'à la création de la disposition. Sur les contenus qui
+ * existaient déjà, la disposition enregistrée en base a gagné, et le champ
+ * s'affichait comme un bloc JSON incompréhensible au milieu du formulaire.
+ *
+ * On ne retire que ce champ, en laissant le reste de la disposition intact :
+ * l'ordre des champs et les libellés sont du réglage utilisateur.
+ */
+async function hideTechnicalField({ strapi }) {
+  for (const [uid, model] of Object.entries(strapi.contentTypes)) {
+    if (!model.attributes?.translationMeta) continue;
+
+    const key = configKey(uid);
+    const config = await configStore(strapi).get({ key });
+    if (!config?.layouts?.edit) continue;
+
+    const edit = config.layouts.edit
+      .map((row) => row.filter((field) => field.name !== 'translationMeta'))
+      .filter((row) => row.length > 0);
+
+    const unchanged = JSON.stringify(edit) === JSON.stringify(config.layouts.edit);
+    if (unchanged) continue;
+
+    await configStore(strapi).set({ key, value: { ...config, layouts: { ...config.layouts, edit } } });
+  }
+}
+
 module.exports = {
   register() {},
-  bootstrap() {},
+
+  async bootstrap({ strapi }) {
+    try {
+      await hideTechnicalField({ strapi });
+    } catch (error) {
+      // Un formulaire un peu encombré ne justifie pas d'empêcher Strapi de démarrer.
+      strapi.log.warn(`[traduction] disposition non ajustée : ${error.message}`);
+    }
+  },
 
   routes: {
     admin: {
