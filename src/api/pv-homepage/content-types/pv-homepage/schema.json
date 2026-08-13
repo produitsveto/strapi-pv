@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "pv_homepages",
+  "info": {
+    "singularName": "pv-homepage",
+    "pluralName": "pv-homepages",
+    "displayName": "PV - Accueil"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "topBandItems": { "type": "component", "repeatable": true, "component": "deals.top-band-item", "max": 6, "pluginOptions": { "i18n": { "localized": true } } },
+    "heroEyebrow": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "heroTitle": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "heroDescription": { "type": "text", "pluginOptions": { "i18n": { "localized": true } } },
+    "heroCtaPrimaryLabel": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "heroCtaPrimaryLink": { "type": "string" },
+    "heroCtaSecondaryLabel": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "heroCtaSecondaryLink": { "type": "string" },
+    "heroStats": { "type": "component", "repeatable": true, "component": "deals.hero-stat", "max": 4, "pluginOptions": { "i18n": { "localized": true } } },
+    "heroProducts": { "type": "component", "repeatable": true, "component": "deals.hero-product", "max": 6 },
+    "newProductsTitle": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo", "pluginOptions": { "i18n": { "localized": true } } }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "kind": "singleType",
+  "collectionName": "pv_contacts",
+  "info": {
+    "singularName": "pv-contact",
+    "pluralName": "pv-contacts",
+    "displayName": "PV - Contact",
+    "description": "Page de contact : coordonnées du service client et chapô. Distinct de « Identité du site », qui porte l'identité légale de la pharmacie pour les données structurées."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "intro": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "addressLines": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "phone": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "email": {
+      "type": "email",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "openingHours": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "shared.media",
+        "shared.quote",
+        "shared.slider"
+      ],
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

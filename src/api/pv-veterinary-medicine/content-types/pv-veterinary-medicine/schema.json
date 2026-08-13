@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "pv_veterinary_medicines",
+  "info": {
+    "singularName": "pv-veterinary-medicine",
+    "pluralName": "pv-veterinary-medicines",
+    "displayName": "PV - Médicaments vétérinaires"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.rich-text",
+        "shared.media",
+        "shared.quote",
+        "shared.slider"
+      ],
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}
