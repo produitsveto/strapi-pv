@@ -104,8 +104,9 @@
       "description": "Handles Medusa des marques poussées (TOP10_BRAND). Tableau ordonné de strings."
     },
     "locales": {
-      "type": "json",
-      "description": "Langues ciblées (ex: [\"fr\",\"en\"]). Vide/null = toutes."
+      "type": "customField",
+      "customField": "global::pv-locales",
+      "description": "Versions du site où la campagne s'affiche (français, anglais). Vide = les deux."
     },
     "devices": {
       "type": "json",
@@ -119,30 +120,6 @@
     "sales_channels": {
       "type": "json",
       "description": "IDs/noms de canaux de vente Medusa ciblés. Vide/null = tous."
-    },
-    "impressions": {
-      "type": "integer",
-      "default": 0
-    },
-    "clicks": {
-      "type": "integer",
-      "default": 0
-    },
-    "add_to_cart_count": {
-      "type": "integer",
-      "default": 0
-    },
-    "attributed_orders": {
-      "type": "integer",
-      "default": 0
-    },
-    "attributed_revenue": {
-      "type": "decimal",
-      "default": 0
-    },
-    "conversion_rate": {
-      "type": "decimal",
-      "default": 0
     }
   }
 }

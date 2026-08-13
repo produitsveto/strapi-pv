@@ -27,6 +27,7 @@ module.exports = {
       ['medusa-products', 'json'],
       ['medusa-targets', 'json'],
       ['medusa-countries', 'json'],
+      ['pv-locales', 'json'],
     ]) {
       strapi.customFields.register({ name, type });
     }

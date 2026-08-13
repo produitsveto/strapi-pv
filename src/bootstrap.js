@@ -165,6 +165,24 @@ const CONTENT_TYPE_CONFIG = {
       seo: 'SEO',
     },
   },
+  // PV-190 — l'accueil de produits-veto.com se limite à ce que le site lit vraiment :
+  // les bannières viennent des campagnes marketing, les carrousels de Medusa.
+  'api::pv-homepage.pv-homepage': {
+    settings: {},
+    listColumns: [],
+    labels: {
+      reassurance: 'Bandeau de réassurance',
+      seo: 'SEO',
+    },
+    descriptions: {
+      reassurance: 'Les 4 arguments affichés sous les carrousels de la page d’accueil (livraison, agrément, paiement, avis). Laisser vide affiche le bandeau par défaut.',
+      seo: 'Titre et description de la page d’accueil dans Google.',
+    },
+    editLayout: [
+      [{ name: 'reassurance', size: 12 }],
+      [{ name: 'seo', size: 12 }],
+    ],
+  },
   // PV-190 — produits-veto.com a désormais sa propre fiche produit : seules les
   // « FAQ génériques » sont lues par le site, les autres champs restent pour plus tard.
   'api::pv-product-page.pv-product-page': {
@@ -185,8 +203,9 @@ const CONTENT_TYPE_CONFIG = {
   },
   // PV-188 — le formulaire des campagnes affichait 28 champs en vrac, aux noms techniques et
   // sans ordre : PA le jugeait « incompréhensible ». On range par usage, on nomme en clair, et
-  // on relègue en bas les champs que le site ne lit pas (appareils, canaux de vente) ainsi que
-  // les compteurs, alimentés par le suivi d'audience et donc en lecture seule.
+  // on relègue en bas les champs que le site ne lit pas (appareils, canaux de vente).
+  // Les six compteurs de performance ont été retirés du schéma : c'est le rôle de l'outil
+  // d'analytics, pas d'une fiche de contenu — ils n'ont jamais été alimentés (PV-188).
   // Pays ET langues sont bien appliqués par le site : ils restent dans le bloc ciblage.
   'api::marketing-campaign.marketing-campaign': {
     settings: { mainField: 'title', defaultSortBy: 'start_date', defaultSortOrder: 'DESC' },
@@ -214,12 +233,6 @@ const CONTENT_TYPE_CONFIG = {
       devices: 'Appareils (non pris en compte)',
       countries: 'Pays de diffusion',
       sales_channels: 'Canaux de vente (non pris en compte)',
-      impressions: 'Affichages',
-      clicks: 'Clics',
-      add_to_cart_count: 'Ajouts au panier',
-      attributed_orders: 'Commandes attribuées',
-      attributed_revenue: 'Chiffre d’affaires attribué',
-      conversion_rate: 'Taux de conversion',
     },
     descriptions: {
       campaign_type: 'Détermine où la campagne s’affiche : bannière d’accueil, de catégorie, de marque, de méga-menu, produits en vedette, top laboratoires ou vente croisée.',
@@ -240,16 +253,7 @@ const CONTENT_TYPE_CONFIG = {
       devices: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
       countries: 'Limite la campagne aux visiteurs de ces pays. Vide = diffusée partout.',
       sales_channels: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
-      impressions: 'Renseigné automatiquement par le suivi d’audience.',
     },
-    readOnlyFields: [
-      'impressions',
-      'clicks',
-      'add_to_cart_count',
-      'attributed_orders',
-      'attributed_revenue',
-      'conversion_rate',
-    ],
     editLayout: [
       [{ name: 'title', size: 6 }, { name: 'campaign_type', size: 6 }],
       [{ name: 'start_date', size: 4 }, { name: 'end_date', size: 4 }, { name: 'is_active', size: 2 }, { name: 'priority', size: 2 }],
@@ -263,8 +267,6 @@ const CONTENT_TYPE_CONFIG = {
       [{ name: 'slug', size: 6 }],
       [{ name: 'devices', size: 6 }],
       [{ name: 'sales_channels', size: 6 }],
-      [{ name: 'impressions', size: 4 }, { name: 'clicks', size: 4 }, { name: 'add_to_cart_count', size: 4 }],
-      [{ name: 'attributed_orders', size: 4 }, { name: 'attributed_revenue', size: 4 }, { name: 'conversion_rate', size: 4 }],
     ],
   },
   'api::site-identity.site-identity': {
@@ -293,6 +295,23 @@ const CONTENT_TYPE_CONFIG = {
  * (« dealRefId », « highlightText »…) partout où le composant est réutilisé.
  */
 const COMPONENT_CONFIG = {
+  // PV-190 — tuiles du bandeau de réassurance de l'accueil produits-veto.com.
+  'pv.reassurance-item': {
+    labels: {
+      title: 'Titre',
+      text: 'Précision',
+      icon: 'Pictogramme',
+    },
+    descriptions: {
+      title: 'Ex. « Livraison 72-96h ».',
+      text: 'Ligne affichée sous le titre, en plus petit. Ex. « Offerte dès 99 € d’achat ».',
+      icon: 'Dessin affiché à gauche du titre : camion (livraison), bouclier (agrément), cadenas (paiement), étoile (avis), téléphone (conseil), cœur (soin).',
+    },
+    editLayout: [
+      [{ name: 'icon', size: 4 }, { name: 'title', size: 8 }],
+      [{ name: 'text', size: 12 }],
+    ],
+  },
   'shared.seo': {
     labels: {
       metaTitle: 'Titre SEO',

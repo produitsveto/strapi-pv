@@ -32,6 +32,7 @@ export default {
       ['medusa-products', 'json', 'Produits mis en avant', 'Produits de la campagne, dans l’ordre d’affichage'],
       ['medusa-targets', 'json', 'Cibles de la campagne', 'Catégories visées. Pour une bannière de méga-menu, saisis la famille telle quelle'],
       ['medusa-countries', 'json', 'Pays', 'Laisse vide pour diffuser partout'],
+      ['pv-locales', 'json', 'Langues', 'Laisse vide pour diffuser dans les deux langues'],
     ];
     for (const [fieldName, type, label, hint] of pickers) {
       app.customFields.register({
