@@ -54,9 +54,11 @@ const PAGES = [
   { key: 'veterinary-medicine', type: 'pv-veterinary-medicine', source: 'copy', from: 'deals-veterinary-medicine' },
   { key: 'partner', type: 'pv-partner', source: 'copy', from: 'deals-partner' },
   { key: 'contact', type: 'pv-contact', source: 'copy', from: 'deals-contact' },
-  // Structures à composants, sans équivalent exploitable dans le legacy (accordéons
-  // Elementor) : on repart de Deals en écartant ce qui ne parle que d'Anti-Gaspi.
-  { key: 'faq', type: 'pv-faq', source: 'copy', from: 'deals-faq' },
+  // La FAQ du site actuel est un accordéon Elementor : chaque volet donne une entrée
+  // question/réponse. Reprise à la demande de PA (13/08).
+  { key: 'faq', type: 'pv-faq', source: 'legacy-faq', slug: 'faq-un-petit-coup-de-patte' },
+  // Structure à composants sans équivalent dans le legacy : on repart de Deals en
+  // écartant ce qui ne parle que d'Anti-Gaspi.
   { key: 'product-page', type: 'pv-product-page', source: 'copy', from: 'deals-product-page' },
 ]
 
@@ -171,6 +173,53 @@ const fetchLegacyPage = async (slug) => {
   }
 }
 
+/** WordPress renvoie ses titres avec des entités HTML (`&#8211;`, `&rsquo;`…). */
+const decodeEntities = (text) => text
+  .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+  .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCharCode(parseInt(code, 16)))
+  .replace(/&nbsp;/g, ' ')
+  .replace(/&(amp|lt|gt|quot|apos|rsquo|lsquo|laquo|raquo|eacute|egrave|agrave|ccedil);/g, (m, name) => ({
+    amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", rsquo: '’', lsquo: '‘',
+    laquo: '«', raquo: '»', eacute: 'é', egrave: 'è', agrave: 'à', ccedil: 'ç',
+  })[name] || m)
+
+/**
+ * La FAQ du site actuel est un accordéon Elementor : un volet = une question, avec
+ * le titre dans `.elementor-accordion-title` et la réponse dans `#elementor-tab-content-N`.
+ * Le contenu des réponses est du HTML rédactionnel simple (p, listes, liens).
+ */
+const fetchLegacyFaq = async (slug) => {
+  const res = await fetch(`${LEGACY_URL}/wp-json/wp/v2/pages?slug=${slug}&_fields=title,content`)
+  if (!res.ok) throw new Error(`WP ${res.status} sur ${slug}`)
+  const [page] = await res.json()
+  if (!page) throw new Error(`page legacy introuvable : ${slug}`)
+
+  const html = page.content?.rendered || ''
+  const items = []
+
+  for (const block of html.split('elementor-accordion-item').slice(1)) {
+    const question = block.match(/<a[^>]*elementor-accordion-title[^>]*>([\s\S]*?)<\/a>/)
+    const answer = block.match(/<div[^>]*id="elementor-tab-content-\d+"[^>]*>([\s\S]*?)<\/div>/)
+    if (!question || !answer) continue
+
+    const q = decodeEntities(sanitizeHtml(question[1], { allowedTags: [] })).replace(/\s+/g, ' ').trim()
+    const a = sanitizeHtml(answer[1], {
+      allowedTags: ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'a', 'br'],
+      allowedAttributes: { a: ['href', 'title'] },
+      nonTextTags: ['style', 'script', 'svg'],
+    })
+      .replace(/https?:\/\/(?:www\.)?produits-veto\.com\/?/gi, '/')
+      .replace(/(\s|&nbsp;)+/g, ' ')
+      .trim()
+
+    // `question` et `answer` sont requis côté Strapi : un volet incomplet est écarté.
+    if (q && a) items.push({ question: q, answer: a })
+  }
+
+  if (!items.length) throw new Error(`aucun volet d'accordéon trouvé sur ${slug}`)
+  return { title: decodeEntities(page.title?.rendered || '').trim(), items }
+}
+
 /** Champs gérés par Strapi, à ne jamais renvoyer en écriture. */
 const SYSTEM_FIELDS = new Set([
   'id', 'documentId', 'createdAt', 'updatedAt', 'publishedAt', 'locale',
@@ -232,6 +281,10 @@ const run = async () => {
           blocks: [{ __component: 'shared.rich-text', body: legacy.html }],
         }
         origin = `legacy /${page.slug} (${legacy.html.length} car.)`
+      } else if (page.source === 'legacy-faq') {
+        const faq = await fetchLegacyFaq(page.slug)
+        payload = { title: faq.title, items: faq.items }
+        origin = `legacy /${page.slug} (${faq.items.length} questions)`
       } else {
         const src = await api(`/${page.from}?locale=${LOCALE}&populate=*`)
         if (!src.json?.data) throw new Error(`source ${page.from} vide ou inaccessible (${src.status})`)
