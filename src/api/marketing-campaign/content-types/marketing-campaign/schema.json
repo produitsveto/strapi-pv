@@ -108,18 +108,10 @@
       "customField": "global::pv-locales",
       "description": "Versions du site où la campagne s'affiche (français, anglais). Vide = les deux."
     },
-    "devices": {
-      "type": "json",
-      "description": "Devices ciblés (desktop/mobile/tablet). Vide/null = tous."
-    },
     "countries": {
       "type": "customField",
       "customField": "global::medusa-countries",
       "description": "Pays où la campagne est diffusée (codes ISO 2 lettres, ex. « fr », « be »). Vide = tous les pays."
-    },
-    "sales_channels": {
-      "type": "json",
-      "description": "IDs/noms de canaux de vente Medusa ciblés. Vide/null = tous."
     }
   }
 }

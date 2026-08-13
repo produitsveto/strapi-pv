@@ -203,9 +203,10 @@ const CONTENT_TYPE_CONFIG = {
   },
   // PV-188 — le formulaire des campagnes affichait 28 champs en vrac, aux noms techniques et
   // sans ordre : PA le jugeait « incompréhensible ». On range par usage, on nomme en clair, et
-  // on relègue en bas les champs que le site ne lit pas (appareils, canaux de vente).
-  // Les six compteurs de performance ont été retirés du schéma : c'est le rôle de l'outil
-  // d'analytics, pas d'une fiche de contenu — ils n'ont jamais été alimentés (PV-188).
+  // PV-188 — formulaire rangé par usage et nommé en clair : PA jugeait les 28 champs d'origine
+  // « incompréhensibles ». Ont été retirés du schéma au passage les six compteurs de performance
+  // (c'est le rôle de l'outil d'analytics) ainsi que les appareils et canaux de vente, que le
+  // site ne lit pas et que personne n'a jamais renseignés.
   // Pays ET langues sont bien appliqués par le site : ils restent dans le bloc ciblage.
   'api::marketing-campaign.marketing-campaign': {
     settings: { mainField: 'title', defaultSortBy: 'start_date', defaultSortOrder: 'DESC' },
@@ -230,9 +231,7 @@ const CONTENT_TYPE_CONFIG = {
       analytics_id: 'Identifiant Google Analytics',
       campaign_tracking_id: 'Identifiant de suivi interne',
       locales: 'Langues de diffusion',
-      devices: 'Appareils (non pris en compte)',
       countries: 'Pays de diffusion',
-      sales_channels: 'Canaux de vente (non pris en compte)',
     },
     descriptions: {
       campaign_type: 'Détermine où la campagne s’affiche : bannière d’accueil, de catégorie, de marque, de méga-menu, produits en vedette, top laboratoires ou vente croisée.',
@@ -250,9 +249,7 @@ const CONTENT_TYPE_CONFIG = {
       product_handles: 'Produits mis en avant, dans l’ordre d’affichage.',
       analytics_id: 'Nom de la campagne remonté à Google Analytics.',
       locales: 'Limite la campagne à la version du site choisie (français, anglais). Vide = les deux. À ne pas confondre avec le pays du visiteur : un Belge peut lire le site en français.',
-      devices: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
       countries: 'Limite la campagne aux visiteurs de ces pays. Vide = diffusée partout.',
-      sales_channels: 'Segmentation prévue mais pas encore appliquée par le site — laisser vide.',
     },
     editLayout: [
       [{ name: 'title', size: 6 }, { name: 'campaign_type', size: 6 }],
@@ -265,8 +262,6 @@ const CONTENT_TYPE_CONFIG = {
       [{ name: 'countries', size: 6 }, { name: 'locales', size: 6 }],
       [{ name: 'analytics_id', size: 6 }, { name: 'campaign_tracking_id', size: 6 }],
       [{ name: 'slug', size: 6 }],
-      [{ name: 'devices', size: 6 }],
-      [{ name: 'sales_channels', size: 6 }],
     ],
   },
   'api::site-identity.site-identity': {
