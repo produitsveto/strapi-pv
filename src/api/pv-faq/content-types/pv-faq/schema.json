@@ -19,8 +19,17 @@
       "type": "string",
       "required": true
     },
+    "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
     "description": {
       "type": "text"
+    },
+    "intro": {
+      "type": "richtext"
     },
     "items": {
       "type": "component",
