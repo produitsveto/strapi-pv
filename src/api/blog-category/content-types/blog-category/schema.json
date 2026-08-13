@@ -4,7 +4,7 @@
   "info": {
     "singularName": "blog-category",
     "pluralName": "blog-categories",
-    "displayName": "Catégorie Blog",
+    "displayName": "PV - Catégorie Blog",
     "description": "Catégorie éditoriale du blog (importée de WordPress)"
   },
   "options": { "draftAndPublish": true },

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "laboratory",
     "pluralName": "laboratories",
-    "displayName": "Laboratoire",
+    "displayName": "PV - Laboratoire",
     "description": "Laboratoire / Marque (Virbac, Elanco…)"
   },
   "options": { "draftAndPublish": true },

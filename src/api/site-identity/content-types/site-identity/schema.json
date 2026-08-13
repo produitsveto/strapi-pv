@@ -4,7 +4,7 @@
   "info": {
     "singularName": "site-identity",
     "pluralName": "site-identities",
-    "displayName": "Identité du site (Schema.org)",
+    "displayName": "ALL - Identité du site (Schema.org)",
     "description": "Identité Organization globale utilisée par tous les storefronts pour les données structurées Schema.org"
   },
   "options": { "draftAndPublish": true },

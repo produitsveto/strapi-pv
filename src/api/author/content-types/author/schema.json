@@ -4,7 +4,7 @@
   "info": {
     "singularName": "author",
     "pluralName": "authors",
-    "displayName": "Auteur",
+    "displayName": "PV - Auteur",
     "description": "Auteur d'article de blog (importé de WordPress)"
   },
   "options": { "draftAndPublish": false },

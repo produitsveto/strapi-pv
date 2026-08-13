@@ -4,7 +4,7 @@
   "info": {
     "singularName": "species",
     "pluralName": "species-entries",
-    "displayName": "Espèce",
+    "displayName": "PV - Espèce",
     "description": "Espèce cible (chien, chat, cheval…)"
   },
   "options": { "draftAndPublish": true },

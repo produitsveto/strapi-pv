@@ -4,7 +4,7 @@
   "info": {
     "singularName": "product",
     "pluralName": "products",
-    "displayName": "Produit"
+    "displayName": "ALL - Produit"
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
