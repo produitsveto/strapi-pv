@@ -1,10 +1,10 @@
 {
   "kind": "singleType",
-  "collectionName": "pv_veterinary_medicines",
+  "collectionName": "pv_promotions",
   "info": {
-    "singularName": "pv-veterinary-medicine",
-    "pluralName": "pv-veterinary-medicines",
-    "displayName": "PV - Médicaments vétérinaires"
+    "singularName": "pv-promotions",
+    "pluralName": "pv-promotions-list",
+    "displayName": "PV - Promotions"
   },
   "options": {
     "draftAndPublish": true
@@ -17,7 +17,6 @@
   "attributes": {
     "title": {
       "type": "string",
-      "required": true,
       "pluginOptions": {
         "i18n": {
           "localized": true
@@ -39,20 +38,6 @@
       "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
-    },
-    "blocks": {
-      "type": "dynamiczone",
-      "components": [
-        "shared.rich-text",
-        "shared.media",
-        "shared.quote",
-        "shared.slider"
       ],
       "pluginOptions": {
         "i18n": {
