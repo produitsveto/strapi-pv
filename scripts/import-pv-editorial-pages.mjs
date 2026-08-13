@@ -60,6 +60,25 @@ const PAGES = [
   // Structure à composants sans équivalent dans le legacy : on repart de Deals en
   // écartant ce qui ne parle que d'Anti-Gaspi.
   { key: 'product-page', type: 'pv-product-page', source: 'copy', from: 'deals-product-page' },
+  // L'accueil n'a pas de source : on recopie ce que la page affichait en dur, pour que
+  // PA voie le contenu réel et puisse l'éditer plutôt que de partir d'un écran vide.
+  {
+    key: 'homepage',
+    type: 'pv-homepage',
+    source: 'defaults',
+    data: {
+      reassurance: [
+        { title: 'Livraison 72-96h', text: 'Offerte dès 99€ d’achat', icon: 'camion' },
+        { title: 'Pharmacie agréée ANSES', text: 'Conseil de pharmaciens', icon: 'bouclier' },
+        { title: 'Paiement sécurisé', text: 'CB, paiement en plusieurs fois', icon: 'cadenas' },
+        { title: 'Note 9,6/10', text: 'Avis clients vérifiés', icon: 'etoile' },
+      ],
+      seo: {
+        metaTitle: 'Produits vétérinaires en ligne pas cher | Produits-Veto.com',
+        metaDescription: 'Pharmacie vétérinaire en ligne agréée ANSES. Médicaments et produits de soin pour chien, chat, cheval, abeilles et animaux de la ferme, au meilleur prix.',
+      },
+    },
+  },
 ]
 
 /**
@@ -261,7 +280,13 @@ const run = async () => {
       // 1. L'entrée cible est-elle déjà remplie ?
       const existing = await api(`/${page.type}?locale=${LOCALE}&populate=*`)
       const current = existing.json?.data
-      const isFilled = Boolean(current && (current.title || current.blocks?.length))
+      const isFilled = Boolean(current && (
+        current.title
+        || current.blocks?.length
+        || current.items?.length
+        || current.reassurance?.length
+        || current.genericFaqs?.length
+      ))
 
       if (isFilled && !FORCE) {
         console.log(`${label} déjà rempli — ignoré (--force pour réécrire)`)
@@ -281,6 +306,9 @@ const run = async () => {
           blocks: [{ __component: 'shared.rich-text', body: legacy.html }],
         }
         origin = `legacy /${page.slug} (${legacy.html.length} car.)`
+      } else if (page.source === 'defaults') {
+        payload = page.data
+        origin = 'valeurs par défaut de la page'
       } else if (page.source === 'legacy-faq') {
         const faq = await fetchLegacyFaq(page.slug)
         payload = { title: faq.title, items: faq.items }

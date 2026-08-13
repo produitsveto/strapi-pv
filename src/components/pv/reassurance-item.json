@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_pv_reassurance_items",
+  "info": {
+    "displayName": "Réassurance",
+    "icon": "shield",
+    "description": "Une tuile du bandeau de réassurance de la page d'accueil"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "text": { "type": "string" },
+    "icon": {
+      "type": "enumeration",
+      "required": true,
+      "default": "camion",
+      "enum": ["camion", "bouclier", "cadenas", "etoile", "telephone", "coeur"]
+    }
+  }
+}

@@ -165,6 +165,24 @@ const CONTENT_TYPE_CONFIG = {
       seo: 'SEO',
     },
   },
+  // PV-190 — l'accueil de produits-veto.com se limite à ce que le site lit vraiment :
+  // les bannières viennent des campagnes marketing, les carrousels de Medusa.
+  'api::pv-homepage.pv-homepage': {
+    settings: {},
+    listColumns: [],
+    labels: {
+      reassurance: 'Bandeau de réassurance',
+      seo: 'SEO',
+    },
+    descriptions: {
+      reassurance: 'Les 4 arguments affichés sous les carrousels de la page d’accueil (livraison, agrément, paiement, avis). Laisser vide affiche le bandeau par défaut.',
+      seo: 'Titre et description de la page d’accueil dans Google.',
+    },
+    editLayout: [
+      [{ name: 'reassurance', size: 12 }],
+      [{ name: 'seo', size: 12 }],
+    ],
+  },
   // PV-190 — produits-veto.com a désormais sa propre fiche produit : seules les
   // « FAQ génériques » sont lues par le site, les autres champs restent pour plus tard.
   'api::pv-product-page.pv-product-page': {
@@ -277,6 +295,23 @@ const CONTENT_TYPE_CONFIG = {
  * (« dealRefId », « highlightText »…) partout où le composant est réutilisé.
  */
 const COMPONENT_CONFIG = {
+  // PV-190 — tuiles du bandeau de réassurance de l'accueil produits-veto.com.
+  'pv.reassurance-item': {
+    labels: {
+      title: 'Titre',
+      text: 'Précision',
+      icon: 'Pictogramme',
+    },
+    descriptions: {
+      title: 'Ex. « Livraison 72-96h ».',
+      text: 'Ligne affichée sous le titre, en plus petit. Ex. « Offerte dès 99 € d’achat ».',
+      icon: 'Dessin affiché à gauche du titre : camion (livraison), bouclier (agrément), cadenas (paiement), étoile (avis), téléphone (conseil), cœur (soin).',
+    },
+    editLayout: [
+      [{ name: 'icon', size: 4 }, { name: 'title', size: 8 }],
+      [{ name: 'text', size: 12 }],
+    ],
+  },
   'shared.seo': {
     labels: {
       metaTitle: 'Titre SEO',
