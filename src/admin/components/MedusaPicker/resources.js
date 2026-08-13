@@ -110,22 +110,33 @@ export const RESOURCES = {
     },
   },
 
-  // Les langues du site ne viennent pas de Medusa : liste fixe, alignée sur les versions
-  // publiées du storefront.
+  // Les langues ne viennent pas de Medusa mais des versions du site, exposées par
+  // /api/medusa-config : le site en compte neuf, et la liste évoluera sans qu'on ait
+  // à la recopier ici.
   locales: {
     placeholder: 'Choisir une langue…',
     empty: 'Aucune langue',
+    async all() {
+      const { locales } = await getMedusaConfig();
+      const noms = new Intl.DisplayNames(['fr'], { type: 'language' });
+      return (locales ?? []).map((code) => {
+        let label = code.toUpperCase();
+        try {
+          const n = noms.of(code);
+          if (n && n !== code) label = n.charAt(0).toUpperCase() + n.slice(1);
+        }
+        catch { /* code inconnu du navigateur : on garde le code */ }
+        return { value: code, label };
+      }).sort((a, b) => a.label.localeCompare(b.label, 'fr'));
+    },
     async search(query) {
-      const all = [
-        { value: 'fr', label: 'Français' },
-        { value: 'en', label: 'Anglais' },
-      ];
+      const all = await this.all();
       if (!query) return all;
       const q = query.toLowerCase();
       return all.filter(l => l.label.toLowerCase().includes(q) || l.value.includes(q));
     },
     async resolve(codes) {
-      const all = await this.search('');
+      const all = await this.all();
       const byCode = new Map(all.map(l => [l.value, l.label]));
       return codes.map(c => ({ value: c, label: byCode.get(String(c).toLowerCase()) || c }));
     },
