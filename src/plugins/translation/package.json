@@ -1,0 +1,16 @@
+{
+  "name": "strapi-plugin-translation",
+  "version": "1.0.0",
+  "description": "PV-60 — état et relance des traductions depuis le Content Manager",
+  "strapi": {
+    "name": "translation",
+    "displayName": "Traduction",
+    "kind": "plugin"
+  },
+  "main": "./strapi-server.js",
+  "exports": {
+    "./strapi-admin": "./strapi-admin.js",
+    "./strapi-server": "./strapi-server.js",
+    "./package.json": "./package.json"
+  }
+}
