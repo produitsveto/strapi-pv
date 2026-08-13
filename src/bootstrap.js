@@ -165,6 +165,24 @@ const CONTENT_TYPE_CONFIG = {
       seo: 'SEO',
     },
   },
+  // PV-190 — produits-veto.com a désormais sa propre fiche produit : seules les
+  // « FAQ génériques » sont lues par le site, les autres champs restent pour plus tard.
+  'api::pv-product-page.pv-product-page': {
+    settings: {},
+    listColumns: [],
+    labels: {
+      topBanner: 'Bannière haute',
+      whyThisPriceTitle: 'Titre pourquoi ce prix',
+      whyThisPriceItems: 'Éléments pourquoi ce prix',
+      genericFaqs: 'FAQ génériques',
+      crossSellTitle: 'Titre ventes croisées',
+      relatedProductsTitle: 'Titre produits similaires',
+      seo: 'SEO',
+    },
+    descriptions: {
+      genericFaqs: 'Questions affichées au bas de toutes les fiches produit de produits-veto.com.',
+    },
+  },
   // PV-188 — le formulaire des campagnes affichait 28 champs en vrac, aux noms techniques et
   // sans ordre : PA le jugeait « incompréhensible ». On range par usage, on nomme en clair, et
   // on relègue en bas les champs que le site ne lit pas (appareils, canaux de vente) ainsi que
