@@ -110,6 +110,27 @@ export const RESOURCES = {
     },
   },
 
+  // Les langues du site ne viennent pas de Medusa : liste fixe, alignée sur les versions
+  // publiées du storefront.
+  locales: {
+    placeholder: 'Choisir une langue…',
+    empty: 'Aucune langue',
+    async search(query) {
+      const all = [
+        { value: 'fr', label: 'Français' },
+        { value: 'en', label: 'Anglais' },
+      ];
+      if (!query) return all;
+      const q = query.toLowerCase();
+      return all.filter(l => l.label.toLowerCase().includes(q) || l.value.includes(q));
+    },
+    async resolve(codes) {
+      const all = await this.search('');
+      const byCode = new Map(all.map(l => [l.value, l.label]));
+      return codes.map(c => ({ value: c, label: byCode.get(String(c).toLowerCase()) || c }));
+    },
+  },
+
   categories: {
     placeholder: 'Rechercher une catégorie…',
     empty: 'Aucune catégorie trouvée',
@@ -145,6 +166,7 @@ export const FIELDS = {
   'medusa-products': { resource: 'products', multiple: true },
   'medusa-targets': { resource: 'categories', multiple: true, creatable: true },
   'medusa-countries': { resource: 'countries', multiple: true },
+  'pv-locales': { resource: 'locales', multiple: true },
 };
 
 /** `global::medusa-products` → définition du champ. */
