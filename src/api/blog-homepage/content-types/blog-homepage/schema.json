@@ -4,7 +4,7 @@
   "info": {
     "singularName": "blog-homepage",
     "pluralName": "blog-homepages",
-    "displayName": "Blog — Accueil",
+    "displayName": "PV - Blog Accueil",
     "description": "Contenu éditorial de la page d'accueil du blog"
   },
   "options": { "draftAndPublish": true },
