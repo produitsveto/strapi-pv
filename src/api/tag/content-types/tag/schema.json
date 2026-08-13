@@ -4,7 +4,7 @@
   "info": {
     "singularName": "tag",
     "pluralName": "tags",
-    "displayName": "Étiquette",
+    "displayName": "PV - Étiquette",
     "description": "Étiquette / tag d'article de blog (importée de WordPress)"
   },
   "options": { "draftAndPublish": true },

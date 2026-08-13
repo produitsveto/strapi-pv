@@ -4,7 +4,7 @@
   "info": {
     "singularName": "marketing-campaign",
     "pluralName": "marketing-campaigns",
-    "displayName": "Campagne marketing",
+    "displayName": "PV - Campagne marketing",
     "description": "PV-79 — Campagne marketing centralisée pilotant les emplacements promo du storefront (home, catégorie, marque, méga-menu, produits vedette, vente croisée). Publier = activer ; la diffusion réelle est bornée par start_date/end_date."
   },
   "options": {

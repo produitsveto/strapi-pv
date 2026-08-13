@@ -4,7 +4,7 @@
   "info": {
     "singularName": "article",
     "pluralName": "articles",
-    "displayName": "Article",
+    "displayName": "PV - Article",
     "description": "Article de blog / conseil vétérinaire"
   },
   "options": { "draftAndPublish": true },
