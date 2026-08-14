@@ -6,17 +6,31 @@
     "pluralName": "products",
     "displayName": "ALL - Produit"
   },
-  "options": { "draftAndPublish": true },
-  "pluginOptions": { "i18n": { "localized": true } },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
   "attributes": {
     "name": {
       "type": "string",
       "required": true,
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "nomCourt": {
       "type": "string",
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "ean": {
       "type": "string",
@@ -38,34 +52,55 @@
     "shortDescription": {
       "type": "text",
       "maxLength": 250,
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "carousel": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "extendedDescription": {
       "type": "richtext",
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "modeEmploi": {
       "type": "richtext",
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "precautions": {
       "type": "richtext",
-      "pluginOptions": { "i18n": { "localized": true } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     },
     "notice": {
       "type": "media",
       "multiple": true,
-      "allowedTypes": ["files"]
+      "allowedTypes": [
+        "files"
+      ]
     },
     "formeGalenique": {
       "type": "enumeration",
       "enum": [
         "ampoule-buvable",
+        "bande-pansement",
         "batonnet-barre-friandise",
         "baume",
         "bouchee-croquette",
@@ -73,12 +108,9 @@
         "collyre",
         "comprime",
         "creme-pommade-gel",
-        "gel-buvable",
         "gelule-capsule",
         "goutte-auriculaire",
         "goutte-ophtalmique",
-        "gouttes-buvables",
-        "lamelles",
         "laniere-plaquette-ruban",
         "lingette-coton",
         "lotion-liquide",
@@ -133,7 +165,14 @@
     },
     "translationMeta": {
       "type": "json",
-      "pluginOptions": { "i18n": { "localized": true }, "content-manager": { "visible": false } }
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        },
+        "content-manager": {
+          "visible": false
+        }
+      }
     }
   }
 }
