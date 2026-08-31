@@ -1,3 +1,5 @@
+import { setPluginConfig, defaultHtmlPreset } from '@_sh/strapi-plugin-ckeditor';
+
 const config = {
   locales: ['fr'],
 };
@@ -7,6 +9,13 @@ const bootstrap = () => {};
 export default {
   config,
   register(app) {
+    // PV-199 — CKEditor ne propose qu'un seul preset, celui qui produit du HTML.
+    // Le preset Markdown livré par le plugin réintroduirait exactement le décalage
+    // de format qu'on corrige ici : le storefront rend le contenu en `v-html`.
+    // Le plugin construit la liste déroulante du Content-Type Builder dans son
+    // `bootstrap()`, donc après ce `register()` : elle n'affichera que « defaultHtml ».
+    setPluginConfig({ presets: [defaultHtmlPreset] });
+
     app.customFields.register({
       name: 'deal-ref',
       type: 'string',

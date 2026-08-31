@@ -20,7 +20,14 @@ export interface DealsFaqItem extends Struct.ComponentSchema {
     icon: 'question-circle';
   };
   attributes: {
-    answer: Schema.Attribute.RichText & Schema.Attribute.Required;
+    answer: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      >;
     question: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -89,18 +96,6 @@ export interface DealsTopBandItem extends Struct.ComponentSchema {
   };
 }
 
-export interface DealsTrustBadge extends Struct.ComponentSchema {
-  collectionName: 'components_deals_trust_badges';
-  info: {
-    displayName: 'Trust Badge';
-    icon: 'shield-alt';
-  };
-  attributes: {
-    icon: Schema.Attribute.String & Schema.Attribute.Required;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
 export interface DealsWhyThisPriceItem extends Struct.ComponentSchema {
   collectionName: 'components_deals_why_this_price_items';
   info: {
@@ -110,6 +105,24 @@ export interface DealsWhyThisPriceItem extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.Text & Schema.Attribute.Required;
     icon: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface PvReassuranceItem extends Struct.ComponentSchema {
+  collectionName: 'components_pv_reassurance_items';
+  info: {
+    description: "Une tuile du bandeau de r\u00E9assurance de la page d'accueil";
+    displayName: 'R\u00E9assurance';
+    icon: 'shield';
+  };
+  attributes: {
+    icon: Schema.Attribute.Enumeration<
+      ['camion', 'bouclier', 'cadenas', 'etoile', 'telephone', 'coeur']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'camion'>;
+    text: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
@@ -184,7 +197,14 @@ export interface SharedQuote extends Struct.ComponentSchema {
     icon: 'quote-right';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      >;
     title: Schema.Attribute.String;
   };
 }
@@ -196,7 +216,14 @@ export interface SharedRichText extends Struct.ComponentSchema {
     icon: 'align-left';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      >;
   };
 }
 
@@ -263,8 +290,8 @@ declare module '@strapi/strapi' {
       'deals.hero-stat': DealsHeroStat;
       'deals.product-carousel': DealsProductCarousel;
       'deals.top-band-item': DealsTopBandItem;
-      'deals.trust-badge': DealsTrustBadge;
       'deals.why-this-price-item': DealsWhyThisPriceItem;
+      'pv.reassurance-item': PvReassuranceItem;
       'shared.knowledge-area': SharedKnowledgeArea;
       'shared.media': SharedMedia;
       'shared.medication': SharedMedication;

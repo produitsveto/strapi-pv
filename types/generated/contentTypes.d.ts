@@ -434,7 +434,7 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
   collectionName: 'articles';
   info: {
     description: 'Article de blog / conseil v\u00E9t\u00E9rinaire';
-    displayName: 'Article';
+    displayName: 'PV - Article';
     pluralName: 'articles';
     singularName: 'article';
   };
@@ -505,6 +505,15 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -519,7 +528,7 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   collectionName: 'authors';
   info: {
     description: "Auteur d'article de blog (import\u00E9 de WordPress)";
-    displayName: 'Auteur';
+    displayName: 'PV - Auteur';
     pluralName: 'authors';
     singularName: 'author';
   };
@@ -529,7 +538,13 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   attributes: {
     articles: Schema.Attribute.Relation<'oneToMany', 'api::article.article'>;
     avatar: Schema.Attribute.Media<'images'>;
-    bio: Schema.Attribute.RichText;
+    bio: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -555,7 +570,7 @@ export interface ApiBlogCategoryBlogCategory
   collectionName: 'blog_categories';
   info: {
     description: 'Cat\u00E9gorie \u00E9ditoriale du blog (import\u00E9e de WordPress)';
-    displayName: 'Cat\u00E9gorie Blog';
+    displayName: 'PV - Cat\u00E9gorie Blog';
     pluralName: 'blog-categories';
     singularName: 'blog-category';
   };
@@ -573,6 +588,12 @@ export interface ApiBlogCategoryBlogCategory
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -593,6 +614,15 @@ export interface ApiBlogCategoryBlogCategory
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -605,7 +635,7 @@ export interface ApiBlogHomepageBlogHomepage extends Struct.SingleTypeSchema {
   collectionName: 'blog_homepage';
   info: {
     description: "Contenu \u00E9ditorial de la page d'accueil du blog";
-    displayName: 'Blog \u2014 Accueil';
+    displayName: 'PV - Blog Accueil';
     pluralName: 'blog-homepages';
     singularName: 'blog-homepage';
   };
@@ -642,6 +672,12 @@ export interface ApiBlogHomepageBlogHomepage extends Struct.SingleTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     seoText: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -649,6 +685,15 @@ export interface ApiBlogHomepageBlogHomepage extends Struct.SingleTypeSchema {
       }>;
     tagline: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
         i18n: {
           localized: true;
         };
@@ -663,7 +708,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
     description: 'Cat\u00E9gorie produit (antiparasitaires, compl\u00E9ments\u2026)';
-    displayName: 'Cat\u00E9gorie Produit';
+    displayName: 'PV - Cat\u00E9gorie Produit';
     pluralName: 'categories';
     singularName: 'category';
   };
@@ -681,6 +726,12 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -712,10 +763,19 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
         };
       }> &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 250;
+        maxLength: 400;
       }>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -760,6 +820,15 @@ export interface ApiDealsAboutDealsAbout extends Struct.SingleTypeSchema {
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
         i18n: {
           localized: true;
         };
@@ -811,6 +880,102 @@ export interface ApiDealsCguDealsCgu extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiDealsContactDealsContact extends Struct.SingleTypeSchema {
+  collectionName: 'deals_contacts';
+  info: {
+    description: "Page de contact : coordonn\u00E9es du service client et chap\u00F4. Distinct de \u00AB Identit\u00E9 du site \u00BB, qui porte l'identit\u00E9 l\u00E9gale de la pharmacie pour les donn\u00E9es structur\u00E9es.";
+    displayName: 'DEALS - Contact';
+    pluralName: 'deals-contacts';
+    singularName: 'deals-contact';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    addressLines: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    intro: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::deals-contact.deals-contact'
+    >;
+    openingHours: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    phone: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -854,6 +1019,15 @@ export interface ApiDealsDeliveryDealsDelivery extends Struct.SingleTypeSchema {
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
         i18n: {
           localized: true;
         };
@@ -1000,8 +1174,11 @@ export interface ApiDealsHomepageDealsHomepage extends Struct.SingleTypeSchema {
         },
         number
       >;
-    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true> &
+    translationMeta: Schema.Attribute.JSON &
       Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
         i18n: {
           localized: true;
         };
@@ -1053,6 +1230,15 @@ export interface ApiDealsLegalDealsLegal extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1100,6 +1286,15 @@ export interface ApiDealsLoyaltyDealsLoyalty extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1143,6 +1338,15 @@ export interface ApiDealsPartnerDealsPartner extends Struct.SingleTypeSchema {
     title: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
         i18n: {
           localized: true;
         };
@@ -1195,6 +1399,15 @@ export interface ApiDealsPaymentInfoDealsPaymentInfo
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1242,6 +1455,15 @@ export interface ApiDealsPrivacyDealsPrivacy extends Struct.SingleTypeSchema {
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1279,7 +1501,6 @@ export interface ApiDealsProductPageDealsProductPage
     relatedProductsTitle: Schema.Attribute.String;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     topBanner: Schema.Attribute.String;
-    trustBadges: Schema.Attribute.Component<'deals.trust-badge', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1333,6 +1554,15 @@ export interface ApiDealsVeterinaryMedicineDealsVeterinaryMedicine
           localized: true;
         };
       }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1343,7 +1573,7 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
   collectionName: 'laboratories';
   info: {
     description: 'Laboratoire / Marque (Virbac, Elanco\u2026)';
-    displayName: 'Laboratoire';
+    displayName: 'PV - Laboratoire';
     pluralName: 'laboratories';
     singularName: 'laboratory';
   };
@@ -1365,6 +1595,12 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1403,6 +1639,15 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
       }>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1415,7 +1660,7 @@ export interface ApiMarketingCampaignMarketingCampaign
   collectionName: 'marketing_campaigns';
   info: {
     description: 'PV-79 \u2014 Campagne marketing centralis\u00E9e pilotant les emplacements promo du storefront (home, cat\u00E9gorie, marque, m\u00E9ga-menu, produits vedette, vente crois\u00E9e). Publier = activer ; la diffusion r\u00E9elle est born\u00E9e par start_date/end_date.';
-    displayName: 'Campagne marketing';
+    displayName: 'PV - Campagne marketing';
     pluralName: 'marketing-campaigns';
     singularName: 'marketing-campaign';
   };
@@ -1423,16 +1668,14 @@ export interface ApiMarketingCampaignMarketingCampaign
     draftAndPublish: true;
   };
   attributes: {
-    add_to_cart_count: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     analytics_id: Schema.Attribute.String;
-    attributed_orders: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    attributed_revenue: Schema.Attribute.Decimal &
-      Schema.Attribute.DefaultTo<0>;
     background_color: Schema.Attribute.String;
     banner_image: Schema.Attribute.Media<'images'>;
     banner_image_mobile: Schema.Attribute.Media<'images'>;
-    brand_handle: Schema.Attribute.String;
-    brand_handles: Schema.Attribute.JSON;
+    brand_handle: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'global::medusa-brand'>;
+    brand_handles: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::medusa-brands'>;
     campaign_tracking_id: Schema.Attribute.String;
     campaign_type: Schema.Attribute.Enumeration<
       [
@@ -1447,32 +1690,31 @@ export interface ApiMarketingCampaignMarketingCampaign
       ]
     > &
       Schema.Attribute.Required;
-    clicks: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    conversion_rate: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
-    countries: Schema.Attribute.JSON;
+    countries: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::medusa-countries'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    devices: Schema.Attribute.JSON;
     end_date: Schema.Attribute.DateTime;
-    impressions: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     label_title: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
-    locales: Schema.Attribute.JSON;
+    locales: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::pv-locales'>;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::marketing-campaign.marketing-campaign'
     > &
       Schema.Attribute.Private;
     priority: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    product_handles: Schema.Attribute.JSON;
+    product_handles: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::medusa-products'>;
     publishedAt: Schema.Attribute.DateTime;
     redirect_url: Schema.Attribute.String;
-    sales_channels: Schema.Attribute.JSON;
     slug: Schema.Attribute.UID<'title'>;
     start_date: Schema.Attribute.DateTime;
-    target_handles: Schema.Attribute.JSON;
+    target_handles: Schema.Attribute.JSON &
+      Schema.Attribute.CustomField<'global::medusa-targets'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1483,7 +1725,7 @@ export interface ApiMarketingCampaignMarketingCampaign
 export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   collectionName: 'products';
   info: {
-    displayName: 'Produit';
+    displayName: 'ALL - Produit';
     pluralName: 'products';
     singularName: 'product';
   };
@@ -1503,6 +1745,12 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     ean: Schema.Attribute.String & Schema.Attribute.Unique;
     extendedDescription: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1512,6 +1760,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     formeGalenique: Schema.Attribute.Enumeration<
       [
         'ampoule-buvable',
+        'bande-pansement',
         'batonnet-barre-friandise',
         'baume',
         'bouchee-croquette',
@@ -1519,12 +1768,9 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         'collyre',
         'comprime',
         'creme-pommade-gel',
-        'gel-buvable',
         'gelule-capsule',
         'goutte-auriculaire',
         'goutte-ophtalmique',
-        'gouttes-buvables',
-        'lamelles',
         'laniere-plaquette-ruban',
         'lingette-coton',
         'lotion-liquide',
@@ -1553,6 +1799,12 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     modeEmploi: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1573,6 +1825,12 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
       }>;
     notice: Schema.Attribute.Media<'files', true>;
     precautions: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1590,7 +1848,20 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
         maxLength: 250;
       }>;
     species: Schema.Attribute.Relation<'manyToMany', 'api::species.species'>;
+    suggestedProducts: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::product.product'
+    >;
     synonymes: Schema.Attribute.Text;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1598,11 +1869,874 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPvAboutPvAbout extends Struct.SingleTypeSchema {
+  collectionName: 'pv_abouts';
+  info: {
+    displayName: 'PV - \u00C0 propos';
+    pluralName: 'pv-abouts';
+    singularName: 'pv-about';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-about.pv-about'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvCguPvCgu extends Struct.SingleTypeSchema {
+  collectionName: 'pv_cgus';
+  info: {
+    displayName: 'PV - CGU';
+    pluralName: 'pv-cgus';
+    singularName: 'pv-cgu';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::pv-cgu.pv-cgu'>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvContactPvContact extends Struct.SingleTypeSchema {
+  collectionName: 'pv_contacts';
+  info: {
+    description: "Page de contact : coordonn\u00E9es du service client et chap\u00F4. Distinct de \u00AB Identit\u00E9 du site \u00BB, qui porte l'identit\u00E9 l\u00E9gale de la pharmacie pour les donn\u00E9es structur\u00E9es.";
+    displayName: 'PV - Contact';
+    pluralName: 'pv-contacts';
+    singularName: 'pv-contact';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    addressLines: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    intro: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-contact.pv-contact'
+    >;
+    openingHours: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    phone: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvDeliveryPvDelivery extends Struct.SingleTypeSchema {
+  collectionName: 'pv_deliveries';
+  info: {
+    displayName: 'PV - Livraison';
+    pluralName: 'pv-deliverys';
+    singularName: 'pv-delivery';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-delivery.pv-delivery'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvFaqPvFaq extends Struct.SingleTypeSchema {
+  collectionName: 'pv_faqs';
+  info: {
+    displayName: 'PV - FAQ';
+    pluralName: 'pv-faqs';
+    singularName: 'pv-faq';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    banner: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    intro: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      >;
+    items: Schema.Attribute.Component<'deals.faq-item', true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::pv-faq.pv-faq'>;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvHomepagePvHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'pv_homepages';
+  info: {
+    description: "Bandeau de r\u00E9assurance et r\u00E9f\u00E9rencement de la page d'accueil. Les banni\u00E8res du haut se r\u00E8glent dans les campagnes marketing.";
+    displayName: 'PV - Accueil';
+    pluralName: 'pv-homepages';
+    singularName: 'pv-homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-homepage.pv-homepage'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    reassurance: Schema.Attribute.Component<'pv.reassurance-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 4;
+        },
+        number
+      >;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvLegalPvLegal extends Struct.SingleTypeSchema {
+  collectionName: 'pv_legals';
+  info: {
+    displayName: 'PV - Mentions l\u00E9gales';
+    pluralName: 'pv-legals';
+    singularName: 'pv-legal';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-legal.pv-legal'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvLoyaltyTermsPvLoyaltyTerms
+  extends Struct.SingleTypeSchema {
+  collectionName: 'pv_loyalty_terms';
+  info: {
+    displayName: 'PV - Conditions fid\u00E9lit\u00E9';
+    pluralName: 'pv-loyalty-termss';
+    singularName: 'pv-loyalty-terms';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-loyalty-terms.pv-loyalty-terms'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvLoyaltyPvLoyalty extends Struct.SingleTypeSchema {
+  collectionName: 'pv_loyalties';
+  info: {
+    displayName: 'PV - Fid\u00E9lit\u00E9';
+    pluralName: 'pv-loyaltys';
+    singularName: 'pv-loyalty';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-loyalty.pv-loyalty'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvPartnerPvPartner extends Struct.SingleTypeSchema {
+  collectionName: 'pv_partners';
+  info: {
+    displayName: 'PV - Partenaires';
+    pluralName: 'pv-partners';
+    singularName: 'pv-partner';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-partner.pv-partner'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvPaymentInfoPvPaymentInfo extends Struct.SingleTypeSchema {
+  collectionName: 'pv_payment_infos';
+  info: {
+    displayName: 'PV - Paiement s\u00E9curis\u00E9';
+    pluralName: 'pv-payment-infos';
+    singularName: 'pv-payment-info';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-payment-info.pv-payment-info'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvPrivacyPvPrivacy extends Struct.SingleTypeSchema {
+  collectionName: 'pv_privacies';
+  info: {
+    displayName: 'PV - Confidentialit\u00E9';
+    pluralName: 'pv-privacys';
+    singularName: 'pv-privacy';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-privacy.pv-privacy'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvProductPagePvProductPage extends Struct.SingleTypeSchema {
+  collectionName: 'pv_product_pages';
+  info: {
+    displayName: 'PV - Fiche Produit';
+    pluralName: 'pv-product-pages';
+    singularName: 'pv-product-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    crossSellTitle: Schema.Attribute.String;
+    genericFaqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-product-page.pv-product-page'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    relatedProductsTitle: Schema.Attribute.String;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    topBanner: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    whyThisPriceItems: Schema.Attribute.Component<
+      'deals.why-this-price-item',
+      true
+    >;
+    whyThisPriceTitle: Schema.Attribute.String;
+  };
+}
+
+export interface ApiPvPromotionsPvPromotions extends Struct.SingleTypeSchema {
+  collectionName: 'pv_promotions';
+  info: {
+    displayName: 'PV - Promotions';
+    pluralName: 'pv-promotions-list';
+    singularName: 'pv-promotions';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroImage: Schema.Attribute.Media<'images', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-promotions.pv-promotions'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    shortDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 400;
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPvVeterinaryMedicinePvVeterinaryMedicine
+  extends Struct.SingleTypeSchema {
+  collectionName: 'pv_veterinary_medicines';
+  info: {
+    displayName: 'PV - M\u00E9dicaments v\u00E9t\u00E9rinaires';
+    pluralName: 'pv-veterinary-medicines';
+    singularName: 'pv-veterinary-medicine';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    blocks: Schema.Attribute.DynamicZone<
+      ['shared.rich-text', 'shared.media', 'shared.quote', 'shared.slider']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroImage: Schema.Attribute.Media<'images'> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pv-veterinary-medicine.pv-veterinary-medicine'
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    shortDescription: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 400;
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSiteIdentitySiteIdentity extends Struct.SingleTypeSchema {
   collectionName: 'site_identities';
   info: {
     description: 'Identit\u00E9 Organization globale utilis\u00E9e par tous les storefronts pour les donn\u00E9es structur\u00E9es Schema.org';
-    displayName: 'Identit\u00E9 du site (Schema.org)';
+    displayName: 'ALL - Identit\u00E9 du site (Schema.org)';
     pluralName: 'site-identities';
     singularName: 'site-identity';
   };
@@ -1642,7 +2776,7 @@ export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
   collectionName: 'species_entries';
   info: {
     description: 'Esp\u00E8ce cible (chien, chat, cheval\u2026)';
-    displayName: 'Esp\u00E8ce';
+    displayName: 'PV - Esp\u00E8ce';
     pluralName: 'species-entries';
     singularName: 'species';
   };
@@ -1668,6 +2802,12 @@ export interface ApiSpeciesSpecies extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'defaultHtml';
+        }
+      > &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
           localized: true;
@@ -1717,7 +2857,7 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
   collectionName: 'tags';
   info: {
     description: "\u00C9tiquette / tag d'article de blog (import\u00E9e de WordPress)";
-    displayName: '\u00C9tiquette';
+    displayName: 'PV - \u00C9tiquette';
     pluralName: 'tags';
     singularName: 'tag';
   };
@@ -1745,6 +2885,15 @@ export interface ApiTagTag extends Struct.CollectionTypeSchema {
       }>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    translationMeta: Schema.Attribute.JSON &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        i18n: {
+          localized: true;
+        };
+      }>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -2270,6 +3419,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::deals-about.deals-about': ApiDealsAboutDealsAbout;
       'api::deals-cgu.deals-cgu': ApiDealsCguDealsCgu;
+      'api::deals-contact.deals-contact': ApiDealsContactDealsContact;
       'api::deals-delivery.deals-delivery': ApiDealsDeliveryDealsDelivery;
       'api::deals-faq.deals-faq': ApiDealsFaqDealsFaq;
       'api::deals-homepage.deals-homepage': ApiDealsHomepageDealsHomepage;
@@ -2283,6 +3433,21 @@ declare module '@strapi/strapi' {
       'api::laboratory.laboratory': ApiLaboratoryLaboratory;
       'api::marketing-campaign.marketing-campaign': ApiMarketingCampaignMarketingCampaign;
       'api::product.product': ApiProductProduct;
+      'api::pv-about.pv-about': ApiPvAboutPvAbout;
+      'api::pv-cgu.pv-cgu': ApiPvCguPvCgu;
+      'api::pv-contact.pv-contact': ApiPvContactPvContact;
+      'api::pv-delivery.pv-delivery': ApiPvDeliveryPvDelivery;
+      'api::pv-faq.pv-faq': ApiPvFaqPvFaq;
+      'api::pv-homepage.pv-homepage': ApiPvHomepagePvHomepage;
+      'api::pv-legal.pv-legal': ApiPvLegalPvLegal;
+      'api::pv-loyalty-terms.pv-loyalty-terms': ApiPvLoyaltyTermsPvLoyaltyTerms;
+      'api::pv-loyalty.pv-loyalty': ApiPvLoyaltyPvLoyalty;
+      'api::pv-partner.pv-partner': ApiPvPartnerPvPartner;
+      'api::pv-payment-info.pv-payment-info': ApiPvPaymentInfoPvPaymentInfo;
+      'api::pv-privacy.pv-privacy': ApiPvPrivacyPvPrivacy;
+      'api::pv-product-page.pv-product-page': ApiPvProductPagePvProductPage;
+      'api::pv-promotions.pv-promotions': ApiPvPromotionsPvPromotions;
+      'api::pv-veterinary-medicine.pv-veterinary-medicine': ApiPvVeterinaryMedicinePvVeterinaryMedicine;
       'api::site-identity.site-identity': ApiSiteIdentitySiteIdentity;
       'api::species.species': ApiSpeciesSpecies;
       'api::tag.tag': ApiTagTag;

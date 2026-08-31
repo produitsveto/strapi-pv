@@ -23,7 +23,9 @@
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "seoText": {
-      "type": "richtext",
+      "type": "customField",
+      "customField": "plugin::ckeditor5.CKEditor",
+      "options": { "preset": "defaultHtml" },
       "pluginOptions": { "i18n": { "localized": true } }
     },
     "heroImage": {
