@@ -23,6 +23,10 @@
       "type": "uid",
       "targetField": "title"
     },
+    "publishAt": {
+      "type": "datetime",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
     "wpId": {
       "type": "integer",
       "unique": true

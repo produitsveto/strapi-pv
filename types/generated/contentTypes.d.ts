@@ -490,6 +490,12 @@ export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
       'api::article.article'
     >;
     products: Schema.Attribute.Relation<'manyToMany', 'api::product.product'>;
+    publishAt: Schema.Attribute.DateTime &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
     publishedAt: Schema.Attribute.DateTime;
     relatedArticles: Schema.Attribute.Relation<
       'manyToMany',

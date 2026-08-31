@@ -97,17 +97,22 @@ const CONTENT_TYPE_CONFIG = {
   },
   'api::article.article': {
     settings: { mainField: 'title', defaultSortBy: 'createdAt', defaultSortOrder: 'DESC' },
-    listColumns: ['title', 'slug', 'categories', 'createdAt'],
+    listColumns: ['title', 'slug', 'publishAt', 'categories', 'createdAt'],
     labels: {
       title: 'Titre',
       description: 'Description',
       slug: 'Slug',
+      publishAt: 'Date de publication',
       cover: 'Couverture',
       categories: 'Catégories',
       species: 'Espèces',
       relatedArticles: 'Articles liés',
       blocks: 'Contenu',
       seo: 'SEO',
+    },
+    descriptions: {
+      publishAt:
+        'Laisser vide pour que l’article paraisse dès sa publication. Sinon, l’article reste invisible sur le site jusqu’à la date et l’heure indiquées — il faut quand même le publier pour que la programmation s’applique. La date vaut pour toutes les langues, et l’article peut mettre jusqu’à une heure à apparaître.',
     },
     // Identifiants d'import WordPress — édition = risque de casser le lien avec l'article source.
     readOnlyFields: ['wpId', 'wpStatus', 'wpModified', 'wpDate'],
