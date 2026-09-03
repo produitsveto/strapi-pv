@@ -159,6 +159,11 @@
       "relation": "manyToMany",
       "target": "api::product.product"
     },
+    "bundledProducts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product"
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

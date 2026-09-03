@@ -89,6 +89,11 @@ const CONTENT_TYPE_CONFIG = {
       laboratory: 'Laboratoire',
       species: 'Espèces',
       articles: 'Articles',
+      // Deux relations produit↔produit distinctes, à ne pas confondre : les « complémentaires »
+      // s'affichent en bas de fiche (PV-81), les « proposés » sont les cases à cocher à côté du
+      // bouton d'achat (PV-195). Sans libellé, elles apparaissaient sous leur nom technique.
+      suggestedProducts: 'Produits complémentaires (bas de fiche)',
+      bundledProducts: 'Proposé avec ce produit (cases à cocher)',
       seo: 'SEO',
     },
     // Champs importés/synchronisés par le job nocturne sync-products (Woo→Medusa→Strapi)
