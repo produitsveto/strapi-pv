@@ -2,6 +2,7 @@
 const bootstrap = require("./bootstrap");
 const { registerStorefrontRevalidation } = require("./revalidate-storefront");
 const { registerMediaBufferStripping } = require("./strip-media-buffers");
+const { hideTranslationMeta } = require("./hide-translation-meta");
 
 module.exports = {
   /**
@@ -47,5 +48,17 @@ module.exports = {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap,
+  async bootstrap(ctx) {
+    await bootstrap(ctx);
+
+    // PV-60 — `translationMeta` porte les empreintes qui protègent les corrections
+    // manuelles ; il n'a pas à encombrer les formulaires. Le nettoyage vivait dans
+    // le plugin « Traduction », retiré au profit de la seule passe nocturne.
+    try {
+      await hideTranslationMeta(ctx);
+    } catch (error) {
+      // Un formulaire un peu encombré ne justifie pas d'empêcher Strapi de démarrer.
+      ctx.strapi.log.warn(`[traduction] disposition non ajustée : ${error.message}`);
+    }
+  },
 };
