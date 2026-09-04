@@ -32,6 +32,20 @@
 
 const TRIGGER_ACTIONS = new Set(['publish', 'unpublish', 'delete']);
 
+/**
+ * Content-types dont un simple `update` doit AUSSI purger (PV-187).
+ *
+ * La règle générale — ne purger que sur publish/unpublish/delete — tient parce que les fronts ne
+ * lisent que le publié : modifier un brouillon d'article n'a aucun effet visible, et purger à
+ * chaque frappe spammerait pendant l'édition.
+ *
+ * Les redirections échappent à ce raisonnement : le geste courant y est de MODIFIER une règle
+ * déjà publiée — corriger une destination, décocher « Activée ». Sans cette exception, la
+ * correction ne prendrait effet qu'à l'expiration du cache, soit jusqu'à une heure plus tard.
+ * Personne ne comprendrait pourquoi sa redirection « ne marche pas ».
+ */
+const UPDATE_ALSO_PURGES = new Set(['api::redirect.redirect']);
+
 // Coalesce les purges : une publication en masse (plusieurs entrées d'affilée)
 // ne déclenche qu'un seul purge ~1,5 s après la dernière, vers tous les fronts.
 const DEBOUNCE_MS = 1500;
@@ -130,7 +144,10 @@ function registerStorefrontRevalidation({ strapi }) {
   strapi.documents.use(async (context, next) => {
     const result = await next();
 
-    if (context.uid?.startsWith('api::') && TRIGGER_ACTIONS.has(context.action)) {
+    const isTrigger =
+      TRIGGER_ACTIONS.has(context.action) ||
+      (context.action === 'update' && UPDATE_ALSO_PURGES.has(context.uid));
+    if (context.uid?.startsWith('api::') && isTrigger) {
       schedule(`${context.action} ${context.uid}`);
     }
 
@@ -138,7 +155,7 @@ function registerStorefrontRevalidation({ strapi }) {
   });
 
   strapi.log.info(
-    `[revalidate] purge activée (publish/unpublish/delete) → ${targets.map((t) => t.name).join(', ')}`,
+    `[revalidate] purge activée (publish/unpublish/delete, + update sur ${[...UPDATE_ALSO_PURGES].join(', ')}) → ${targets.map((t) => t.name).join(', ')}`,
   );
 }
 
