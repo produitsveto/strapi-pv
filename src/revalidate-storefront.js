@@ -33,18 +33,20 @@
 const TRIGGER_ACTIONS = new Set(['publish', 'unpublish', 'delete']);
 
 /**
- * Content-types dont un simple `update` doit AUSSI purger (PV-187).
+ * Content-types dont TOUTE écriture purge, `create` et `update` compris (PV-187).
  *
  * La règle générale — ne purger que sur publish/unpublish/delete — tient parce que les fronts ne
  * lisent que le publié : modifier un brouillon d'article n'a aucun effet visible, et purger à
  * chaque frappe spammerait pendant l'édition.
  *
- * Les redirections échappent à ce raisonnement : le geste courant y est de MODIFIER une règle
- * déjà publiée — corriger une destination, décocher « Activée ». Sans cette exception, la
- * correction ne prendrait effet qu'à l'expiration du cache, soit jusqu'à une heure plus tard.
- * Personne ne comprendrait pourquoi sa redirection « ne marche pas ».
+ * Les redirections échappent à ce raisonnement. Les deux gestes courants y sont d'en CRÉER une
+ * et d'en MODIFIER une déjà publiée (corriger une destination, décocher « Activée »).
+ * ⚠️ Aucun des deux ne passe par l'action `publish` : en Strapi v5, créer une entrée directement
+ * publiée déclenche `create`. Mesuré le 04/09 — une règle créée restait sans effet pendant plus
+ * de deux minutes, et l'aurait été jusqu'à une heure. PA aurait conclu que ça ne marche pas.
  */
-const UPDATE_ALSO_PURGES = new Set(['api::redirect.redirect']);
+const ALWAYS_PURGE_TYPES = new Set(['api::redirect.redirect']);
+const ALWAYS_PURGE_ACTIONS = new Set(['create', 'update']);
 
 // Coalesce les purges : une publication en masse (plusieurs entrées d'affilée)
 // ne déclenche qu'un seul purge ~1,5 s après la dernière, vers tous les fronts.
@@ -146,7 +148,7 @@ function registerStorefrontRevalidation({ strapi }) {
 
     const isTrigger =
       TRIGGER_ACTIONS.has(context.action) ||
-      (context.action === 'update' && UPDATE_ALSO_PURGES.has(context.uid));
+      (ALWAYS_PURGE_TYPES.has(context.uid) && ALWAYS_PURGE_ACTIONS.has(context.action));
     if (context.uid?.startsWith('api::') && isTrigger) {
       schedule(`${context.action} ${context.uid}`);
     }
@@ -155,7 +157,7 @@ function registerStorefrontRevalidation({ strapi }) {
   });
 
   strapi.log.info(
-    `[revalidate] purge activée (publish/unpublish/delete, + update sur ${[...UPDATE_ALSO_PURGES].join(', ')}) → ${targets.map((t) => t.name).join(', ')}`,
+    `[revalidate] purge activée (publish/unpublish/delete, + create/update sur ${[...ALWAYS_PURGE_TYPES].join(', ')}) → ${targets.map((t) => t.name).join(', ')}`,
   );
 }
 
