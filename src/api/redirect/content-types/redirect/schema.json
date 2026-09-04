@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "redirects",
+  "info": {
+    "singularName": "redirect",
+    "pluralName": "redirects",
+    "displayName": "Redirections",
+    "description": "PV-187 — Redirections d'URL servies par les storefronts. Reprend les 312 redirections 301 de Rank Math (WordPress), qui disparaissent à la bascule, et permet d'en créer de nouvelles sans développeur. Collection PARTAGÉE : le champ `site` dit à quel front la règle s'applique."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": false
+    }
+  },
+  "attributes": {
+    "site": {
+      "type": "enumeration",
+      "required": true,
+      "default": "pv",
+      "enum": ["pv", "deals"],
+      "description": "Front concerné. Une règle ne s'applique JAMAIS aux autres sites : les storefronts partagent ce Strapi mais pas leurs URLs. Ajouter une valeur ici pour un nouveau front."
+    },
+    "from_path": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "description": "Chemin source, sans domaine, commençant par / (ex. /produit/ancien-slug). La comparaison est exacte et insensible au slash final et à la casse."
+    },
+    "to_path": {
+      "type": "string",
+      "required": true,
+      "maxLength": 500,
+      "description": "Cible : chemin interne (/produit/nouveau-slug) ou URL absolue (https://…) pour sortir du site."
+    },
+    "status_code": {
+      "type": "enumeration",
+      "required": true,
+      "default": "permanent_301",
+      "enum": ["permanent_301", "temporary_302", "gone_410"],
+      "description": "⚠️ Les valeurs sont préfixées car Strapi refuse une énumération commençant par un chiffre. permanent_301 = déménagement définitif (transmet le référencement, le cas normal). temporary_302 = temporaire. gone_410 = page supprimée pour toujours."
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Kill-switch, en plus de l'état publié. Une règle inactive n'est jamais servie."
+    },
+    "origin": {
+      "type": "enumeration",
+      "default": "manual",
+      "enum": ["legacy-rankmath", "manual"],
+      "description": "Provenance. `legacy-rankmath` = importée de WordPress ; l'import se resynchronise sur ces entrées et ne touche jamais aux règles saisies à la main."
+    },
+    "legacy_hits": {
+      "type": "integer",
+      "default": 0,
+      "description": "Trafic constaté sur l'ancien site (Rank Math). Sert à prioriser : une règle à 3 000 visites compte plus qu'une à 2."
+    },
+    "note": {
+      "type": "text",
+      "description": "Commentaire libre — sert notamment aux règles importées dont la cible n'existe plus et qui attendent un arbitrage."
+    }
+  }
+}

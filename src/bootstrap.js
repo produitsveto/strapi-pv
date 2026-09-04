@@ -218,6 +218,31 @@ const CONTENT_TYPE_CONFIG = {
   // (c'est le rôle de l'outil d'analytics) ainsi que les appareils et canaux de vente, que le
   // site ne lit pas et que personne n'a jamais renseignés.
   // Pays ET langues sont bien appliqués par le site : ils restent dans le bloc ciblage.
+  'api::redirect.redirect': {
+    settings: { mainField: 'from_path', defaultSortBy: 'legacy_hits', defaultSortOrder: 'DESC' },
+    listColumns: ['from_path', 'to_path', 'site', 'status_code', 'is_active', 'legacy_hits'],
+    labels: {
+      site: 'Site concerné',
+      from_path: 'Ancienne adresse',
+      to_path: 'Nouvelle adresse',
+      status_code: 'Type de redirection',
+      is_active: 'Activée',
+      origin: 'Provenance',
+      legacy_hits: 'Visites sur l’ancien site',
+      note: 'Note',
+    },
+    descriptions: {
+      site: 'À quel site la règle s’applique. Une redirection de produits-veto.com ne vaut pas pour Deals.',
+      from_path: 'L’adresse à rediriger, sans le nom de domaine, en commençant par une barre oblique — par exemple /produit/ancien-nom. La barre oblique finale et les majuscules n’ont pas d’importance.',
+      to_path: 'Où envoyer le visiteur : une adresse du site (/produit/nouveau-nom) ou une adresse complète commençant par https:// pour envoyer ailleurs.',
+      status_code: '301 dans presque tous les cas : c’est le déménagement définitif, celui qui transmet le référencement de l’ancienne adresse à la nouvelle. 302 pour un détour temporaire. 410 pour dire à Google qu’une page a disparu pour de bon.',
+      is_active: 'Décocher suspend la redirection sans la supprimer.',
+      origin: 'Importée de l’ancien site, ou créée ici. Les règles importées peuvent être rafraîchies automatiquement ; celles créées ici ne le sont jamais.',
+      legacy_hits: 'Nombre de visites que cette redirection a servies sur l’ancien site. Donne une idée de son importance.',
+      note: 'Pour se souvenir du pourquoi. Les redirections importées dont la destination n’existe plus arrivent ici avec une note.',
+    },
+    readOnlyFields: ['legacy_hits'],
+  },
   'api::marketing-campaign.marketing-campaign': {
     settings: { mainField: 'title', defaultSortBy: 'start_date', defaultSortOrder: 'DESC' },
     listColumns: ['title', 'campaign_type', 'is_active', 'start_date', 'end_date'],
