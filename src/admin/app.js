@@ -1,13 +1,28 @@
 import { setPluginConfig, defaultHtmlPreset } from '@_sh/strapi-plugin-ckeditor';
 
 // PV-214 — corrections CSS du back-office (listes déroulantes tronquées par le design system).
-import './extensions/pv-admin.css';
+//
+// ⚠️ Un `import './extensions/pv-admin.css'` ne suffit PAS : en build de production, Vite en fait
+// une feuille séparée que l'admin Strapi ne référence jamais (aucun `<link rel=stylesheet>` dans
+// la page — tout le style du design system passe par styled-components, à l'exécution). Le
+// serveur de développement, lui, injecte les CSS du graphe de modules : le correctif y marchait,
+// et seulement là. D'où `?inline`, qui nous rend la feuille sous forme de chaîne à poser
+// nous-mêmes dans le `<head>`.
+import pvAdminCss from './extensions/pv-admin.css?inline';
 
 const config = {
   locales: ['fr'],
 };
 
-const bootstrap = () => {};
+const PV_STYLE_ID = 'pv-admin-styles';
+
+const bootstrap = () => {
+  if (typeof document === 'undefined' || document.getElementById(PV_STYLE_ID)) return;
+  const style = document.createElement('style');
+  style.id = PV_STYLE_ID;
+  style.textContent = pvAdminCss;
+  document.head.appendChild(style);
+};
 
 export default {
   config,
