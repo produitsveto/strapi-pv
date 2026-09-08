@@ -1,0 +1,47 @@
+/**
+ * PV-214 — les listes déroulantes d'énumération paraissaient amputées.
+ *
+ * `@strapi/design-system` plafonne `Select.Content` à `max-height: 15.6rem` — soit 156 px, car
+ * l'admin pose `html { font-size: 10px }` — et enveloppe les options dans un `ScrollArea` qui
+ * masque explicitement la barre de défilement (`scrollbar-width: none` + `::-webkit-scrollbar
+ * { display: none }`), sans rendre les chevrons de défilement que Radix fournit pour ce cas.
+ *
+ * Le débordement est donc géré, mais RIEN ne signale qu'il existe : avec 4 lignes de 36 px, dont
+ * une pour le placeholder, seules 3 valeurs sont visibles. Le client en a déduit que les autres
+ * avaient disparu (« Type de campagne » : 8 valeurs ; « Forme galénique » : 23).
+ *
+ * On relève le plafond sans jamais dépasser la place réellement disponible (Radix la calcule et
+ * l'expose en variable CSS), et on redonne une barre de défilement visible.
+ *
+ * `div[role='listbox']` (0-1-1) l'emporte sur la classe générée du design system (0-1-0) : pas
+ * besoin de `!important`, et le sélecteur ne dépend pas d'un nom de classe qui change à chaque
+ * version.
+ */
+div[role='listbox'] {
+  max-height: min(
+    32rem,
+    var(--radix-select-content-available-height, var(--radix-popper-available-height, 32rem))
+  );
+}
+
+/* Firefox — le design system pose `scrollbar-width: none` sur le conteneur de défilement. */
+div[role='listbox'] * {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(180 180 180) transparent;
+}
+
+/* Chromium / WebKit — le design system pose `::-webkit-scrollbar { display: none }`. */
+div[role='listbox'] *::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+  height: 6px;
+}
+
+div[role='listbox'] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+div[role='listbox'] *::-webkit-scrollbar-thumb {
+  background-color: rgb(180 180 180);
+  border-radius: 999px;
+}

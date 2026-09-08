@@ -280,7 +280,7 @@ const CONTENT_TYPE_CONFIG = {
       label_title: 'Petite pastille posée sur la bannière de catégorie, ex. « Promo canon ! ».',
       target_handles: 'Catégories visées. Pour une bannière de méga-menu, saisir la famille telle quelle et valider avec « Utiliser … tel quel ».',
       brand_handle: 'Marque dont la page porte la bannière (types Bannière marque et Produits en vedette d’une marque).',
-      brand_handles: 'Laboratoires poussés dans la section « Top laboratoires » de l’accueil, dans l’ordre choisi.',
+      brand_handles: 'Laboratoires mis à la une dans le panneau « Marques » du méga-menu, dans l’ordre choisi. Il n’y a pas de bloc équivalent sur la page d’accueil.',
       product_handles: 'Produits mis en avant, dans l’ordre d’affichage.',
       analytics_id: 'Nom de la campagne remonté à Google Analytics.',
       locales: 'Limite la campagne à la version du site choisie (français, anglais). Vide = les deux. À ne pas confondre avec le pays du visiteur : un Belge peut lire le site en français.',

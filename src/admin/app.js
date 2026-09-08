@@ -1,5 +1,8 @@
 import { setPluginConfig, defaultHtmlPreset } from '@_sh/strapi-plugin-ckeditor';
 
+// PV-214 — corrections CSS du back-office (listes déroulantes tronquées par le design system).
+import './extensions/pv-admin.css';
+
 const config = {
   locales: ['fr'],
 };
