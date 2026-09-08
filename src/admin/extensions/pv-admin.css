@@ -19,8 +19,8 @@
  */
 div[role='listbox'] {
   max-height: min(
-    32rem,
-    var(--radix-select-content-available-height, var(--radix-popper-available-height, 32rem))
+    40rem,
+    var(--radix-select-content-available-height, var(--radix-popper-available-height, 40rem))
   );
 }
 
