@@ -4,7 +4,7 @@
   "info": {
     "singularName": "redirect",
     "pluralName": "redirects",
-    "displayName": "Redirections",
+    "displayName": "ALL - Redirections",
     "description": "PV-187 — Redirections d'URL servies par les storefronts. Reprend les 312 redirections 301 de Rank Math (WordPress), qui disparaissent à la bascule, et permet d'en créer de nouvelles sans développeur. Collection PARTAGÉE : le champ `site` dit à quel front la règle s'applique."
   },
   "options": {

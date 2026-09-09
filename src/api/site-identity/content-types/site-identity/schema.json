@@ -4,19 +4,14 @@
   "info": {
     "singularName": "site-identity",
     "pluralName": "site-identities",
-    "displayName": "ALL - Identité du site (Schema.org)",
-    "description": "Identité Organization globale utilisée par tous les storefronts pour les données structurées Schema.org"
+    "displayName": "ALL - Identité légale (pharmacie)",
+    "description": "Identité légale de l'officine, commune aux deux storefronts : elle alimente le node Schema.org Organization de produits-veto.com et du site Anti-Gaspi. PV-215 — le logo et le nom d'affichage n'ont PAS leur place ici, ils diffèrent d'un site à l'autre et sont servis par chaque storefront (nuxt.config.schemaOrg.identity)."
   },
   "options": { "draftAndPublish": true },
   "attributes": {
     "legalName": {
       "type": "string",
       "required": true
-    },
-    "logo": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": ["images"]
     },
     "email": {
       "type": "email"

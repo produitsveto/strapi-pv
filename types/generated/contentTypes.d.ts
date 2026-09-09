@@ -2742,11 +2742,67 @@ export interface ApiPvVeterinaryMedicinePvVeterinaryMedicine
   };
 }
 
+export interface ApiRedirectRedirect extends Struct.CollectionTypeSchema {
+  collectionName: 'redirects';
+  info: {
+    description: "PV-187 \u2014 Redirections d'URL servies par les storefronts. Reprend les 312 redirections 301 de Rank Math (WordPress), qui disparaissent \u00E0 la bascule, et permet d'en cr\u00E9er de nouvelles sans d\u00E9veloppeur. Collection PARTAG\u00C9E : le champ `site` dit \u00E0 quel front la r\u00E8gle s'applique.";
+    displayName: 'ALL - Redirections';
+    pluralName: 'redirects';
+    singularName: 'redirect';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: false;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    from_path: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    is_active: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    legacy_hits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::redirect.redirect'
+    > &
+      Schema.Attribute.Private;
+    note: Schema.Attribute.Text;
+    origin: Schema.Attribute.Enumeration<['legacy-rankmath', 'manual']> &
+      Schema.Attribute.DefaultTo<'manual'>;
+    publishedAt: Schema.Attribute.DateTime;
+    site: Schema.Attribute.Enumeration<['pv', 'deals']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pv'>;
+    status_code: Schema.Attribute.Enumeration<
+      ['permanent_301', 'temporary_302', 'gone_410']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'permanent_301'>;
+    to_path: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 500;
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSiteIdentitySiteIdentity extends Struct.SingleTypeSchema {
   collectionName: 'site_identities';
   info: {
-    description: 'Identit\u00E9 Organization globale utilis\u00E9e par tous les storefronts pour les donn\u00E9es structur\u00E9es Schema.org';
-    displayName: 'ALL - Identit\u00E9 du site (Schema.org)';
+    description: "Identit\u00E9 l\u00E9gale de l'officine, commune aux deux storefronts : elle alimente le node Schema.org Organization de produits-veto.com et du site Anti-Gaspi. PV-215 \u2014 le logo et le nom d'affichage n'ont PAS leur place ici, ils diff\u00E8rent d'un site \u00E0 l'autre et sont servis par chaque storefront (nuxt.config.schemaOrg.identity).";
+    displayName: 'ALL - Identit\u00E9 l\u00E9gale (pharmacie)';
     pluralName: 'site-identities';
     singularName: 'site-identity';
   };
@@ -2769,7 +2825,6 @@ export interface ApiSiteIdentitySiteIdentity extends Struct.SingleTypeSchema {
       'api::site-identity.site-identity'
     > &
       Schema.Attribute.Private;
-    logo: Schema.Attribute.Media<'images'>;
     pharmacists: Schema.Attribute.Component<'shared.person', true>;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
@@ -3458,6 +3513,7 @@ declare module '@strapi/strapi' {
       'api::pv-product-page.pv-product-page': ApiPvProductPagePvProductPage;
       'api::pv-promotions.pv-promotions': ApiPvPromotionsPvPromotions;
       'api::pv-veterinary-medicine.pv-veterinary-medicine': ApiPvVeterinaryMedicinePvVeterinaryMedicine;
+      'api::redirect.redirect': ApiRedirectRedirect;
       'api::site-identity.site-identity': ApiSiteIdentitySiteIdentity;
       'api::species.species': ApiSpeciesSpecies;
       'api::tag.tag': ApiTagTag;
