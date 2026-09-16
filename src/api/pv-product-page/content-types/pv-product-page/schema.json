@@ -9,12 +9,13 @@
   "options": { "draftAndPublish": true },
   "pluginOptions": { "i18n": { "localized": true } },
   "attributes": {
-    "topBanner": { "type": "string" },
-    "whyThisPriceTitle": { "type": "string" },
-    "whyThisPriceItems": { "type": "component", "repeatable": true, "component": "deals.why-this-price-item" },
-    "genericFaqs": { "type": "component", "repeatable": true, "component": "deals.faq-item" },
-    "crossSellTitle": { "type": "string" },
-    "relatedProductsTitle": { "type": "string" },
-    "seo": { "type": "component", "repeatable": false, "component": "shared.seo" }
+    "topBanner": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "whyThisPriceTitle": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "whyThisPriceItems": { "type": "component", "repeatable": true, "component": "deals.why-this-price-item", "pluginOptions": { "i18n": { "localized": true } } },
+    "genericFaqs": { "type": "component", "repeatable": true, "component": "deals.faq-item", "pluginOptions": { "i18n": { "localized": true } } },
+    "crossSellTitle": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "relatedProductsTitle": { "type": "string", "pluginOptions": { "i18n": { "localized": true } } },
+    "seo": { "type": "component", "repeatable": false, "component": "shared.seo", "pluginOptions": { "i18n": { "localized": true } } },
+    "translationMeta": { "type": "json", "pluginOptions": { "i18n": { "localized": true }, "content-manager": { "visible": false } } }
   }
 }
