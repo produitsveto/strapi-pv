@@ -14,6 +14,11 @@
  * les fronts ne lisent que le publié → inutile de purger sur un simple
  * `update`/`create` de brouillon (ça spammerait pendant l'édition).
  *
+ * PV-228 — le corps de l'appel liste les content-types concernés
+ * (`{"types":["api::article.article"]}`) : le front ne purge que les pages qui en
+ * dépendent, jamais celles servies par Medusa. Un front qui ignore le corps
+ * (Deals, pour l'instant) purge tout, comme avant.
+ *
  * Config (env) — deux formes, au choix :
  *
  *   1. Plusieurs fronts (recommandé) — un JSON array :
@@ -107,18 +112,24 @@ function registerStorefrontRevalidation({ strapi }) {
 
   let timer = null;
   let pending = new Set();
+  let pendingTypes = new Set();
 
-  async function purgeOne(target, reasons) {
+  async function purgeOne(target, reasons, types) {
     const { url, secret, name } = target;
     const href = `${url}${url.includes('?') ? '&' : '?'}secret=${encodeURIComponent(secret)}`;
     try {
-      const res = await fetch(href, { method: 'POST' });
+      const res = await fetch(href, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ types }),
+      });
       if (!res.ok) {
         strapi.log.warn(`[revalidate] ${name} : HTTP ${res.status} (${reasons.join(', ')})`);
         return;
       }
       const body = await res.json().catch(() => ({}));
-      strapi.log.info(`[revalidate] ${name} : cache purgé (${body.purged ?? '?'} clés)`);
+      const families = Array.isArray(body.families) ? ` — ${body.families.join(', ') || 'rien à purger'}` : '';
+      strapi.log.info(`[revalidate] ${name} : cache purgé (${body.purged ?? '?'} clés${families})`);
     } catch (err) {
       strapi.log.warn(`[revalidate] ${name} : échec purge (${err.message})`);
     }
@@ -127,13 +138,16 @@ function registerStorefrontRevalidation({ strapi }) {
   async function flush() {
     timer = null;
     const reasons = Array.from(pending);
+    const types = Array.from(pendingTypes);
     pending = new Set();
+    pendingTypes = new Set();
     strapi.log.info(`[revalidate] purge ${targets.length} front(s) — ${reasons.join(', ')}`);
-    await Promise.allSettled(targets.map((t) => purgeOne(t, reasons)));
+    await Promise.allSettled(targets.map((t) => purgeOne(t, reasons, types)));
   }
 
-  function schedule(reason) {
-    pending.add(reason);
+  function schedule(action, uid) {
+    pending.add(`${action} ${uid}`);
+    pendingTypes.add(uid);
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       // ne pas faire échouer le cycle si la promesse rejette
@@ -150,7 +164,7 @@ function registerStorefrontRevalidation({ strapi }) {
       TRIGGER_ACTIONS.has(context.action) ||
       (ALWAYS_PURGE_TYPES.has(context.uid) && ALWAYS_PURGE_ACTIONS.has(context.action));
     if (context.uid?.startsWith('api::') && isTrigger) {
-      schedule(`${context.action} ${context.uid}`);
+      schedule(context.action, context.uid);
     }
 
     return result;
