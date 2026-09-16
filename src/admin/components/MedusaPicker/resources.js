@@ -172,7 +172,6 @@ export const RESOURCES = {
  * sont pas des catégories Medusa (PV-152).
  */
 export const FIELDS = {
-  'medusa-brand': { resource: 'brands', multiple: false },
   'medusa-brands': { resource: 'brands', multiple: true },
   'medusa-products': { resource: 'products', multiple: true },
   'medusa-targets': { resource: 'categories', multiple: true, creatable: true },

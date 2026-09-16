@@ -88,11 +88,6 @@
       "customField": "global::medusa-targets",
       "description": "Handles Medusa des catégories ciblées (CATEGORY_BANNER) ou des entrées de méga-menu à affecter (MEGAMENU_BANNER). Tableau de strings. Vide/null = global."
     },
-    "brand_handle": {
-      "type": "customField",
-      "customField": "global::medusa-brand",
-      "description": "Handle Medusa de la marque/laboratoire (BRAND_BANNER, FEATURED_BRAND_PRODUCTS)."
-    },
     "product_handles": {
       "type": "customField",
       "customField": "global::medusa-products",
@@ -101,7 +96,7 @@
     "brand_handles": {
       "type": "customField",
       "customField": "global::medusa-brands",
-      "description": "Handles Medusa des marques poussées (TOP10_BRAND). Tableau ordonné de strings."
+      "description": "Handles Medusa des marques/laboratoires (PV-233) : pages marque où la campagne s'affiche (BRAND_BANNER, FEATURED_BRAND_PRODUCTS), fiches des produits de ces marques (CROSS_SELLING), marques affichées dans l'ordre (TOP10_BRAND). Tableau de strings."
     },
     "locales": {
       "type": "customField",

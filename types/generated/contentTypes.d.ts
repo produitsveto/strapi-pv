@@ -1678,8 +1678,6 @@ export interface ApiMarketingCampaignMarketingCampaign
     background_color: Schema.Attribute.String;
     banner_image: Schema.Attribute.Media<'images'>;
     banner_image_mobile: Schema.Attribute.Media<'images'>;
-    brand_handle: Schema.Attribute.String &
-      Schema.Attribute.CustomField<'global::medusa-brand'>;
     brand_handles: Schema.Attribute.JSON &
       Schema.Attribute.CustomField<'global::medusa-brands'>;
     campaign_tracking_id: Schema.Attribute.String;

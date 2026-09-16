@@ -23,7 +23,6 @@ module.exports = {
     // Le type sous-jacent reste celui d'origine du champ : les campagnes déjà enregistrées
     // restent lisibles telles quelles, aucune reprise de données.
     for (const [name, type] of [
-      ['medusa-brand', 'string'],
       ['medusa-brands', 'json'],
       ['medusa-products', 'json'],
       ['medusa-targets', 'json'],
