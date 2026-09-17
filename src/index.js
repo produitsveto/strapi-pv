@@ -1,8 +1,12 @@
 'use strict';
 const bootstrap = require("./bootstrap");
 const { registerStorefrontRevalidation } = require("./revalidate-storefront");
+const { registerScheduledArticlesPurge } = require("./scheduled-articles");
 const { registerMediaBufferStripping } = require("./strip-media-buffers");
 const { hideTranslationMeta } = require("./hide-translation-meta");
+
+// PV-255 — file de purge des storefronts, partagée avec la tâche des articles programmés.
+let revalidation = null;
 
 module.exports = {
   /**
@@ -34,7 +38,7 @@ module.exports = {
 
     // Purge le cache du storefront Deals à chaque publish/unpublish/delete,
     // pour que le contenu mis à jour dans Strapi soit visible immédiatement.
-    registerStorefrontRevalidation({ strapi });
+    revalidation = registerStorefrontRevalidation({ strapi });
 
     // PV-185 — empêche le provider R2 d'écrire le binaire des images en base.
     registerMediaBufferStripping({ strapi });
@@ -49,6 +53,9 @@ module.exports = {
    */
   async bootstrap(ctx) {
     await bootstrap(ctx);
+
+    // PV-255 — les articles programmés purgent le cache à leur parution.
+    registerScheduledArticlesPurge({ strapi: ctx.strapi, revalidation });
 
     // PV-60 — `translationMeta` porte les empreintes qui protègent les corrections
     // manuelles ; il n'a pas à encombrer les formulaires. Le nettoyage vivait dans
