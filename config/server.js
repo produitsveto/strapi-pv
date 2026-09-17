@@ -7,4 +7,8 @@ module.exports = ({ env }) => ({
   webhooks: {
     populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),
   },
+  // PV-255 — tâche des articles programmés (src/scheduled-articles.js).
+  cron: {
+    enabled: true,
+  },
 });

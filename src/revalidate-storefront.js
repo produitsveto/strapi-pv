@@ -208,7 +208,7 @@ function registerStorefrontRevalidation({ strapi }) {
     strapi.log.info(
       '[revalidate] aucune cible configurée → purge du cache storefront désactivée',
     );
-    return;
+    return null;
   }
 
   let timer = null;
@@ -326,6 +326,18 @@ function registerStorefrontRevalidation({ strapi }) {
   strapi.log.info(
     `[revalidate] purge activée (publish/unpublish/delete, écritures publiées par l'API, + create/update sur ${[...ALWAYS_PURGE_TYPES].join(', ')}) → ${targets.map((t) => t.name).join(', ')}`,
   );
+
+  /**
+   * PV-255 — purge de documents qui changent sans écriture : un article programmé (PV-204) paraît
+   * quand sa date `publishAt` passe, sans que rien ne soit enregistré. Traités comme une publication :
+   * leurs entrées et celles qui les affichent sont relues au moment de purger.
+   */
+  function enqueueDocuments(uid, documentIds, reason) {
+    for (const documentId of documentIds) pendingDocuments.set(`${uid}|${documentId}`, { uid, documentId });
+    schedule(reason);
+  }
+
+  return { enqueueDocuments };
 }
 
 module.exports = { registerStorefrontRevalidation };
