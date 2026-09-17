@@ -1,5 +1,7 @@
 'use strict';
 
+const { isDeepStrictEqual } = require('node:util');
+
 /**
  * Revalidation du cache des storefronts (Deals, produits-veto.com, staging…)
  * sur publication de contenu Strapi.
@@ -17,7 +19,8 @@
  * PV-228 — purge par entrée. Le corps de l'appel liste les entrées modifiées
  * (`{"changes":[{"type":"api::article.article","slug":"…"}]}`) et celles qui les
  * affichent (l'article qui cite un article modifié dans ses « articles liés »…) :
- * le front ne purge que leurs clés, dans toutes les langues. `types` reste envoyé
+ * le front ne purge que leurs clés, dans toutes les langues ou dans la seule langue
+ * d'une traduction (`locale`, cf. `translationLocale`). `types` reste envoyé
  * pour un front qui ne connaît que la purge par familles ; un front qui ignore le
  * corps (Deals, pour l'instant) purge tout, comme avant.
  *
@@ -117,6 +120,69 @@ const DISPLAYED_BY = {
 const unique = (values) => [...new Set(values.filter(Boolean))];
 
 /**
+ * PV-228 — purge limitée à la langue écrite.
+ *
+ * Une passe de traduction (PV-60, PV-254) écrit chaque entrée langue par langue
+ * (`PUT /api/articles/:id?locale=it`). Purger l'entrée dans les 9 langues à chaque écriture
+ * recalculait 9 fois trop de pages, et toutes les listes du blog : ~2 850 clés par article. Une
+ * écriture qui ne touche qu'une traduction transmet donc sa langue, et le front ne purge qu'elle.
+ *
+ * Toutes les langues restent purgées quand l'écriture :
+ *  - vise la langue par défaut (français), qui sert de repli aux traductions absentes ;
+ *  - modifie un champ partagé entre les langues (image, FAQ, visibilité… : champs non localisés),
+ *    que le plugin i18n recopie alors dans les autres. ⚠️ Ce sont les valeurs en base qui sont
+ *    comparées, pas la présence des champs dans la requête : la traduction renvoie ces champs à
+ *    l'identique (garde-fou PV-193) ;
+ *  - n'a pas de langue explicite (`*`, absente), ou si la relecture échoue.
+ */
+const SHARED_FIELDS_ACTIONS = new Set(['create', 'update', 'publish']);
+const DEFAULT_LOCALE_TTL_MS = 10 * 60_000;
+let defaultLocaleCache = null;
+
+async function defaultLocale(strapi) {
+  if (!defaultLocaleCache || Date.now() - defaultLocaleCache.at > DEFAULT_LOCALE_TTL_MS) {
+    defaultLocaleCache = { value: await strapi.plugin('i18n').service('locales').getDefaultLocale(), at: Date.now() };
+  }
+  return defaultLocaleCache.value;
+}
+
+/** Langue de l'écriture si elle ne vise qu'une traduction existante d'un type localisé, sinon `null`. */
+async function translationLocale(strapi, context) {
+  const locale = context.params?.locale;
+  if (typeof locale !== 'string' || locale === '*' || !context.params?.documentId) return null;
+  const contentTypes = strapi.plugin('i18n')?.service('content-types');
+  if (!contentTypes?.isLocalizedContentType(strapi.contentType(context.uid))) return null;
+  return locale === (await defaultLocale(strapi)) ? null : locale;
+}
+
+/**
+ * Champs partagés de chaque langue publiée du document. Les brouillons sont ignorés : le plugin i18n
+ * ne recopie un champ que vers les entrées de même statut, et le front ne lit que le publié.
+ */
+async function sharedFieldsByLocale(strapi, uid, documentId) {
+  const contentTypes = strapi.plugin('i18n').service('content-types');
+  const schema = strapi.contentType(uid);
+  const rows = await strapi.db.query(uid).findMany({
+    where: { documentId, ...(schema.options?.draftAndPublish && { publishedAt: { $notNull: true } }) },
+    populate: contentTypes.getNestedPopulateOfNonLocalizedAttributes(uid),
+  });
+  return new Map(rows.map((row) => [row.locale, contentTypes.copyNonLocalizedAttributes(schema, row)]));
+}
+
+/**
+ * Les autres langues sont intactes si chacune avait déjà, avant l'écriture, les champs partagés de
+ * la langue écrite. Juste quel que soit l'ordre des middlewares : que le plugin i18n ait recopié ces
+ * champs ou non, les autres langues finissent avec ces valeurs.
+ */
+async function otherLocalesUnchanged(strapi, uid, documentId, locale, before) {
+  const written = (await sharedFieldsByLocale(strapi, uid, documentId)).get(locale);
+  if (!written) return false;
+  return [...before].every(([other, fields]) => other === locale || isDeepStrictEqual(fields, written));
+}
+
+const withLocale = (changes, locale) => (locale ? changes.map((change) => ({ ...change, locale })) : changes);
+
+/**
  * Entrées à purger pour un document : lui-même (par son identifiant) et celles qui l'affichent.
  * Lu en base, brouillon et publié confondus, toutes langues : un slug ou une relation qui vient de
  * changer est couvert par la lecture faite avant l'écriture ET par celle faite au moment de purger.
@@ -214,7 +280,8 @@ function registerStorefrontRevalidation({ strapi }) {
   let timer = null;
   let firstPendingAt = null;
   let pendingReasons = new Set();
-  // Documents à relire au moment de purger (état après écriture), et entrées déjà relevées avant.
+  // Documents à relire au moment de purger (état après écriture), par langue purgée (`*` : toutes),
+  // et entrées déjà relevées avant.
   let pendingDocuments = new Map();
   let pendingChanges = new Map();
 
@@ -254,9 +321,9 @@ function registerStorefrontRevalidation({ strapi }) {
     pendingReasons = new Set();
     pendingDocuments = new Map();
 
-    for (const { uid, documentId } of documents) {
+    for (const { uid, documentId, locale } of documents) {
       try {
-        addChanges(await collectChanges(strapi, uid, documentId));
+        addChanges(withLocale(await collectChanges(strapi, uid, documentId), locale));
       } catch (err) {
         strapi.log.warn(`[revalidate] ${uid} ${documentId} : entrées non relues (${err.message}), purge du type`);
         addChanges([{ type: uid }]);
@@ -305,19 +372,40 @@ function registerStorefrontRevalidation({ strapi }) {
     // Avant l'écriture : ce qui va disparaître (entrée supprimée ou dépubliée, ancien slug,
     // relation retirée) doit être purgé aussi.
     const documentId = context.params?.documentId;
+    let before = [];
+    let sharedBefore = null;
+    let locale = null;
     if (documentId) {
       try {
-        addChanges(await collectChanges(strapi, uid, documentId));
+        before = await collectChanges(strapi, uid, documentId);
       } catch (err) {
         strapi.log.warn(`[revalidate] ${uid} ${documentId} : état avant écriture non relu (${err.message})`);
+      }
+      try {
+        locale = await translationLocale(strapi, context);
+        if (locale && SHARED_FIELDS_ACTIONS.has(action)) sharedBefore = await sharedFieldsByLocale(strapi, uid, documentId);
+      } catch (err) {
+        locale = null;
+        strapi.log.warn(`[revalidate] ${uid} ${documentId} : champs partagés non relus (${err.message}), purge toutes langues`);
       }
     }
 
     const result = await next();
 
+    // Dépublier ou supprimer une langue ne recopie rien : seule la comparaison des écritures compte.
+    if (locale && sharedBefore) {
+      const unchanged = await otherLocalesUnchanged(strapi, uid, documentId, locale, sharedBefore).catch((err) => {
+        strapi.log.warn(`[revalidate] ${uid} ${documentId} : champs partagés non relus (${err.message}), purge toutes langues`);
+        return false;
+      });
+      if (!unchanged) locale = null;
+    }
+    addChanges(withLocale(before, locale));
+
     const writtenId = documentId ?? result?.documentId;
-    if (action !== 'delete' && writtenId) pendingDocuments.set(`${uid}|${writtenId}`, { uid, documentId: writtenId });
-    else if (!writtenId) addChanges([{ type: uid }]);
+    if (action !== 'delete' && writtenId) {
+      pendingDocuments.set(`${uid}|${writtenId}|${locale ?? '*'}`, { uid, documentId: writtenId, locale });
+    } else if (!writtenId) addChanges([{ type: uid }]);
     schedule(`${action} ${uid}`);
 
     return result;
@@ -333,7 +421,8 @@ function registerStorefrontRevalidation({ strapi }) {
    * leurs entrées et celles qui les affichent sont relues au moment de purger.
    */
   function enqueueDocuments(uid, documentIds, reason) {
-    for (const documentId of documentIds) pendingDocuments.set(`${uid}|${documentId}`, { uid, documentId });
+    // Sans langue : `publishAt` n'est pas traduit, une parution vaut pour toutes les langues.
+    for (const documentId of documentIds) pendingDocuments.set(`${uid}|${documentId}|*`, { uid, documentId, locale: null });
     schedule(reason);
   }
 
