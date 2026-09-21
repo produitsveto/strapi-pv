@@ -11,4 +11,10 @@ module.exports = ({ env }) => ({
   cron: {
     enabled: true,
   },
+  // Serveur MCP natif (Strapi ≥ 5.47) : expose le contenu et la médiathèque sur
+  // POST /mcp, authentifié par un admin token. Éteint par défaut — on l'allume
+  // là où on en a besoin, sans changer le comportement de la prod.
+  mcp: {
+    enabled: env.bool('STRAPI_MCP_ENABLED', false),
+  },
 });
