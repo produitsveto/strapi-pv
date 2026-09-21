@@ -34,31 +34,38 @@ module.exports = (plugin) => {
       let maxLevel;
       let countOpts;
 
-      const wrapper = {
-        populateFromQuery(query) {
-          builder.populateFromQuery(query);
-          return wrapper;
-        },
-        populateDeep(level) {
-          maxLevel = level;
-          builder.populateDeep(level);
-          return wrapper;
-        },
-        countRelations(opts = { toMany: true, toOne: true }) {
-          countOpts = opts;
-          builder.countRelations(opts);
-          return wrapper;
-        },
-        async build() {
-          const isArticleListPopulate =
-            uid === LIGHT_POPULATE_UID &&
-            maxLevel === 1 &&
-            countOpts?.toMany === true &&
-            countOpts?.toOne === false;
+      // On délègue tout au builder d'origine plutôt que de réécrire sa surface :
+      // la 5.54 a ajouté `withPopulateOverride()`, appelée par les contrôleurs du
+      // content-manager ET par les handlers MCP. Une enveloppe qui n'énumère que
+      // les méthodes connues casse donc l'admin à chaque nouveauté du core.
+      const wrapper = new Proxy(builder, {
+        get(target, prop, receiver) {
+          if (prop === 'build') {
+            return async () => {
+              const isArticleListPopulate =
+                uid === LIGHT_POPULATE_UID &&
+                maxLevel === 1 &&
+                countOpts?.toMany === true &&
+                countOpts?.toOne === false;
 
-          return isArticleListPopulate ? LIGHT_POPULATE : builder.build();
+              return isArticleListPopulate ? LIGHT_POPULATE : target.build();
+            };
+          }
+
+          const value = Reflect.get(target, prop, receiver);
+          if (typeof value !== 'function') return value;
+
+          return (...args) => {
+            if (prop === 'populateDeep') maxLevel = args[0];
+            if (prop === 'countRelations') countOpts = args[0] ?? { toMany: true, toOne: true };
+
+            const result = value.apply(target, args);
+            // Les méthodes chaînables rendent le builder d'origine : on garde la
+            // main en rendant le proxy, sinon on perd notre `build()`.
+            return result === target ? wrapper : result;
+          };
         },
-      };
+      });
 
       return wrapper;
     };
