@@ -79,9 +79,12 @@ const DEBOUNCE_MS = 1500;
 // … mais une rafale continue (4 traductions en parallèle pendant une heure, PV-254) purge quand
 // même toutes les 30 s, au lieu d'attendre la fin.
 const MAX_WAIT_MS = 30_000;
-// Seconde passe : une clé écrite juste avant la publication n'apparaît pas encore dans la liste
-// des clés de Cloudflare, qui a jusqu'à une minute de retard. La même purge est relancée.
-const SECOND_PASS_MS = 90_000;
+// Seconde passe, seulement vers un front dont la première n'a trouvé AUCUNE clé : une clé écrite
+// juste avant la publication n'apparaît pas encore dans la liste des clés de Cloudflare, qui a
+// jusqu'à une minute de retard. PV-255 (22/09/2026) — elle était systématique, et supprimait à
+// nouveau les clés que les visiteurs venaient de reconstruire entre-temps (1 173 clés 90 s après
+// une purge de 24 739 le 21/09) : du rechargement Strapi et Medusa payé deux fois pour un cas rare.
+const EMPTY_RETRY_MS = 90_000;
 
 /** Champ par lequel les fronts identifient une entrée dans leurs clés de cache. */
 const IDENTIFIER_FIELDS = {
@@ -300,17 +303,21 @@ function registerStorefrontRevalidation({ strapi }) {
       });
       if (!res.ok) {
         strapi.log.warn(`[revalidate] ${name} : HTTP ${res.status} (${label})`);
-        return;
+        return null;
       }
       const body = await res.json().catch(() => ({}));
       strapi.log.info(`[revalidate] ${name} : cache purgé (${body.purged ?? '?'} clés${body.mode ? `, ${body.mode}` : ''}) — ${label}`);
+      return typeof body.purged === 'number' ? body.purged : null;
     } catch (err) {
       strapi.log.warn(`[revalidate] ${name} : échec purge (${err.message}) — ${label}`);
+      return null;
     }
   }
 
-  async function send(payload, label) {
-    await Promise.allSettled(targets.map((t) => purgeOne(t, label, payload)));
+  /** Purge les fronts donnés ; renvoie ceux qui ont répondu « 0 clé purgée ». */
+  async function send(payload, label, list = targets) {
+    const results = await Promise.allSettled(list.map((t) => purgeOne(t, label, payload)));
+    return list.filter((_, i) => results[i].status === 'fulfilled' && results[i].value === 0);
   }
 
   async function flush() {
@@ -339,12 +346,13 @@ function registerStorefrontRevalidation({ strapi }) {
     const payload = { changes, types: unique(changes.map((change) => change.type)) };
     const label = `${reasons.length > 3 ? `${reasons.length} écritures` : reasons.join(', ')}, ${changes.length} entrée(s)`;
     strapi.log.info(`[revalidate] purge ${targets.length} front(s) — ${label}`);
-    await send(payload, label);
+    const emptyTargets = await send(payload, label);
+    if (emptyTargets.length === 0) return;
 
-    const secondPass = setTimeout(() => {
-      send(payload, `${label}, seconde passe`).catch(() => {});
-    }, SECOND_PASS_MS);
-    if (secondPass.unref) secondPass.unref();
+    const retry = setTimeout(() => {
+      send(payload, `${label}, seconde passe (aucune clé à la première)`, emptyTargets).catch(() => {});
+    }, EMPTY_RETRY_MS);
+    if (retry.unref) retry.unref();
   }
 
   function schedule(reason) {
