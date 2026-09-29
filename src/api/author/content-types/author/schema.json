@@ -13,6 +13,10 @@
       "type": "string",
       "required": true
     },
+    "jobTitle": {
+      "type": "enumeration",
+      "enum": ["preparatrice", "preparateur", "docteur_pharmacie"]
+    },
     "slug": {
       "type": "uid",
       "targetField": "name"
