@@ -96,8 +96,15 @@ const CONTENT_TYPE_CONFIG = {
       bundledProducts: 'Proposé avec ce produit (cases à cocher)',
       seo: 'SEO',
     },
-    // Champs importés/synchronisés par le job nocturne sync-products (Woo→Medusa→Strapi)
-    // — un edit manuel serait écrasé au run suivant, jamais modifiés depuis Strapi.
+    // PV-354 — deux champs que le site ne lit plus. PA les voyait vides sur les produits créés
+    // depuis la bascule et se demandait pourquoi Medusa ne les remplissait pas : le site prend
+    // l'EAN (code-barres de la variante) et le laboratoire (marque) dans Medusa.
+    descriptions: {
+      ean: "Copié depuis Medusa à la création du produit, jamais mis à jour ensuite. Le site et Google lisent le code-barres de la variante dans Medusa : c'est là qu'il se corrige.",
+      laboratory: "Ancien champ de l'import WooCommerce, plus rempli ni lu par le site. Le laboratoire affiché vient de la marque du produit dans Medusa.",
+    },
+    // `medusaId` : clé de jointure avec Medusa. `laboratory` : vestige de l'import Woo (voir
+    // ci-dessus), le modifier n'aurait aucun effet sur le site.
     readOnlyFields: ['medusaId', 'laboratory'],
   },
   'api::article.article': {
