@@ -70,7 +70,9 @@ const CONTENT_TYPE_CONFIG = {
   },
   'api::product.product': {
     settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
-    listColumns: ['name', 'ean', 'handle', 'laboratory', 'visibilite', 'createdAt'],
+    // PV-354 — EAN et Laboratoire retirés de la liste par PA (09/10/2026) : le site ne les lit plus.
+    // Cette liste est réimposée à chaque démarrage : y laisser les deux colonnes les ferait revenir.
+    listColumns: ['name', 'handle', 'visibilite', 'createdAt'],
     labels: {
       name: 'Nom',
       ean: 'EAN',
