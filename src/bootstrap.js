@@ -126,7 +126,7 @@ const CONTENT_TYPE_CONFIG = {
     },
     descriptions: {
       publishAt:
-        'Laisser vide pour que l’article paraisse dès sa publication. Sinon, l’article reste invisible sur le site jusqu’à la date et l’heure indiquées — il faut quand même le publier pour que la programmation s’applique. La date vaut pour toutes les langues, et l’article peut mettre jusqu’à une heure à apparaître.',
+        'Laisser vide pour que l’article paraisse dès sa publication : la date du jour est alors remplie automatiquement. Une date future programme l’article : il reste invisible sur le site jusqu’à la date et l’heure indiquées — il faut quand même le publier pour que la programmation s’applique. C’est cette date qui est affichée et qui classe le blog : l’article le plus récent passe « Au top de l’actu ». La date vaut pour toutes les langues.',
     },
     // Identifiants d'import WordPress — édition = risque de casser le lien avec l'article source.
     readOnlyFields: ['wpId', 'wpStatus', 'wpModified', 'wpDate'],
