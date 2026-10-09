@@ -82,6 +82,7 @@ const CONTENT_TYPE_CONFIG = {
       shortDescription: 'Description courte',
       carousel: 'Carrousel',
       extendedDescription: 'Description étendue',
+      composition: 'Composition',
       modeEmploi: "Mode d'emploi",
       precautions: 'Précautions',
       notice: 'Notice (PDF)',
