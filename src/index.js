@@ -4,6 +4,7 @@ const { registerStorefrontRevalidation } = require("./revalidate-storefront");
 const { registerScheduledArticlesPurge } = require("./scheduled-articles");
 const { registerMediaBufferStripping } = require("./strip-media-buffers");
 const { hideTranslationMeta } = require("./hide-translation-meta");
+const { registerArticlePublishDate } = require("./article-publish-date");
 
 // PV-255 — file de purge des storefronts, partagée avec la tâche des articles programmés.
 let revalidation = null;
@@ -42,6 +43,9 @@ module.exports = {
 
     // PV-185 — empêche le provider R2 d'écrire le binaire des images en base.
     registerMediaBufferStripping({ strapi });
+
+    // PV-357 — la date de publication d'un article est posée à sa première parution.
+    registerArticlePublishDate({ strapi });
   },
 
   /**
