@@ -38,7 +38,8 @@
     "faqs": {
       "type": "component",
       "repeatable": true,
-      "component": "deals.faq-item"
+      "component": "deals.faq-item",
+      "pluginOptions": { "i18n": { "localized": true } }
     },
     "articles": {
       "type": "relation",

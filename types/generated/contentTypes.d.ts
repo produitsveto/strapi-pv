@@ -774,7 +774,12 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
-    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     laboratories: Schema.Attribute.Relation<
       'manyToMany',
       'api::laboratory.laboratory'
@@ -1698,7 +1703,12 @@ export interface ApiLaboratoryLaboratory extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
-    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     faqTitle: Schema.Attribute.String &
       Schema.Attribute.SetPluginOptions<{
         i18n: {
@@ -1855,7 +1865,12 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
-    faqs: Schema.Attribute.Component<'deals.faq-item', true>;
+    faqs: Schema.Attribute.Component<'deals.faq-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     formeGalenique: Schema.Attribute.Enumeration<
       [
         'ampoule-buvable',
