@@ -113,10 +113,10 @@ const CONTENT_TYPE_CONFIG = {
     // l'EAN (code-barres de la variante) et le laboratoire (marque) dans Medusa.
     descriptions: {
       ean: "Copié depuis Medusa à la création du produit, jamais mis à jour ensuite. Le site et Google lisent le code-barres de la variante dans Medusa : c'est là qu'il se corrige.",
-      laboratory: "Ancien champ de l'import WooCommerce, plus rempli ni lu par le site. Le laboratoire affiché vient de la marque du produit dans Medusa.",
+      laboratory: "Recopié automatiquement depuis Medusa à chaque changement de marque : le laboratoire de la marque du produit (Ceva pour un produit Douxo), ou la marque elle-même si elle n'a pas de laboratoire. Se modifie dans Medusa, sert à filtrer la liste ; le site ne le lit pas.",
     },
-    // `medusaId` : clé de jointure avec Medusa. `laboratory` : vestige de l'import Woo (voir
-    // ci-dessus), le modifier n'aurait aucun effet sur le site.
+    // `medusaId` : clé de jointure avec Medusa. `laboratory` : tenu à jour par Medusa depuis la
+    // marque du produit (PV-378), une saisie ici serait écrasée au changement de marque suivant.
     readOnlyFields: ['medusaId', 'laboratory'],
     // PV-378 — jamais affichée sur la fiche, et la description SEO, qui passe avant, est remplie
     // sur les 73 fiches où elle l'était : le champ ne servait à rien.
