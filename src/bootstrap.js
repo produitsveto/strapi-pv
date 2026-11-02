@@ -118,6 +118,9 @@ const CONTENT_TYPE_CONFIG = {
     // `medusaId` : clé de jointure avec Medusa. `laboratory` : vestige de l'import Woo (voir
     // ci-dessus), le modifier n'aurait aucun effet sur le site.
     readOnlyFields: ['medusaId', 'laboratory'],
+    // PV-378 — jamais affichée sur la fiche, et la description SEO, qui passe avant, est remplie
+    // sur les 73 fiches où elle l'était : le champ ne servait à rien.
+    hiddenFields: ['shortDescription'],
   },
   'api::article.article': {
     settings: { mainField: 'title', defaultSortBy: 'createdAt', defaultSortOrder: 'DESC' },
@@ -311,10 +314,12 @@ const CONTENT_TYPE_CONFIG = {
       [{ name: 'target_handles', size: 12 }],
       [{ name: 'brand_handles', size: 12 }],
       [{ name: 'product_handles', size: 12 }],
-      [{ name: 'countries', size: 6 }, { name: 'locales', size: 6 }],
-      [{ name: 'analytics_id', size: 6 }, { name: 'campaign_tracking_id', size: 6 }],
-      [{ name: 'slug', size: 6 }],
+      [{ name: 'countries', size: 6 }, { name: 'analytics_id', size: 6 }],
     ],
+    // PV-378 — demandé par PA. Langues : aucune campagne ne s'en sert, le pays de diffusion suffit.
+    // Identifiant et suivi interne : doublons de l'identifiant Google Analytics ; les statistiques
+    // de ventes par campagne de Medusa reconnaissent déjà la campagne à son numéro.
+    hiddenFields: ['locales', 'campaign_tracking_id', 'slug'],
   },
   'api::site-identity.site-identity': {
     settings: {},
@@ -435,9 +440,10 @@ const COMPONENT_CONFIG = {
  * schéma et en conservant en fin de formulaire ceux qu'on n'a pas listés — sans
  * ça, un champ ajouté au schéma plus tard disparaîtrait silencieusement du BO.
  */
-function buildEditLayout(target, current, uid) {
+function buildEditLayout(target, current, uid, hidden = []) {
   const known = new Set(Object.keys(current.metadatas || {}));
-  const placed = new Set();
+  // Un champ masqué (`hiddenFields`) n'est pas un oubli de l'editLayout : pas de rattrapage en fin.
+  const placed = new Set(hidden);
   const rows = [];
 
   for (const row of target) {
@@ -535,7 +541,7 @@ async function applyConfig(cmStore, storeKey, ctConfig, uid) {
 
   // --- Ordre et largeur des champs du formulaire ---
   if (ctConfig.editLayout) {
-    const targetEdit = buildEditLayout(ctConfig.editLayout, config, uid);
+    const targetEdit = buildEditLayout(ctConfig.editLayout, config, uid, ctConfig.hiddenFields);
     if (JSON.stringify(config.layouts?.edit) !== JSON.stringify(targetEdit)) {
       config.layouts.edit = targetEdit;
       changed = true;
