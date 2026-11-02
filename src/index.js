@@ -37,6 +37,10 @@ module.exports = {
       strapi.customFields.register({ name, type });
     }
 
+    // PV-378 — forme galénique : l'énumération du schéma reste la liste des valeurs permises et
+    // la colonne ne change pas ; seul le champ de saisie affiche les libellés.
+    strapi.customFields.register({ name: 'galenic-form', type: 'enumeration' });
+
     // Purge le cache du storefront Deals à chaque publish/unpublish/delete,
     // pour que le contenu mis à jour dans Strapi soit visible immédiatement.
     revalidation = registerStorefrontRevalidation({ strapi });

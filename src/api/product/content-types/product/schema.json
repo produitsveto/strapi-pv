@@ -113,7 +113,8 @@
       ]
     },
     "formeGalenique": {
-      "type": "enumeration",
+      "type": "customField",
+      "customField": "global::galenic-form",
       "enum": [
         "ampoule-buvable",
         "bande-pansement",

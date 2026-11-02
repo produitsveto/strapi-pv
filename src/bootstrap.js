@@ -14,6 +14,8 @@
  *
  * → Premier lancement : les configs n'existent pas encore, rien ne se passe.
  * → Redémarrer Strapi après le premier accès admin pour appliquer.
+ * → ⚠️ Changer des `listColumns` : incrémenter aussi `LIST_COLUMNS_VERSION` dans
+ *   `src/admin/app.js`, sinon les navigateurs qui ont mémorisé l'ancienne liste la gardent (PV-378).
  */
 
 const CONTENT_TYPE_CONFIG = {
@@ -37,7 +39,7 @@ const CONTENT_TYPE_CONFIG = {
   },
   'api::laboratory.laboratory': {
     settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
-    listColumns: ['name', 'slug', 'visibilite', 'categories', 'createdAt'],
+    listColumns: ['name', 'slug', 'visibilite', 'createdAt'],
     labels: {
       name: 'Nom',
       slug: 'Slug',
@@ -51,6 +53,10 @@ const CONTENT_TYPE_CONFIG = {
       articles: 'Articles',
       seo: 'SEO',
     },
+    // PV-378 — demandé par PA. `faqTitle` : le site titre lui-même la FAQ « Questions fréquentes
+    // sur <marque> », dans chaque langue. `categories` : le site n'a jamais lu ce lien, les
+    // catégories d'une marque se déduisent de ses produits dans Medusa.
+    hiddenFields: ['faqTitle', 'categories'],
   },
   'api::category.category': {
     settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
@@ -67,6 +73,9 @@ const CONTENT_TYPE_CONFIG = {
       laboratories: 'Laboratoires',
       seo: 'SEO',
     },
+    // PV-378 — l'autre côté du lien laboratoire ↔ catégorie, que le site ne lit pas : les marques
+    // d'une catégorie se déduisent de ses produits dans Medusa.
+    hiddenFields: ['laboratories'],
   },
   'api::product.product': {
     settings: { mainField: 'name', defaultSortBy: 'name', defaultSortOrder: 'ASC' },
@@ -529,6 +538,29 @@ async function applyConfig(cmStore, storeKey, ctConfig, uid) {
     const targetEdit = buildEditLayout(ctConfig.editLayout, config, uid);
     if (JSON.stringify(config.layouts?.edit) !== JSON.stringify(targetEdit)) {
       config.layouts.edit = targetEdit;
+      changed = true;
+    }
+  }
+
+  // --- Champs masqués du formulaire (PV-378) ---
+  // `visible: false` au schéma ne vaut qu'à la création de la disposition : sur une disposition
+  // déjà enregistrée, le champ resterait affiché. On le retire donc nous-mêmes, sans toucher au
+  // reste de la disposition. La donnée reste en base : il suffit de retirer le champ d'ici pour
+  // le faire réapparaître.
+  if (ctConfig.hiddenFields) {
+    for (const field of ctConfig.hiddenFields) {
+      const meta = config.metadatas[field];
+      if (meta?.edit && meta.edit.visible !== false) {
+        meta.edit.visible = false;
+        changed = true;
+      }
+    }
+    const hidden = new Set(ctConfig.hiddenFields);
+    const edit = (config.layouts?.edit || [])
+      .map((row) => row.filter((cell) => !hidden.has(cell.name)))
+      .filter((row) => row.length > 0);
+    if (JSON.stringify(edit) !== JSON.stringify(config.layouts?.edit || [])) {
+      config.layouts.edit = edit;
       changed = true;
     }
   }
