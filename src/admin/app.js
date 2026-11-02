@@ -16,8 +16,30 @@ const config = {
 
 const PV_STYLE_ID = 'pv-admin-styles';
 
+// PV-378 — l'admin garde dans chaque navigateur les colonnes affichées de chaque liste
+// (`STRAPI_LIST_VIEW_DISPLAYED_HEADERS:<type>`), et ce réglage l'emporte sur celui que
+// `src/bootstrap.js` impose au serveur : PA voyait encore les colonnes EAN et Laboratoire retirées
+// en PV-354. On efface ces réglages une fois par version : à incrémenter à chaque changement
+// de `listColumns`, pour que la nouvelle liste s'applique partout.
+const LIST_COLUMNS_VERSION = '2026-11-02';
+const LIST_COLUMNS_VERSION_KEY = 'pv-list-columns-version';
+
+const resetStoredListColumns = () => {
+  try {
+    if (localStorage.getItem(LIST_COLUMNS_VERSION_KEY) === LIST_COLUMNS_VERSION) return;
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('STRAPI_LIST_VIEW_DISPLAYED_HEADERS:'))
+      .forEach((key) => localStorage.removeItem(key));
+    localStorage.setItem(LIST_COLUMNS_VERSION_KEY, LIST_COLUMNS_VERSION);
+  } catch {
+    // Stockage indisponible (navigation privée) : rien de mémorisé, rien à effacer.
+  }
+};
+
 const bootstrap = () => {
-  if (typeof document === 'undefined' || document.getElementById(PV_STYLE_ID)) return;
+  if (typeof document === 'undefined') return;
+  resetStoredListColumns();
+  if (document.getElementById(PV_STYLE_ID)) return;
   const style = document.createElement('style');
   style.id = PV_STYLE_ID;
   style.textContent = pvAdminCss;
@@ -69,6 +91,15 @@ export default {
         components: { Input: medusaPicker },
       });
     }
+
+    // PV-378 — forme galénique : mêmes valeurs qu'avant, affichées avec leur libellé.
+    app.customFields.register({
+      name: 'galenic-form',
+      type: 'enumeration',
+      intlLabel: { id: 'galenic-form.label', defaultMessage: 'Forme galénique' },
+      intlDescription: { id: 'galenic-form.description', defaultMessage: 'Liste fermée, identique au filtre du site' },
+      components: { Input: async () => import('./components/GalenicFormSelect/Input') },
+    });
   },
   bootstrap,
 };
