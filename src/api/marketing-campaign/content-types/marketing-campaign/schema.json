@@ -20,17 +20,16 @@
       "targetField": "title"
     },
     "campaign_type": {
-      "type": "enumeration",
+      "type": "customField",
+      "customField": "global::campaign-type",
       "required": true,
       "enum": [
         "HOME_BANNER",
         "CATEGORY_BANNER",
-        "BRAND_BANNER",
+        "FEATURED_CATEGORY_PRODUCTS",
         "MEGAMENU_BANNER",
         "TOP10_BRAND",
-        "CROSS_SELLING",
-        "FEATURED_CATEGORY_PRODUCTS",
-        "FEATURED_BRAND_PRODUCTS"
+        "CROSS_SELLING"
       ]
     },
     "start_date": {
@@ -47,7 +46,23 @@
     "priority": {
       "type": "integer",
       "default": 0,
-      "description": "Ordre d'affichage (tri croissant)."
+      "description": "Ordre d'affichage (tri croissant).",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "HOME_BANNER",
+              "CATEGORY_BANNER",
+              "MEGAMENU_BANNER",
+              "TOP10_BRAND",
+              "CROSS_SELLING"
+            ]
+          ]
+        }
+      }
     },
     "analytics_id": {
       "type": "string",
@@ -62,41 +77,148 @@
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "HOME_BANNER",
+              "CATEGORY_BANNER",
+              "MEGAMENU_BANNER"
+            ]
+          ]
+        }
+      }
     },
     "banner_image_mobile": {
       "type": "media",
       "multiple": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "HOME_BANNER"
+            ]
+          ]
+        }
+      }
     },
     "redirect_url": {
       "type": "string",
-      "description": "URL/chemin de destination au clic."
+      "description": "URL/chemin de destination au clic.",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "HOME_BANNER",
+              "CATEGORY_BANNER",
+              "MEGAMENU_BANNER"
+            ]
+          ]
+        }
+      }
     },
     "background_color": {
       "type": "string",
-      "description": "Couleur de fond (HOME_BANNER). Ex: #4784c3."
+      "description": "Couleur de fond (HOME_BANNER). Ex: #4784c3.",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "CATEGORY_BANNER"
+            ]
+          ]
+        }
+      }
     },
     "label_title": {
       "type": "string",
-      "description": "Titre d'étiquette (CATEGORY_BANNER / BRAND_BANNER)."
+      "description": "Titre d'étiquette (CATEGORY_BANNER, bannière catégorie / marque).",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "CATEGORY_BANNER"
+            ]
+          ]
+        }
+      }
     },
     "target_handles": {
       "type": "customField",
       "customField": "global::medusa-targets",
-      "description": "Handles Medusa des catégories ciblées (CATEGORY_BANNER) ou des entrées de méga-menu à affecter (MEGAMENU_BANNER). Tableau de strings. Vide/null = global."
+      "description": "Handles Medusa des catégories ciblées (CATEGORY_BANNER) ou des entrées de méga-menu à affecter (MEGAMENU_BANNER). Tableau de strings. Vide/null = global.",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "CATEGORY_BANNER",
+              "FEATURED_CATEGORY_PRODUCTS",
+              "MEGAMENU_BANNER",
+              "CROSS_SELLING"
+            ]
+          ]
+        }
+      }
     },
     "product_handles": {
       "type": "customField",
       "customField": "global::medusa-products",
-      "description": "Handles Medusa des produits mis en avant (FEATURED_*, CROSS_SELLING). Tableau ordonné de strings."
+      "description": "Handles Medusa des produits mis en avant (FEATURED_*, CROSS_SELLING). Tableau ordonné de strings.",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "FEATURED_CATEGORY_PRODUCTS",
+              "CROSS_SELLING"
+            ]
+          ]
+        }
+      }
     },
     "brand_handles": {
       "type": "customField",
       "customField": "global::medusa-brands",
-      "description": "Handles Medusa des marques/laboratoires (PV-233) : pages marque où la campagne s'affiche (BRAND_BANNER, FEATURED_BRAND_PRODUCTS), fiches des produits de ces marques (CROSS_SELLING), marques affichées dans l'ordre (TOP10_BRAND). Tableau de strings."
+      "description": "Handles Medusa des marques/laboratoires (PV-233) : pages marque où la campagne s'affiche (CATEGORY_BANNER, FEATURED_CATEGORY_PRODUCTS : catégorie / marque depuis PV-378), fiches des produits de ces marques (CROSS_SELLING), marques affichées dans l'ordre (TOP10_BRAND). Tableau de strings.",
+      "conditions": {
+        "visible": {
+          "in": [
+            {
+              "var": "campaign_type"
+            },
+            [
+              "CATEGORY_BANNER",
+              "FEATURED_CATEGORY_PRODUCTS",
+              "TOP10_BRAND",
+              "CROSS_SELLING"
+            ]
+          ]
+        }
+      }
     },
     "locales": {
       "type": "customField",

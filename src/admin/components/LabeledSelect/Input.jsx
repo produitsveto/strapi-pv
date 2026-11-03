@@ -1,9 +1,11 @@
 import { Field, SingleSelect, SingleSelectOption } from '@strapi/design-system';
 
-// PV-378 — l'énumération native de Strapi affiche la valeur technique (« solution-pour-inhalation »).
-// Les valeurs permises restent celles du schéma (`attribute.enum`) : seul l'affichage change.
+// PV-378 — l'énumération native de Strapi affiche la valeur technique (« solution-pour-inhalation »,
+// « CATEGORY_BANNER »). Les valeurs permises restent celles du schéma (`attribute.enum`) : seul
+// l'affichage change, avec un jeu de libellés par custom field.
+
 // Libellés repris de `apps/produits-veto/i18n/locales/fr.json` (`galenicForms`), ceux du site.
-const LABELS = {
+const GALENIC_FORMS = {
   'ampoule-buvable': 'Ampoule buvable',
   'bande-pansement': 'Bande, pansement',
   'batonnet-barre-friandise': 'Bâtonnet, barre, friandise',
@@ -29,11 +31,27 @@ const LABELS = {
   'spray-diffuseur-fogger': 'Spray, diffuseur, fogger',
 };
 
-const label = (v) => LABELS[v] ?? v;
+const CAMPAIGN_TYPES = {
+  HOME_BANNER: 'Bannière d’accueil',
+  CATEGORY_BANNER: 'Bannière catégorie / marque',
+  FEATURED_CATEGORY_PRODUCTS: 'Produits en vedette catégorie / marque',
+  MEGAMENU_BANNER: 'Bannière du méga-menu',
+  TOP10_BRAND: 'Marques à la une du méga-menu',
+  CROSS_SELLING: 'Vente croisée sur les fiches produit',
+};
 
-const GalenicFormSelect = (props) => {
+const LABELS = {
+  'global::galenic-form': { labels: GALENIC_FORMS, sort: true, placeholder: 'Choisir une forme' },
+  'global::campaign-type': { labels: CAMPAIGN_TYPES, sort: false, placeholder: 'Choisir un type' },
+};
+
+const LabeledSelect = (props) => {
   const { attribute, name, onChange, value, label: fieldLabel, hint, error, required, disabled } = props;
-  const options = [...(attribute?.enum ?? [])].sort((a, b) => label(a).localeCompare(label(b), 'fr'));
+  const config = LABELS[attribute?.customField] ?? { labels: {}, sort: false, placeholder: '' };
+  const label = (v) => config.labels[v] ?? v;
+  const values = [...(attribute?.enum ?? [])];
+  // Ordre du schéma pour les types de campagne, alphabétique pour les formes galéniques.
+  const options = config.sort ? values.sort((a, b) => label(a).localeCompare(label(b), 'fr')) : values;
 
   // `type` doit être le type réel : avec `customField`, le formulaire ignore la saisie sans rien dire.
   const emit = (next) => onChange({ target: { name, value: next || null, type: 'enumeration' } });
@@ -46,7 +64,7 @@ const GalenicFormSelect = (props) => {
         onChange={emit}
         onClear={value && !required ? () => emit(null) : undefined}
         disabled={disabled}
-        placeholder="Choisir une forme"
+        placeholder={config.placeholder}
       >
         {options.map((v) => (
           <SingleSelectOption key={v} value={v}>
@@ -60,4 +78,4 @@ const GalenicFormSelect = (props) => {
   );
 };
 
-export default GalenicFormSelect;
+export default LabeledSelect;
