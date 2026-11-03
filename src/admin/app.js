@@ -92,14 +92,21 @@ export default {
       });
     }
 
-    // PV-378 — forme galénique : mêmes valeurs qu'avant, affichées avec leur libellé.
-    app.customFields.register({
-      name: 'galenic-form',
-      type: 'enumeration',
-      intlLabel: { id: 'galenic-form.label', defaultMessage: 'Forme galénique' },
-      intlDescription: { id: 'galenic-form.description', defaultMessage: 'Liste fermée, identique au filtre du site' },
-      components: { Input: async () => import('./components/GalenicFormSelect/Input') },
-    });
+    // PV-378 — énumérations affichées avec leur libellé (forme galénique, type de campagne) : mêmes
+    // valeurs qu'avant, seul le champ de saisie change.
+    const labeledSelect = async () => import('./components/LabeledSelect/Input');
+    for (const [fieldName, label, hint] of [
+      ['galenic-form', 'Forme galénique', 'Liste fermée, identique au filtre du site'],
+      ['campaign-type', 'Type de campagne', 'Détermine où la campagne s’affiche et les champs à remplir'],
+    ]) {
+      app.customFields.register({
+        name: fieldName,
+        type: 'enumeration',
+        intlLabel: { id: `${fieldName}.label`, defaultMessage: label },
+        intlDescription: { id: `${fieldName}.description`, defaultMessage: hint },
+        components: { Input: labeledSelect },
+      });
+    }
   },
   bootstrap,
 };
